@@ -92,6 +92,7 @@
     "lodash-es": "^4.17.15",
     "lodash.camelcase": "^4.3.0",
     "lodash.pick": "^4.4.0",
+    "mermaid": "^10.2.0",
     "mock-stdin": "^1.0.0",
     "openai": "^3.1.0",
     "papaparse": "^5.4.1",

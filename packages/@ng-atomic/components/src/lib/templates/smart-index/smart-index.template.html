@@ -15,31 +15,37 @@
       ></organisms-smart-list>
     </ng-container>
     <ng-container *ngSwitchDefault>
-      <organisms-grid-toolbar
-        [actions]="gridToolbarActions"
-        (action)="onAction($event)"
-      ></organisms-grid-toolbar>
-      <organisms-smart-table
-        [items]="items"
-        [itemActions]="itemActions"
-        [columns]="properties"
-        [selectedIdSet]="selectedIdSet"
-        [sortKey]="sortKey"
-        [sortOrder]="sortOrder"
-        [childrenKey]="tableChildrenKey"
-        (action)="onAction($event)"
-        (checkboxClick)="checkboxClick.emit($event)"
-        (headerClick)="onAction({id: ActionId.TABLE_HEADER_CLICK, payload: $event})"
-      ></organisms-smart-table>
-      <organisms-paginator
-        *ngIf="page"
-        [control]="queryControl"
-        [form]="form"
-        [page]="page"
-        [pageSizeOptions]="pageSizeOptions"
-        [placeholder]="queryPlaceholder"
-        (pageChange)="pageChange.emit($event)"
-      ></organisms-paginator>
+      <frames-divider>
+        <ng-content first select="[dashboard]"></ng-content>
+        <div style="display: flex; flex-direction: column; width: 100%; height: 100%;" second>
+          <organisms-grid-toolbar
+            [actions]="gridToolbarActions"
+            (action)="onAction($event)"
+          ></organisms-grid-toolbar>
+          <organisms-smart-table
+            [items]="items"
+            [itemActions]="itemActions"
+            [columns]="properties"
+            [selectedIdSet]="selectedIdSet"
+            [sortKey]="sortKey"
+            [sortOrder]="sortOrder"
+            [childrenKey]="tableChildrenKey"
+            (action)="onAction($event)"
+            (checkboxClick)="checkboxClick.emit($event)"
+            (headerClick)="onAction({id: ActionId.TABLE_HEADER_CLICK, payload: $event})"
+          ></organisms-smart-table>
+          <organisms-paginator
+            *ngIf="page"
+            [control]="queryControl"
+            [form]="form"
+            [page]="page"
+            [pageSizeOptions]="pageSizeOptions"
+            [placeholder]="queryPlaceholder"
+            (pageChange)="pageChange.emit($event)"
+          ></organisms-paginator>
+        </div>
+      </frames-divider>
+      
     </ng-container>
   </frames-auto-layout>
 </frames-scroll>

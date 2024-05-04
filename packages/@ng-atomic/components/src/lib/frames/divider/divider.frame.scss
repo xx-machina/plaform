@@ -2,4 +2,36 @@
 // @use 'atomic/frame' as *;
 :host {
 	// @include frame($host);
+	@include property('--first-content-height');
+}
+
+:host {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+
+	height: 100%;
+	width: 100%;
+
+	div.first {
+		height: var(--first-content-height);
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+	}
+
+	mat-divider {
+		z-index: 1000;
+		width: 100%;
+		cursor: row-resize;
+	}
+
+	div.second {
+		display: flex;
+		flex-direction: column;
+		height: calc(100% - var(--first-content-height));
+		overflow: hidden;
+
+	}
+
 }

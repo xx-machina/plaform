@@ -1,0 +1,11 @@
+@use 'scoped-var/strict' as * with ($host: 'mermaid-section');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+}
+
+:host {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

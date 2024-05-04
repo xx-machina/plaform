@@ -12,6 +12,7 @@ import { Action } from '@ng-atomic/common/models';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GridToolbarOrganism } from '@ng-atomic/components/organisms/grid-toolbar';
 import { FiltersSectionOrganism } from '@ng-atomic/components/organisms/filters-section';
+import { DividerFrame } from '@ng-atomic/components/frames/divider';
 
 export enum ActionId {
   BACK = '[@ng-atomic/components/templates/smart-index] Back',
@@ -25,6 +26,7 @@ export enum ActionId {
     CommonModule,
     AutoLayoutFrame,
     ScrollFrame,
+    DividerFrame,
     GridToolbarOrganism,
     PaginatorOrganism,
     SmartTableOrganism,

@@ -1,0 +1,11 @@
+{
+  "$schema": "../../../../../../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../../dist/packages/@ng-atomic/components",
+  "lib": {
+    "entryFile": "index.ts",
+    "styleIncludePaths": [
+      "../../../../../../node_modules",
+      "../../../styles"
+    ]
+  }
+}
