@@ -1,5 +1,5 @@
 import { Inject, Injectable, InjectionToken } from "@nx-ddd/core";
-import { OpenAIApi } from "openai";
+// import { OpenAIApi } from "openai";
 import { BaseAdapter, Role } from "../base";
 
 export interface AzureOpenAiConfig {

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import { Observable, ReplaySubject, lastValueFrom } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { Observable, ReplaySubject, lastValueFrom, of, throwError } from 'rxjs';
+import { catchError, distinctUntilChanged, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { FirestoreAdapter } from '../adapters/base';
 import { FirestoreConverter } from '../converter';
 import { FirestoreDAO } from '../dao';
@@ -15,30 +15,40 @@ export class FirestoreQuery<
 > extends FirestoreDAO<Entity, FirestoreData> {
   constructor(
     adapter: FirestoreAdapter,
-    converter: FirestoreConverter<Entity>,
+    protected converter: FirestoreConverter<Entity>,
     protected pathBuilder: FirestorePathBuilder<Entity>
   ) {
-    super(adapter, converter);
+    super(adapter);
     this.switchCollectionRef();
   }
 
   protected readonly collection$ = new ReplaySubject<FirestoreCollectionType<FirestoreData>>(1);
   protected readonly list$ = this.collection$.pipe(
-    switchMap((collection) => this.listChangesByCollectionRef(collection)),
+    switchMap((collection) => this.listChangesByCollectionRef(collection).pipe(
+      catchError(error => throwError(() => error)),
+    )),
     shareReplay(1),
   )
 
-  listChanges(paramMap?: Partial<Entity>): Observable<Entity[]> {
-    this.switchCollectionRef(paramMap);
-    return this.list$;
+  listChanges(paramMap?: Partial<Entity>, options: {switch?: boolean} = {switch: true}): Observable<Entity[]> {
+    return of(paramMap).pipe(
+      tap((paramMap) => options?.switch && this.switchCollectionRef(paramMap)),
+      switchMap(() => this.list$),
+    );
   }
 
   changes({id}: Partial<Entity>) {
     if (!id) throw new Error(`Invalid Id. it must be Truthy`);
-
     return this.list$.pipe(
       map(entities => entities.find(entity => entity.id === id)),
       distinctUntilChanged((pre, cur) => JSON.stringify(pre) === JSON.stringify(cur)),
+    );
+  }
+
+  changesV2(params: Partial<Entity>): Observable<Entity> {
+    const docRef = this.doc(params as any);
+    return docRef.stateChanges().pipe(
+      map((doc) => this.converter.fromFirestore((doc as any))),
     );
   }
 
@@ -72,6 +82,10 @@ export class FirestoreQuery<
 
   protected switchCollectionRef(paramMap?: Partial<Entity>) {
     const collection = this.getCollection(paramMap);
+    this.switchCollection(collection);
+  }
+
+  switchCollection(collection: FirestoreCollection<FirestoreData>) {
     this.collection$.next(collection);
   }
 }

@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  justify-content: start;
+  width: 100vw;
+  height: 100vh;
+
+  div.left {
+    width: 300px;
+    height: 100%;
+    overflow: scroll;
+    outline: 1px solid red;; 
+  }
+
+  div.right {
+    width: calc(100% - 300px);
+    height: 100%;
+    outline: 1px solid red;
+
+    frames-divider {
+      --first-content-height: 50%;
+
+      iframe {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}

@@ -43,7 +43,7 @@ Thumbs.db
 *-debug.log
 
 # Dagger Cache
-storage
+./storage/*
 .angular
 
 # env

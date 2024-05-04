@@ -1,15 +1,24 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Optional, Output } from '@angular/core';
-import { Action } from '@ng-atomic/common/models';
-import { DataAccessor, DATA_ACCESSOR, defaultDataAccessor } from '@ng-atomic/common/pipes/data-accessor';
+import { ChangeDetectionStrategy, Component, Directive, Input, inject } from '@angular/core';
+import { DATA_ACCESSOR, defaultDataAccessor } from '@ng-atomic/common/pipes/data-accessor';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
 import { DataAccessorPipe } from '@ng-atomic/common/pipes/data-accessor';
+import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { KeysPipe } from '@ng-atomic/common/pipes/keys';
+import { GroupedByPipe } from '@ng-atomic/common/pipes/grouped-by';
 
 export enum ActionId {
   CLICK_ITEM = '[@ng-atomic/components/organisms/smart-list] Click Item',
+}
+
+@Directive({standalone: true})
+export class SmartListOrganismStore {
+  @Input() items: any[] = [];
+  @Input() groupedBy: string;
+  @Input() groupKeys: string[];
 }
 
 @Component({
@@ -22,12 +31,14 @@ export enum ActionId {
     MatTooltipModule,
     MatRippleModule,
     DataAccessorPipe,
+    GroupedByPipe,
+    KeysPipe,
   ],
   template: `
-    <mat-list>
-      <ng-container *ngFor="let status of statuses">
-        <div mat-subheader> {{ status }}</div>
-        <ng-container *ngFor="let item of statusMap[status]">
+    <mat-list *ngIf="store.groupedBy">
+      <ng-container *ngFor="let key of store.groupKeys ?? (store.items | groupedBy:store.groupedBy | keys); trackBy: trackByItem;">
+        <div mat-subheader>{{ key }}</div>
+        <ng-container *ngFor="let item of (store.items | groupedBy:store.groupedBy)[key]; trackBy: trackById">
           <mat-list-item lines="2" matRipple (click)="onItemClick(item)">
             <span
               matListItemTitle
@@ -39,46 +50,44 @@ export enum ActionId {
               {{ item | dataAccessor:'description' }}
             </span>
           </mat-list-item>
-          <mat-divider *ngIf="statuses.length === 1"></mat-divider>
         </ng-container>
-        <mat-divider *ngIf="statuses.length > 1"></mat-divider>
+        <mat-divider></mat-divider>
+      </ng-container>
+    </mat-list>
+    <mat-list *ngIf="!store.groupedBy">
+      <ng-container *ngFor="let item of store.items; trackBy: trackById">
+        <mat-list-item lines="2" matRipple (click)="onItemClick(item)">
+          <span
+            matListItemTitle
+            [matTooltip]="item | dataAccessor:'title'"
+          >
+            {{ item | dataAccessor:'title' }}
+          </span>
+          <span matListItemLine>
+            {{ item | dataAccessor:'description' }}
+          </span>
+        </mat-list-item>
+        <mat-divider></mat-divider>
       </ng-container>
     </mat-list>
   `,
   styleUrls: ['./smart-list.organism.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: SmartListOrganismStore,
+      inputs: ['items', 'groupedBy', 'groupKeys'],
+    },
+  ],
 })
-export class SmartListOrganism<T> {
-
-  constructor(
-    @Optional() @Inject(DATA_ACCESSOR) private dataAccessor: DataAccessor<T>
-  ) {
-    this.dataAccessor ??= defaultDataAccessor;
-  }
-
-  @Input()
-  items: T[] = [];
-
-  @Output()
-  action = new EventEmitter<Action>();
-
-  get statusMap() {
-    return (this.items ?? []).reduce((acc, item) => {
-      const key = this.dataAccessor(item, '__status');
-      acc[key] ??= [],
-      acc[key].push(item);
-      return acc;
-    }, {} as { [id: string]: any[] });
-  }
-
-  get statuses() {
-    return Object.keys(this.statusMap);
-  }
+export class SmartListOrganism<T> extends NgAtomicComponent {
+  static readonly ActionId = ActionId;
+  protected readonly store = inject(SmartListOrganismStore);
+  protected readonly dataAccessor = inject(DATA_ACCESSOR) ?? defaultDataAccessor;
+  protected readonly trackByItem = (_: number, item: T) => item;
+  protected readonly trackById = (_: number, item: T) => this.dataAccessor(item, 'id');
 
   protected onItemClick(item: T) {
-    this.action.emit({
-      id: ActionId.CLICK_ITEM,
-      payload: item,
-    });
+    this.dispatch({id: ActionId.CLICK_ITEM, payload: item});
   }
 }

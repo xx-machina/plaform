@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import { ErrorPipe } from '@ng-atomic/common/pipes/error';
 
 export interface Option<T> {
   name: string;
@@ -15,8 +16,19 @@ export interface Option<T> {
     CommonModule,
     ReactiveFormsModule,
     MatSelectModule,
+    ErrorPipe,
   ],
-  templateUrl: './select-input-field.molecule.html',
+  template: `
+  <mat-form-field [appearance]="appearance">
+    <mat-label>{{ label }}</mat-label>
+    <mat-select [formControl]="control">
+      <mat-option *ngFor="let option of options; trackBy value;" [value]="option.value">
+        {{ option.name }}
+      </mat-option>
+    </mat-select>
+    <mat-error>{{ control.errors | error }}</mat-error>
+  </mat-form-field>
+  `,
   styleUrls: ['./select-input-field.molecule.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {class: 'molecule input-field field'},

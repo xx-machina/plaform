@@ -1,1 +1,1 @@
-export * from './lib/firestore-angular-adapter.module';
+export * from './';

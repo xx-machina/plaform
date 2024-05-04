@@ -18,12 +18,12 @@ import { Action, Actions } from '@ng-atomic/common/models';
   <ng-container [ngSwitch]="actions?.length ?? 0">
     <ng-container *ngSwitchCase="0"></ng-container>
     <ng-container *ngSwitchCase="1">
-      <button mat-icon-button (click)="action.emit(actions[0])">
+      <button mat-icon-button (click)="action.emit(actions[0])" [disabled]="actions[0].disabled">
         <mat-icon>{{ actions[0]?.icon }}</mat-icon>
       </button>
     </ng-container>
     <ng-container *ngSwitchDefault>
-      <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="actions.length">
+      <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="action.disabled" *ngIf="actions.length">
         <mat-icon>more_vert</mat-icon>
       </button>
     </ng-container>

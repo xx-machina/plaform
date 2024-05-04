@@ -3,7 +3,7 @@ export type NotionFieldType = 'title' | 'url' | 'rich_text'
   | 'relation' | 'status' | 'formula' | 'rollup' | 'timestamp'
   | 'number' | 'created_time' | 'last_edited_time' | 'date' | 'select'
   | 'phone_number' | 'email' | 'checkbox' | 'created_by' | 'files'
-  | 'last_edited_by' | 'multi_select' | 'people';
+  | 'last_edited_by' | 'multi_select' | 'people' | 'unique_id';
 export interface NotionAnnotation<T extends object = undefined> {
   type: NotionFieldType;
   fieldName: string;
@@ -37,6 +37,7 @@ export const Date = createDecorator('date');
 export const Select = createDecorator('select');
 export const PhoneNumber = createDecorator('phone_number');
 export const Email = createDecorator('email');
+export const UniqueID = createDecorator('unique_id');
 // Not implemented below props!
 // export const Checkbox = createDecorator('checkbox');
 // export const CreatedBy = createDecorator('created_by');

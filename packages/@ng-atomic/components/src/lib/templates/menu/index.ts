@@ -1,1 +1,1 @@
-export { MenuTemplate } from './menu.template';
+export * from './menu.template';

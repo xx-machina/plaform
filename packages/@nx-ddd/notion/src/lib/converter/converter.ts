@@ -1,14 +1,13 @@
-import { PageObjectResponse, PartialPageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { Converter } from '@nx-ddd/common/infrastructure/converter';
+import { PageObjectResponse, PartialPageObjectResponse, PartialDatabaseObjectResponse, DatabaseObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { NotionUtils } from "../utils";
 import { NotionAnnotation, NOTION_ANNOTATIONS } from "../decorators";
 import { omitBy } from "lodash";
 
-export abstract class NotionConverter<E> extends Converter<E> {
+export abstract class NotionConverter<E> {
   protected abstract Entity;
 
-  fromRecord(page: PageObjectResponse | PartialPageObjectResponse): E {
-    const annotations: NotionAnnotation[] = this.Entity[NOTION_ANNOTATIONS];
+  fromNotion(page: PageObjectResponse | PartialPageObjectResponse | PartialDatabaseObjectResponse | DatabaseObjectResponse): E {
+    const annotations: NotionAnnotation[] = this.Entity[NOTION_ANNOTATIONS] ?? [];
     const obj = annotations.reduce((obj, annotation) => {
       const value = page['properties'][annotation.fieldName] 
         ? NotionUtils.fromNotionValue(page['properties'][annotation.fieldName], annotation)
@@ -18,8 +17,8 @@ export abstract class NotionConverter<E> extends Converter<E> {
     return (this.Entity as any).from(obj);
   }
 
-  toRecord(entity: Partial<E>): object {
-    const annotations: NotionAnnotation[] = this.Entity[NOTION_ANNOTATIONS];
+  toNotion(entity: Partial<E>): object {
+    const annotations: NotionAnnotation[] = this.Entity[NOTION_ANNOTATIONS] ?? [];
     const data = annotations.reduce((obj, annotation) => ({
       ...obj, [annotation.fieldName]: NotionUtils.toNotionValue(entity[annotation.propName], annotation),
     }), {});

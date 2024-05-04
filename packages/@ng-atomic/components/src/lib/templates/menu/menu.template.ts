@@ -1,36 +1,46 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, InjectionToken, Input, Type, inject } from '@angular/core';
 import { Action } from '@ng-atomic/common/models';
-import { NavigationListOrganism } from '@ng-atomic/components/organisms/navigation-list';
+import { InjectableComponent } from '@ng-atomic/common/core';
+import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NavigationListOrganismStore } from '@ng-atomic/components/organisms/navigation-list';
+import { MenuFooterOrganismStore } from '@ng-atomic/components/organisms/menu-footer';
+import { MenuHeaderOrganismStore } from '@ng-atomic/components/organisms/menu-header';
+
+@Directive({ standalone: true, selector: 'templates-menu' })
+export class MenuTemplateStore extends InjectableComponent {
+  static readonly TOKEN = new InjectionToken<Type<MenuTemplateStore>>('[@ng-atomic/components] MenuTemplateStore');
+  @Input() actions: Action<string>[] = [];
+}
 
 @Component({
   standalone: true,
   imports: [
     CommonModule,
-    NavigationListOrganism,
+    MenuHeaderOrganismStore,
+    NavigationListOrganismStore,
+    MenuFooterOrganismStore
   ],
   selector: 'templates-menu',
   template: `
   <div class="top">
-    <ng-content select=[header]></ng-content>
-    <organisms-navigation-list
-      [actions]="actions"
-      (action)="action.emit($event)"
+    <organisms-menu-header injectable></organisms-menu-header>
+    <organisms-navigation-list injectable
+      [actions]="store.actions"
+      (action)="dispatch($event)"
     ></organisms-navigation-list>
   </div>
-  <div class="bottom">
-    <ng-content select=[footer]></ng-content>
-  </div>
+  <organisms-menu-footer injectable></organisms-menu-footer>
   `,
   styleUrls: ['./menu.template.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: MenuTemplateStore,
+      inputs: ['actions'],
+    },
+  ]
 })
-export class MenuTemplate {
-
-  @Input()
-  actions: Action<string>[] = [];
-
-  @Output()
-  action = new EventEmitter<Action>();
-
+export class MenuTemplate extends NgAtomicComponent {
+  protected store = inject(MenuTemplateStore);
 }

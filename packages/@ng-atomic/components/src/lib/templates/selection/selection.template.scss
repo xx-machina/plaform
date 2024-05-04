@@ -1,0 +1,5 @@
+@use 'scoped-var/strict' as * with ($host: 'selection');
+@use 'atomic/template' as *;
+:host {
+	@include template($host);
+}

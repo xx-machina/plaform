@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Action, Actions } from '@ng-atomic/common/models';
+import { Actions } from '@ng-atomic/common/models';
+import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
 import { SmartMenuButtonAtom } from '@ng-atomic/components/atoms/smart-menu-button';
 
 @Component({
@@ -38,13 +39,10 @@ import { SmartMenuButtonAtom } from '@ng-atomic/components/atoms/smart-menu-butt
   styleUrls: ['./navigator.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavigatorOrganism {
+export class NavigatorOrganism extends NgAtomicComponent {
   @Input()
   startActions: Actions = [];
 
   @Input()
   endActions: Actions = [];
-
-  @Output()
-  action = new EventEmitter<Action>();
 }

@@ -6,11 +6,10 @@
   "prefix": "platform",
   "targets": {
     "build": {
-      "executor": "@nrwl/angular:package",
+      "executor": "@nx/angular:package",
       "options": {
         "tsConfig": "packages/@ng-atomic/components/tsconfig.lib.json",
-        "project": "packages/@ng-atomic/components/src/lib/ng-package.json",
-        "updateBuildableProjectDepsInPackageJson": true
+        "project": "packages/@ng-atomic/components/src/lib/ng-package.json"
       },
       "configurations": {
         "production": {
@@ -107,17 +106,17 @@
       "defaultConfiguration": "development"
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": [
-          "packages/@ng-atomic/components/src/**/*.ts",
-          "packages/@ng-atomic/components/src/**/*.html"
+          "packages/@ng-atomic/components/**/package.json",
+          "packages/@ng-atomic/components/**/project.json"
         ]
       },
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/ng-atomic/components"],
       "options": {
         "jestConfig": "packages/@ng-atomic/components/jest.config.ts",
@@ -133,19 +132,21 @@
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@ng-atomic/components"
       }
     },
     "link": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "options": {
         "commands": ["npm link"],
         "cwd": "dist/packages/@ng-atomic/components"
       }
     }
   },
-  "tags": ["package"]
+  "tags": [
+    "@ng-atomic"
+  ]
 }

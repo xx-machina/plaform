@@ -1,5 +1,5 @@
 import { NxModule } from '../nx-module';
-import { Injectable, InjectionToken } from 'injection-js';
+import { Injectable, InjectionToken } from '@nx-ddd/injection-js';
 import 'reflect-metadata';
 
 export const EXAMPLE_VALUE = new InjectionToken('examole value');

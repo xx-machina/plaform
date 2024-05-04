@@ -26,19 +26,21 @@ export class EditorComponent {
 
   @ViewChild('editor', { static: true })
   private _editor!: ElementRef<HTMLElement>;
-  private editor!: EditorView;
-
-  async ngOnInit(): Promise<void> { }
+  editor!: EditorView;
 
   async ngAfterViewInit() {
     this.state$.subscribe((state) => {
       if (this.editor) {
-        this.editor.dispatch(
-          this.editor.state.update({...state}),
-          {changes: { from: 0, to: this.editor.state.doc.length, insert: state.doc.toString() }},
-        );
+        const transaction = this.editor.state.update({
+          ...state,
+          selection: this.editor.state.selection,
+        });
+        this.editor.dispatch(transaction);
       } else {
-        this.editor = new EditorView({state, parent: this._editor.nativeElement});
+        this.editor = new EditorView({
+          state,
+          parent: this._editor.nativeElement
+        });
       }
     });
   }

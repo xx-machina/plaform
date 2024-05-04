@@ -2,9 +2,17 @@ type CollectionParamMap<Entity extends {id: string}> = Partial<Entity>;
 type DocParamMap<Entity extends {id: string}> = CollectionParamMap<Entity> & Pick<Entity, 'id'>;
 
 export class FirestorePathBuilder<Entity extends { id: string }> {
-  doc = (param: DocParamMap<Entity>) => resolvePaths(param, this.paths);
-  collection = (param: CollectionParamMap<Entity> = {}) => resolvePaths(param, this.paths.slice(0, -1));
-  collectionGroup = () => this.paths[this.paths.length-2];
+  doc(param: DocParamMap<Entity>) {
+    return resolvePaths(param, this.paths);
+  }
+
+  collection(param: CollectionParamMap<Entity> = {}) {
+    return resolvePaths(param, this.paths.slice(0, -1));
+  }
+
+  collectionGroup() {
+    return this.paths[this.paths.length-2];
+  }
 
   constructor(private paths: string[]) { }
 }
@@ -27,6 +35,6 @@ export const resolvePaths = (obj: object, paths: string[]): string => {
 }
 
 const resolvePath = (obj: object, key: string) => {
-  if (!obj?.[key]) throw new Error(`Invalid key is detected in resolving paths, key: ${key}, obj: ${obj}`);
+  if (!obj?.[key]) throw new Error(`Invalid key is detected in resolving paths, key: \`${key}\`, obj: \`${JSON.stringify(obj)}\``);
   return obj?.[key];
 }

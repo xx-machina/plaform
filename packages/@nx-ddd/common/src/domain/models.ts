@@ -14,9 +14,9 @@ export type OmitGetter<T> = {
 };
 
 export class Entity { 
-  static from<E extends Entity = any>(obj: Partial<OmitGetter<E>>): E {
-    return Object.assign(new this(), obj) as E;
-  }
+  // static from<E extends Entity = any>(obj: Partial<OmitGetter<E>>): E {
+  //   return Object.assign(new this(), obj) as E;
+  // }
 
   static fromObj<T extends Entity = Entity>(obj: object): T {
     return Object.assign(new this(), {

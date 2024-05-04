@@ -1,4 +1,6 @@
 {
   "name": "@schematics-x/estimators",
-  "version": "0.0.0-PLACEHOLDER"
+  "version": "0.0.0-PLACEHOLDER",
+  "peerDependencies": {},
+  "dependencies": {}
 }

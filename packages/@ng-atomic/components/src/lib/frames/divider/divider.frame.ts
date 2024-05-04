@@ -1,9 +1,14 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDivider, MatDividerModule } from '@angular/material/divider';
+import { MatDividerModule } from '@angular/material/divider';
 import { CdkDrag, CdkDragMove, CdkDragStart } from '@angular/cdk/drag-drop';
-import { DomSanitizer } from '@angular/platform-browser';
-import { ReplaySubject } from 'rxjs';
+import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+
+enum ActionId {
+  DRAG_STARTED = '[@ng-atomic/divider] drag start',
+  DRAG_MOVED = '[@ng-atomic/divider] drag move',
+  DRAG_ENDED = '[@ng-atomic/divider] drag end',
+}
 
 @Component({
   selector: 'frames-divider',
@@ -23,6 +28,7 @@ import { ReplaySubject } from 'rxjs';
       [cdkDragStartDelay]="0"
       (cdkDragStarted)="onDragStart($event)"
       (cdkDragMoved)="onDragMoved($event)"
+      (cdkDragEnded)="onDragEnd($event)"
       cdkDragLockAxis="y"
       #el
     ></mat-divider>
@@ -33,11 +39,10 @@ import { ReplaySubject } from 'rxjs';
   styleUrls: ['./divider.frame.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DividerFrame {
+export class DividerFrame extends NgAtomicComponent {
+  static ActionId = ActionId;
 
-  constructor(
-    private el: ElementRef,
-  ) { }
+  private el = inject(ElementRef);
 
   protected firstContentHeight: number;
   protected distance: {x: number, y: number} = {x: 0, y: 0};
@@ -46,15 +51,21 @@ export class DividerFrame {
   @ViewChild('el', {read: ElementRef})
   divider: ElementRef<HTMLElement>;
 
-  onDragStart($event: CdkDragStart) {
+  protected onDragStart($event: CdkDragStart) {
+    this.dispatch({id: ActionId.DRAG_STARTED, payload: $event}, 'default');
     const parentRect = this.divider.nativeElement.parentElement.getBoundingClientRect();
     const elementRect = this.divider.nativeElement.getBoundingClientRect();
     this.firstContentHeight = elementRect.top - parentRect.top;
   }
 
-  onDragMoved($event: CdkDragMove) {
+  protected onDragMoved($event: CdkDragMove) {
+    this.dispatch({id: ActionId.DRAG_MOVED, payload: $event}, 'default');
     this.divider.nativeElement.style.transform = `translate3d(0, 0, 0)`;
     const height = Math.max(1, this.firstContentHeight + $event.distance.y);
     this.el.nativeElement.style.setProperty('--first-content-height', `${height}px`);
+  }
+
+  protected onDragEnd($event: CdkDragMove) {
+    this.dispatch({id: ActionId.DRAG_ENDED, payload: $event}, 'default');
   }
 }

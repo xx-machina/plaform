@@ -10,7 +10,15 @@ import { TextInputFieldMolecule } from '@ng-atomic/components/molecules/text-inp
     CommonModule,
     TextInputFieldMolecule,
   ],
-  templateUrl: './text-input-section.organism.html',
+  template: `
+  <molecules-text-input-field
+    [type]="type"
+    [control]="control"
+    [label]="label"
+    [placeholder]="placeholder"
+    [hint]="hint"
+    [autoComplete]="autoComplete"
+  ></molecules-text-input-field>`,
   styleUrls: ['./text-input-section.organism.scss']
 })
 export class TextInputSectionOrganism {
@@ -29,5 +37,8 @@ export class TextInputSectionOrganism {
 
   @Input()
   control = new FormControl('');
+
+  @Input()
+  autoComplete: string[] = [];
 
 }

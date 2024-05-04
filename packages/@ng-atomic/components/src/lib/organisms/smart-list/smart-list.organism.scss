@@ -14,4 +14,12 @@
 	mat-list-item {
 		cursor: pointer;
 	}
+
+	mat-list {
+		.mdc-list-group__subheader {
+			font-size: 14px;
+			line-height: 1em;
+			margin: calc((3rem - 1.5rem)/2) 16px;
+		}
+	}
 }

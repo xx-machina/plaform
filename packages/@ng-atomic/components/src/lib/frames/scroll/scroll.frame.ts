@@ -1,15 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { IosSafariScrollBuggyfillModule } from '@ng-atomic/common/directives/ios-safari-scroll-buggyfill';
 
 @Component({
   selector: 'frames-scroll',
   standalone: true,
   imports: [
     CommonModule,
-    IosSafariScrollBuggyfillModule,
   ],
-  templateUrl: './scroll.frame.html',
+  template: `
+  <div class="navigator">
+    <ng-content select=[navigator]></ng-content>
+  </div>
+  <div class="contents">
+    <ng-content select=[contents]></ng-content>
+  </div>
+  `,
   styleUrls: ['./scroll.frame.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

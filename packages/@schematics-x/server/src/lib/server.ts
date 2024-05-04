@@ -1,6 +1,6 @@
 import { BaseAdapter, Role } from '@schematics-x/core/adapters/base';
 import { RedisService } from './redis';
-import { Context } from '@x-x-machina/common/domain/models';
+import { Context } from '@machina/common/domain/models';
 import { Injectable } from '@nx-ddd/core';
 
 

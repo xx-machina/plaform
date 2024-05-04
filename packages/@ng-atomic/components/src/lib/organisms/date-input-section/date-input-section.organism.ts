@@ -11,7 +11,13 @@ import dayjs from 'dayjs';
     CommonModule,
     DateInputFieldMolecule,
   ],
-  templateUrl: './date-input-section.organism.html',
+  template: `
+  <molecules-date-input-field
+    [control]="control"
+    [label]="label"
+    [placeholder]="placeholder"
+  ></molecules-date-input-field>
+  `,
   styleUrls: ['./date-input-section.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {class: 'organism section'},

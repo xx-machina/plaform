@@ -1,0 +1,38 @@
+@use 'scoped-var/strict' as * with ($host: 'scroll');
+
+:host {
+	@include property(--height, 100%);
+	@include property(--top-height, 56px);
+	@include property(--bottom-height, 56px);
+}
+
+:host {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: var(--height);
+	overflow: hidden;
+
+	.top {
+		height: var(--top-height);
+		transition: 0.5s height;
+		overflow: hidden;
+		touch-action: none;
+	}
+
+	.contents {
+		height: calc(#{var(--height)} - #{var(--top-height)} - #{var(--bottom-height)});
+		transition: 0.5s height;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+
+		&::-webkit-scrollbar{
+			display: none;
+		}
+	}
+
+	.bottom {
+		height: var(--bottom-height);
+	}
+
+}

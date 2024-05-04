@@ -11,7 +11,15 @@ import { catchError, map, Observable, of, ReplaySubject, switchMap } from 'rxjs'
     CommonModule,
     MatIconModule,
   ],
-  templateUrl: './icon.atom.html',
+  template: `
+  <mat-icon
+    *ngIf="hasSvgIcon$ | async"
+    [svgIcon]="name$ | async"
+  ></mat-icon>
+  <mat-icon
+    *ngIf="!(hasSvgIcon$ | async)"
+  >{{ name$ | async }}</mat-icon>
+  `,
   styleUrls: ['./icon.atom.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

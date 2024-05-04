@@ -1,17 +1,19 @@
-import { Observable } from 'rxjs';
+import { NEVER, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import ResizeObserver from 'resize-observer-polyfill';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ElementRef } from '@angular/core';
 
-export function fromResize({nativeElement}: ElementRef<Element>): Observable<number> {
-  return Observable.create(function(observer: any) {
-    const callback = (entries: any) => entries.forEach((e: any) => observer.next(e));
-    const resizeObserver = new ResizeObserver(callback);
-    resizeObserver.observe(nativeElement);
+export function fromResize(el: ElementRef<Element>): Observable<number> {
+  if (!el) return NEVER;
+  return new Observable<any>((observer) => {
+    const resizeObserver = new ResizeObserver(entries => {
+      entries.forEach((entry) => observer.next(entry));
+    });
+    resizeObserver.observe(el.nativeElement);
     return () => resizeObserver.disconnect();
   }).pipe(
-    map(({contentRect}) => contentRect?.width ?? 0),
+    map((el) => el.contentRect?.width ?? 0),
     startWith(0),
     distinctUntilChanged(),
   );

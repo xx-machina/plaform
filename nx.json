@@ -4,7 +4,7 @@
   },
   "tasksRunnerOptions": {
     "cloud": {
-      "runner": "@nrwl/nx-cloud",
+      "runner": "nx-cloud",
       "options": {
         "cacheableOperations": ["build", "lint", "test", "e2e"],
         "accessToken": "ZDlmYjY5ZjQtY2Q5Yi00NDQxLWI4Y2MtMjhjMDg3MjA1OWIxfHJlYWQtd3JpdGU=",
@@ -18,12 +18,63 @@
       }
     }
   },
-  "defaultProject": "demo",
+  "defaultProject": "@ng-atomic/components",
   "cli": {
     "defaultCollection": "./dist/packages/@ng-atomic/schematics"
   },
   "generators": {
-    "@nrwl/angular": {
+    "@nx/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nx/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nx/angular:component": {
+      "style": "scss"
+    },
+    "./dist/packages/@ng-atomic/schematics": {
+      "pipe": {
+        "project": "@ng-atomic/common",
+        "path": "packages/@ng-atomic/common/src/pipes",
+        "flat": false,
+        "standalone": true,
+        "skipImport": true
+      },
+      "atom": {
+        "project": "@ng-atomic/components",
+        "path": "atoms",
+        "inlineTemplate": true
+      },
+      "molecule": {
+        "project": "@ng-atomic/components",
+        "path": "molecules",
+        "inlineTemplate": true
+      },
+      "organism": {
+        "project": "@ng-atomic/components",
+        "path": "organisms",
+        "inlineTemplate": true
+      },
+      "template": {
+        "project": "@ng-atomic/components",
+        "path": "templates",
+        "inlineTemplate": true
+      },
+      "page": {
+        "project": "@ng-atomic/components",
+        "inlineTemplate": true
+      },
+      "frame": {
+        "project": "@ng-atomic/components",
+        "path": "frames",
+        "inlineTemplate": true
+      }
+    },
+    "@nx/angular": {
       "application": {
         "linter": "eslint"
       },
@@ -32,45 +83,6 @@
       },
       "storybook-configuration": {
         "linter": "eslint"
-      }
-    },
-    "@nrwl/angular:application": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
-    },
-    "@nrwl/angular:library": {
-      "linter": "eslint",
-      "unitTestRunner": "jest"
-    },
-    "@nrwl/angular:component": {
-      "style": "scss"
-    },
-    "./dist/packages/@ng-atomic/schematics": {
-      "atom": {
-        "project": "@ng-atomic/components",
-        "path": "atoms"
-      },
-      "molecule": {
-        "project": "@ng-atomic/components",
-        "path": "molecules"
-      },
-      "organism": {
-        "project": "@ng-atomic/components",
-        "path": "organisms"
-      },
-      "template": {
-        "project": "@ng-atomic/components",
-        "path": "templates"
-      },
-      "page": {
-        "project": "@ng-atomic/components",
-        "path": "pages"
-      },
-      "frame": {
-        "project": "@ng-atomic/components",
-        "path": "frames"
       }
     }
   },
@@ -103,7 +115,8 @@
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/.eslintrc.json"
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/src/test-setup.[jt]s"
     ]
   }
 }

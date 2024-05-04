@@ -2,6 +2,7 @@
 
 :host {
   @include property(--height, 64px);
+  @include property(--primary-color, #012148);
 }
 
 :host {
@@ -13,6 +14,8 @@
     display: flex;
     width: 100%;
     height: 100%;
+
+    background-color: var(--primary-color);
 
     justify-content: space-between;
     align-items: center;

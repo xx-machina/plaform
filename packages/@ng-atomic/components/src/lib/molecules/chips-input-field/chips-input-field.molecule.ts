@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ChipsInputAtom } from '@ng-atomic/components/atoms/chips-input';
+import { ErrorPipe } from '@ng-atomic/common/pipes/error';
 
 
 @Component({
@@ -22,6 +23,7 @@ import { ChipsInputAtom } from '@ng-atomic/components/atoms/chips-input';
     MatInputModule,
     MatFormFieldModule,
     ChipsInputAtom,
+    ErrorPipe,
   ],
   template: `
   <mat-form-field [appearance]="appearance" [floatLabel]="floatLabel">
@@ -44,6 +46,7 @@ import { ChipsInputAtom } from '@ng-atomic/components/atoms/chips-input';
       >
     </mat-chip-grid>
     <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+    <mat-error>{{ control.errors | error }}</mat-error>
   </mat-form-field>
   `,
   styleUrls: ['./chips-input-field.molecule.scss'],

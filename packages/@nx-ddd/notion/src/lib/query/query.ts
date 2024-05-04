@@ -116,7 +116,7 @@ export class NotionOr extends NotionBaseQuery {
   }
 }
 
-export const Query = <E extends typeof Entity<any>>(Entity: E) => {
+export const Query = <E = any>(Entity: E) => {
   const Filter = (_propName: string, evaluation: Evaluation, value: string | number): NotionFilter => {
     const annotation: NotionAnnotation = Entity[NOTION_ANNOTATIONS].find(({propName}) => propName === _propName);
 

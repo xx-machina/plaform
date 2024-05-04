@@ -5,7 +5,7 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/@nx-ddd/core",
@@ -18,14 +18,17 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/@nx-ddd/core/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/@nx-ddd/core/**/package.json",
+          "packages/@nx-ddd/core/**/project.json"
+        ]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/core"],
       "options": {
         "jestConfig": "packages/@nx-ddd/core/jest.config.ts",
@@ -33,19 +36,19 @@
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@nx-ddd/core"
       }
     },
     "link": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "options": {
         "commands": ["npm link"],
         "cwd": "dist/packages/@nx-ddd/core"
       }
     }
   },
-  "tags": ["package"]
+  "tags": ["package", "@nx-ddd"]
 }
