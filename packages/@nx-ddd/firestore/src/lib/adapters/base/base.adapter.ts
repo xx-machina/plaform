@@ -1,3 +1,4 @@
+import { Injectable } from '@nx-ddd/core';
 import {
   FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument,
   ToFirestoreData, Timestamp
@@ -5,6 +6,7 @@ import {
 
 export type QueryFn<Data> = (collection?: any) => any;
 
+@Injectable()
 export abstract class FirestoreAdapter<Date = any> {
   protected abstract isTimestamp: (v: any) => v is Timestamp;
   protected abstract isDate(v: any): v is Date;

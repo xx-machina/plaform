@@ -1,8 +1,8 @@
 import { NxModule } from "@nx-ddd/core";
-import { AI_CONFIG } from '@schematics-x/core/ai';
+import { REDIS_CONFIG } from "./redis";
 
 export interface SchematicsXServerConfig {
-  token: string;
+  redisUrl?: string;
 }
 
 @NxModule({ })
@@ -11,7 +11,7 @@ export class SchematicsXServerModule {
     return {
       nxModule: SchematicsXServerModule,
       providers: [
-        { provide: AI_CONFIG, useValue: {token: config.token} },
+        { provide: REDIS_CONFIG, useValue: {url: config.redisUrl} },
       ],
     };
   }

@@ -6,8 +6,16 @@ import { DocumentSnapshot, ToFirestoreData } from '../interfaces';
 import { FirestoreAnnotation, FIRESTORE_ANNOTATIONS } from '../decorators';
 
 
+export interface IFirestoreConverter<Entity = any, Data = ToFirestoreData<Entity, Dayjs>> {
+  fromFirestore(doc: DocumentSnapshot<Data>): Entity;
+  toFirestore(entity: Partial<Entity>): Data;
+}
+
 @Injectable()
-export class FirestoreConverter<Entity = any, Data = ToFirestoreData<Entity, Dayjs>> {
+export class FirestoreConverter<
+  Entity = any, 
+  Data = ToFirestoreData<Entity, Dayjs>
+> implements IFirestoreConverter {
   protected Entity: any;
   protected adapter: FirestoreAdapter<any>;
 
@@ -16,14 +24,14 @@ export class FirestoreConverter<Entity = any, Data = ToFirestoreData<Entity, Day
     return annotations.map(a => a.fieldName);
   }
 
-  fromRecord<Data>(doc: DocumentSnapshot<Data>): Entity {
+  fromFirestore(doc: DocumentSnapshot<Data>): Entity {
     return this.Entity.fromObj(this.adapter.fromFirestoreData({
       ...doc.data(),
       id: doc.id
     }));
   }
 
-  toRecord<Entity>(entity: Entity): Data {
+  toFirestore(entity: Entity): Data {
     const data = this.adapter.toFirestoreData<Entity>(this.Entity.toObj(entity));
     return pick(data, this.fields) as Data;
   }

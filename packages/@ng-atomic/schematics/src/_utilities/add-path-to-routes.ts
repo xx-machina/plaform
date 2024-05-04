@@ -11,10 +11,10 @@ const hasMatchTextChild = (n: ts.Node, text: string) => {
 };
 const isRoutesVariableDeclaration = (n: ts.Node) =>  isVariableDeclaration(n) && hasMatchTextChild(n, 'routes')
 
-export const addPathToRoutes = ({route, routingModulePath, removeOtherRoutes}: any) => (host: Tree) => {
+export const addPathToRoutes = ({route, routesPath, removeOtherRoutes}: any) => (host: Tree) => {
 	const src = ts.createSourceFile(
-		routingModulePath,
-		host.read(routingModulePath)!.toString('utf-8'),
+		routesPath,
+		host.read(routesPath)!.toString('utf-8'),
 		ts.ScriptTarget.Latest,
 		true
 	);
@@ -26,7 +26,7 @@ export const addPathToRoutes = ({route, routingModulePath, removeOtherRoutes}: a
 
 	if (routeNodes.length === 1) {
 		const n = routeNodes[0] as ts.ArrayLiteralExpression;
-		const recorder = host.beginUpdate(routingModulePath);
+		const recorder = host.beginUpdate(routesPath);
 		const suffix = n.elements.length > 0 && !removeOtherRoutes ? ',' : '';
 		recorder.insertRight(n.getStart() + 1, `${route}${suffix}`);
 		host.commitUpdate(recorder);

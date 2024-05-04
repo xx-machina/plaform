@@ -1,0 +1,46 @@
+<frames-scroll>
+  <organisms-navigator 
+    [startActions]="navStartActions"
+    [endActions]="navEndActions"
+    (action)="action.emit($event)"
+    navigator
+  >
+    <molecules-header [title]="title"></molecules-header>
+  </organisms-navigator>
+  <frames-auto-layout vertical contents>
+    <ng-container *ngFor="let entry of controls; trackBy:trackByIndex" [ngSwitch]="(entry[0] | smartField)?.type">
+      <organisms-select-input-section
+        *ngSwitchCase="'select'"
+        [label]="entry[0] | D"
+        [control]="entry[1]"
+        [options]="(entry[0] | smartField)?.options"
+      ></organisms-select-input-section>
+      <organisms-date-input-section
+        *ngSwitchCase="'date'"
+        [label]="entry[0] | D"
+        [control]="entry[1]"
+      ></organisms-date-input-section>
+      <organisms-text-input-section
+        *ngSwitchCase="'number'"
+        [type]="'number'"
+        [label]="entry[0] | D"
+        [control]="entry[1]"
+      ></organisms-text-input-section>
+      <organisms-textarea-section
+        *ngSwitchCase="'textarea'"
+        [label]="entry[0] | D"
+        [control]="entry[1]"
+        [rows]="(entry[0] | smartField).rows"
+      ></organisms-textarea-section>
+      <organisms-text-input-section
+        *ngSwitchDefault
+        [label]="entry[0] | D"
+        [control]="entry[1]"
+      ></organisms-text-input-section>
+    </ng-container>
+    <organisms-action-buttons-section
+      [actions]="actions"
+      (action)="action.emit($event)"
+    ></organisms-action-buttons-section>
+  </frames-auto-layout>
+</frames-scroll>

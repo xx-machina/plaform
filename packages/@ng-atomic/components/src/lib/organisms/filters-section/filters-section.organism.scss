@@ -1,0 +1,11 @@
+@use 'scoped-var/strict' as * with ($host: 'filters-section');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+}
+
+:host {
+	display: block;
+	padding: 0 16px;
+	box-sizing: border-box;
+}

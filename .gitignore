@@ -45,3 +45,11 @@ Thumbs.db
 # Dagger Cache
 storage
 .angular
+
+# env
+.env
+.env.*
+.secret/*
+
+# Cache
+.firebase

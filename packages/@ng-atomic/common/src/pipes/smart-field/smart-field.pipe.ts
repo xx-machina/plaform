@@ -9,6 +9,11 @@ interface InputField {
   type: 'input';
 }
 
+interface TextareaField {
+  type: 'textarea';
+  rows?: number;
+}
+
 interface DateInputField {
   type: 'date';
 }
@@ -24,6 +29,7 @@ interface MultiSelectField<T> {
 }
 
 type FormField<V> = InputField
+  | TextareaField
   | DateInputField
   | SelectField<V>
   | MultiSelectField<V>;

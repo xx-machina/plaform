@@ -11,12 +11,13 @@ export const distinctUntilChangedArray = <T>() => {
   return distinctUntilChanged<T>((pre, cur) => JSON.stringify(pre) === JSON.stringify(cur));
 };
 
-export abstract class EntitiesStore<S extends EntitiesState<E>, E extends {id: string}> extends ComponentStore<S> {
+export abstract class EntitiesStore<E extends {id: string}, S extends EntitiesState<E> = any> extends ComponentStore<S> {
   protected readonly refresh$ = new ReplaySubject<void>(1);
 
   get entities() { return this.get().entities; }
 
   entities$ = this.select(({entities}) => entities ? entities.sort(compareById) : []);
+  size$ = this.select(({entities}) => entities?.length ?? 0);
   
   constructor(initialState: S) {
     super(initialState);

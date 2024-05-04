@@ -1,10 +1,16 @@
 import { Injector } from 'injection-js';
 import { createInjectorWithoutInjectorInstances } from '../di/create-injector';
+import { Provider } from '../di/interface/provider';
+import { NxModule } from './nx-module';
 
 export type Type<T> = any;
 
 export function createNxModuleRef<T>(moduleType: Type<T>, injector?: Injector): NxModuleRef<T> {
   return new NxModuleRef(moduleType, injector ?? null);
+}
+
+export function bootstrap(moduleType: Type<any>, providers: Provider[] = []): NxModuleRef {
+  return createNxModuleRef(NxModule({ imports: [moduleType], providers })(class BootstrapModule { }));
 }
 
 export class NxModuleRef<T = any> {

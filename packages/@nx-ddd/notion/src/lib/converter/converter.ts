@@ -9,17 +9,19 @@ export abstract class NotionConverter<E> extends Converter<E> {
 
   fromRecord(page: PageObjectResponse | PartialPageObjectResponse): E {
     const annotations: NotionAnnotation[] = this.Entity[NOTION_ANNOTATIONS];
-    const obj = annotations.reduce((obj, {type, fieldName, propName}) => {
-      const value = page['properties'][fieldName] ? NotionUtils.fromNotionValue(page['properties'][fieldName]) : undefined;
-      return {...obj, [propName]: value};
+    const obj = annotations.reduce((obj, annotation) => {
+      const value = page['properties'][annotation.fieldName] 
+        ? NotionUtils.fromNotionValue(page['properties'][annotation.fieldName], annotation)
+        : undefined;
+      return {...obj, [annotation.propName]: value};
     }, {id: page.id});
     return (this.Entity as any).from(obj);
   }
 
   toRecord(entity: Partial<E>): object {
     const annotations: NotionAnnotation[] = this.Entity[NOTION_ANNOTATIONS];
-    const data = annotations.reduce((obj, {type, fieldName, propName}) => ({
-      ...obj, [fieldName]: NotionUtils.toNotionValue(entity[propName], type),
+    const data = annotations.reduce((obj, annotation) => ({
+      ...obj, [annotation.fieldName]: NotionUtils.toNotionValue(entity[annotation.propName], annotation),
     }), {});
     return omitBy(data, (value) => typeof value === 'undefined');
   }

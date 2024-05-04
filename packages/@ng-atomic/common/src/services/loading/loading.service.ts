@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { scan, map, distinctUntilChanged, delay } from 'rxjs/operators';
+import { scan, map, distinctUntilChanged, delay, tap, shareReplay } from 'rxjs/operators';
 
-type LoadingMap = Record<string, boolean>;
+type LoadingMap = Map<string, boolean>;
 
 @Injectable({
   providedIn: 'root',
@@ -10,17 +10,17 @@ type LoadingMap = Record<string, boolean>;
 export class LoadingService {
   private loadingEntries$ = new Subject<[string, boolean]>();
 
-  loadingMap: LoadingMap = {};
+  loadingMap: LoadingMap = new Map();
   loadingMap$ = this.loadingEntries$.pipe(
-    scan((pre, [key, value]) => ({ ...pre, [key]: value }), {} as LoadingMap),
-    map((m: LoadingMap) => Object.entries(m)
-      .filter(([k, v]: [string, boolean]) => v)
-      .reduce((p, [k, v]) => ({ ...p, [k]: v }), {} as LoadingMap)),
-    distinctUntilChanged((pre, cur) => JSON.stringify(pre) === JSON.stringify(cur)),
+    scan((map, [key, value]) => map.set(key, value), new Map()),
+    map((map: LoadingMap) => new Map([...map.entries()].filter(([_, v]: [string, boolean]) => v))),
+    tap(m => console.debug('m:', m)),
+    distinctUntilChanged((pre, cur) => JSON.stringify([...pre.entries()]) === JSON.stringify([...cur.entries()])),
+    shareReplay(1),
   );
 
   isLoading$ = this.loadingMap$.pipe(
-    map((m) => !!Object.keys(m).length),
+    map((map) => !![...map.keys()].length),
     delay(0),
   );
 
@@ -41,6 +41,13 @@ export class LoadingService {
   start(callback: (done: any) => void, key: string = randomStr(16)) {
     this.setKey(key);
     callback(() => this.removeKey(key));
+  }
+
+  async await(callback: (...args: any[]) => Promise<void>) {
+    const key = randomStr(16);
+    this.setKey(key);
+    await callback();
+    this.removeKey(key);
   }
 }
 

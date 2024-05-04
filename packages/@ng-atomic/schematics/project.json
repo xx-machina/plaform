@@ -31,12 +31,12 @@
           "collection.json",
           "packages/@ng-atomic/schematics/*.md",
           {
-            "input": "./ng-atomic/schematics/src",
+            "input": "packages/@ng-atomic/schematics/src",
             "glob": "**/*.!(ts)",
             "output": "./src"
           },
           {
-            "input": "./ng-atomic/schematics",
+            "input": "packages/@ng-atomic/schematics",
             "glob": "collection.json",
             "output": "."
           }

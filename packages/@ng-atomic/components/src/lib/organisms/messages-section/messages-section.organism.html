@@ -1,0 +1,17 @@
+<ng-container *ngFor="let message of messages">
+  <ng-container [ngSwitch]="message.role">
+    <div class="user message" *ngSwitchCase="'user'">
+      <div class="balloon">
+        <span> {{ message.content }}</span>
+      </div>
+    </div>
+    <div class="opponent message" *ngSwitchDefault>
+      <div class="opponent">
+        
+      </div>
+      <div class="balloon">
+        <span> {{ message.content }}</span>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

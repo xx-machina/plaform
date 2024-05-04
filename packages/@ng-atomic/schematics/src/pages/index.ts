@@ -7,7 +7,7 @@ import { Schema } from './schema';
 export const pages = (options: Schema): Rule => async (host: Tree) => {
   options.path ??= await createDefaultPath(host, options.project);
   const { name, path } = options = {...options, ...parseName(options.path, options.name)};
-  return host.exists(`${path}/${name}/${name}.module.ts`) ? noop() : genModule(options);
+  return host.exists(`${path}/${name}/${name}.routes.ts`) ? noop() : genModule(options);
 };
 
 const genModule = (options: Schema) => 

@@ -1,7 +1,7 @@
-import { Injectable } from "@nx-ddd/core";
+import { Inject, Injectable, InjectionToken } from "@nx-ddd/core";
 import { createClient, commandOptions, SchemaFieldTypes, VectorAlgorithms } from 'redis';
-import { bufferFloat32, bufferFloat64, float32Buffer, float64Buffer } from "../utils";
-import { Context } from '@schematics-x/server/models';
+import { bufferFloat32, bufferFloat64, float32Buffer, float64Buffer } from "@x-x-machina/common/utils";
+import { Context } from '@x-x-machina/common/domain/models';
 
 export enum VectorSize {
   // TEST = 3,
@@ -9,11 +9,21 @@ export enum VectorSize {
   ADA = 1948,
 }
 
+export interface RedisConfig {
+  url?: string;
+}
+
+export const REDIS_CONFIG = new InjectionToken<RedisConfig>('[@schematics-x/server] Redis Config');
+
 @Injectable({providedIn: 'root'})
 export class RedisService {
-  private client = createClient();
+  private client = createClient({
+    url: this.config.url,
+  });
 
-  constructor() {
+  constructor(
+    @Inject(REDIS_CONFIG) protected config: RedisConfig
+  ) {
     this.client.on('error', err => console.log('Redis Client Error', err));
   }
 
@@ -44,12 +54,22 @@ export class RedisService {
       ...context, embedding: this.toBuffer(context.embedding)
     });
   }
+  
+  async list() {
+    const keys = await this.client.keys('noderedis:contextes:*')
+      .then(keys => keys.map(key => key.replace('noderedis:contextes:', '')));
+    return await Promise.all(keys.map(key => this.getContext(key)));
+  }
 
   async getContext(id: string): Promise<Context> {
     const context = await this.client.hGetAll(`noderedis:contextes:${id}`);
     const {embedding} = await this.client.hGetAll(commandOptions({ returnBuffers: true }), `noderedis:contextes:${id}`);
     const em = this.fromBuffer(embedding);
     return {...context, embedding: em} as never as Context;
+  }
+
+  async existsContext(id: string): Promise<boolean> {
+    return this.client.exists(`noderedis:contextes:${id}`).then(res => !!res);
   }
 
   async searchContexts(embedding: number[]): Promise<Context[]> {

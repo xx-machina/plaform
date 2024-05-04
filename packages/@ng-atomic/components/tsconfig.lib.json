@@ -8,6 +8,7 @@
     "inlineSources": true,
     "types": [],
     "lib": ["dom", "es2018"],
+    "rootDir": "src/lib",
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {

@@ -1,12 +1,12 @@
 import { Injectable } from '@nx-ddd/core';
 import { PartialWithId, Repository } from '@nx-ddd/common/domain/repository';
-import { FirestoreAdapter } from '../adapters/base';
-import { FirestoreConverter } from '../converter';
-import { FirestorePathBuilder } from '../path-builder';
 import { toObject } from '@nx-ddd/common/utilities/to-object';
-import { FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument, ToFirestoreData } from '../interfaces';
-import { Dayjs } from 'dayjs';
 import { generateId } from '@nx-ddd/common/utilities';
+import { Dayjs } from 'dayjs';
+import { FirestoreAdapter } from '../adapters/base';
+import { IFirestoreConverter } from '../converter';
+import { FirestorePathBuilder } from '../path-builder';
+import { FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument, ToFirestoreData } from '../interfaces';
 
 const toPromise = callback => new Promise<ReturnType<typeof callback>>(async (resolve, reject) => {
   try { resolve(callback()); } catch (error) { reject(error); }
@@ -19,7 +19,7 @@ export abstract class BaseFirestoreRepository<
 > extends Repository<Entity> {
   protected Entity: { new(): Entity };
   protected abstract collectionPath: string;
-  protected abstract converter: FirestoreConverter;
+  protected abstract converter: IFirestoreConverter<Entity, FirestoreData>;
   protected pathBuilder: FirestorePathBuilder<Entity>;
 
   constructor(
@@ -58,7 +58,7 @@ export abstract class BaseFirestoreRepository<
     return entities.reduce((batch, entity) => {
       const doc = this.doc(entity).__ref;
       return batch.set(doc, {
-        ...this.converter.toRecord(entity),
+        ...this.converter.toFirestore(entity),
         ...this.buildServerTimestampObject(timestamps),
       });
     }, this.adapter.batch()).commit();
@@ -69,7 +69,7 @@ export abstract class BaseFirestoreRepository<
     return entities.reduce((batch, entity) => {
       const doc = this.doc(entity).__ref;
       return batch.create(doc, {
-        ...this.converter.toRecord(entity),
+        ...this.converter.toFirestore(entity),
         ...this.buildServerTimestampObject(['createdAt', 'updatedAt']),
       });
     }, this.adapter.batch()).commit();
@@ -80,7 +80,7 @@ export abstract class BaseFirestoreRepository<
     return entities.reduce((batch, entity) => {
       const doc = this.doc(entity).__ref;
       return batch.update(doc, {
-        ...this.converter.toRecord(entity),
+        ...this.converter.toFirestore(entity),
         ...this.buildServerTimestampObject(['updatedAt']),
       });
     }, this.adapter.batch()).commit();
@@ -104,35 +104,44 @@ export abstract class BaseFirestoreRepository<
   protected genId = (): string => generateId();
 
   protected _list(collection: FirestoreCollection<FirestoreData>) {
-    return collection.get().then(({docs}) => docs.map(doc => this.converter.fromRecord(doc)));
+    const doesExist = (doc: any) => typeof doc.exists === 'function' ? doc.exists() : doc.exists;
+    return collection.get().then(({docs}) => docs.map(doc => {
+      if (!doesExist(doc)) return null;
+      return this.converter.fromFirestore(doc);
+    }));
   }
 
   protected _get(doc: FirestoreDocument<FirestoreData>) {
-    return doc.get().then((doc => this.converter.fromRecord(doc)));
+    const doesExist = (doc: any) => typeof doc.exists === 'function' ? doc.exists() : doc.exists;
+    return doc.get().then((doc => {
+      console.debug(doc.data());
+      if (!doc.data()) return null;
+      return this.converter.fromFirestore(doc)
+    }));
   }
 
   protected _save(doc: FirestoreDocument<FirestoreData>, entity: Entity): Promise<[Entity, boolean]> {
     return this._set(doc, entity, !entity?.id)
-      .then(doc => this.converter.fromRecord(doc)).then(e => [e, !!entity?.id]); 
+      .then(doc => this.converter.fromFirestore(doc)).then(e => [e, !!entity?.id]); 
   }
 
   protected _create(doc: FirestoreDocument<FirestoreData>, entity: Entity): Promise<Entity> {
     return doc.set({
-      ...this.converter.toRecord(entity),
+      ...this.converter.toFirestore(entity),
       ...this.buildServerTimestampObject(['createdAt', 'updatedAt']),
-    } as any).then(() => doc.get()).then(doc => this.converter.fromRecord(doc)); ;
+    } as any).then(() => doc.get()).then(doc => this.converter.fromFirestore(doc)); ;
   }
 
   protected _update(doc: FirestoreDocument<FirestoreData>, entity: Partial<Entity>): Promise<void> {
     return doc.update({
-      ...this.converter.toRecord(entity),
+      ...this.converter.toFirestore(entity),
       ...this.buildServerTimestampObject(['updatedAt']),
     } as any).then(() => {}); 
   }
 
   protected _set(doc: FirestoreDocument<FirestoreData>, entity: Partial<Entity>, isUpdate = true) {
     return doc.set({
-      ...this.converter.toRecord(entity),
+      ...this.converter.toFirestore(entity),
       ...this.buildServerTimestampObject(isUpdate ? ['updatedAt'] : []),
     } as any, {merge: isUpdate}).then(() => doc.get());
   }

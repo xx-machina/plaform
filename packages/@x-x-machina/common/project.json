@@ -1,0 +1,57 @@
+{
+  "name": "@x-x-machina/common",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@x-x-machina/common/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/@x-x-machina/common/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/@x-x-machina/common/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@x-x-machina/common",
+        "tsConfig": "packages/@x-x-machina/common/tsconfig.lib.json",
+        "packageJson": "packages/@x-x-machina/common/package.json",
+        "main": "packages/@x-x-machina/common/src/index.ts",
+        "assets": ["packages/@x-x-machina/common/*.md"],
+        "rootDir": "packages/@x-x-machina/common/src/lib",
+        "buildableProjectDepsInPackageJsonType": "peerDependencies"
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/@x-x-machina/common"
+      }
+    },
+    "link": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm link"],
+        "cwd": "dist/packages/@x-x-machina/common"
+      }
+    }
+  },
+  "tags": ["package"]
+}

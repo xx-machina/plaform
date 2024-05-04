@@ -8,6 +8,8 @@ export function resolveAndCreate(providers, parent = Injector.NULL) {
   const injector = ReflectiveInjector.resolveAndCreate(providers, parent);
   const originalGet = injector.get;
   injector.get = function(token: any, notFoundValue?: any): any {
+    notFoundValue = token['Θopt'] ? null : notFoundValue;
+
     setCurrentInjector(this);
     if(this.parent === Injector.NULL && token?.providedIn === 'root') {
       return originalGet.apply(injector, [token, token['Θfac']()]);

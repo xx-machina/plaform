@@ -1,2 +1,2 @@
-export { <%= classify(name) %><%= classify(type) %> } from './<%= dasherize(name) %>.<%= dasherize(type) %>';
-export { <%= classify(name) %>Module } from './<%= dasherize(name) %>.module';
+export * from './<%= dasherize(name) %>.<%= dasherize(type) %>';
+<% if(!standalone) { %>export * from './<%= dasherize(name) %>.module';<% } %>

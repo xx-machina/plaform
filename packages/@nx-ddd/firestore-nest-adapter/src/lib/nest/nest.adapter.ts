@@ -1,11 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { AdminFirestoreAdapter } from "@nx-ddd/firestore/adapters/admin";
+import { FirestoreAdminAdapter } from "@nx-ddd/firestore/adapters/admin";
 import { FirebaseFirestoreService } from '@aginix/nestjs-firebase-admin';
 
 
 @Injectable()
-export class NestFirestoreAdapter extends AdminFirestoreAdapter {
-  constructor(nestFirestore: FirebaseFirestoreService) {
-    super(nestFirestore.firestore);
+export class NestFirestoreAdapter extends FirestoreAdminAdapter {
+  constructor(private _firestore: FirebaseFirestoreService) {
+    super();
   }
+  
+  protected firestore = this._firestore.firestore;
 }

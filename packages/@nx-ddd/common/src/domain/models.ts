@@ -5,8 +5,8 @@ export type DomainLangMap<Entity> =  Partial<{[K in keyof Entity]: string}>
 
 export interface Entity<Id = string> {
   id: Id | null;
-  createdAt: Dayjs | null;
-  updatedAt: Dayjs | null;
+  createdAt?: Dayjs | null;
+  updatedAt?: Dayjs | null;
 }
 
 export type OmitGetter<T> = {

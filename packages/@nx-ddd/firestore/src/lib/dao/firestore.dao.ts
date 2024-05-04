@@ -16,7 +16,7 @@ export abstract class FirestoreDAO<
     protected converter: FirestoreConverter<Entity>,
   ) { }
 
-  protected collection(paramMap?: Partial<Entity>):FirestoreCollection<FirestoreData> {
+  protected collection(paramMap?: Partial<Entity>): FirestoreCollection<FirestoreData> {
     const path = this.pathBuilder.collection(paramMap)
     return this.adapter.collection<FirestoreData>(path);
   }
@@ -29,5 +29,9 @@ export abstract class FirestoreDAO<
   protected doc(paramMap: Partial<Entity> & {id: string}): FirestoreDocument<FirestoreData> {
     const path = this.pathBuilder.doc(paramMap);
     return this.adapter.doc<FirestoreData>(path);
+  }
+
+  protected getCollection(paramMap?: Partial<Entity>) {
+    return paramMap ? this.collection(paramMap) : this.collectionGroup();
   }
 }
