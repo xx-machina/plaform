@@ -1,8 +1,9 @@
 import { NG_INJ_DEF } from '../di/interface/defs';
+import { Provider } from '../di/interface/provider';
 
 export interface NxModule {
   imports?: any[],
-  providers?: any[],
+  providers?: Provider[],
 }
 
 export function NxModule(nxModule: NxModule) {

@@ -7,9 +7,12 @@ export const EXAMPLE_VALUE = new InjectionToken('examole value');
 
 @Injectable()
 export abstract class Repository {
-  get name(): string {
-    throw new Error('Repository.name is not implemented!');
-  }
+  abstract name: string;
+}
+
+@Injectable()
+export class RepositoryImpl {
+  name = 'RepositoryImpl.name';
 }
 
 @Injectable()
@@ -46,7 +49,7 @@ export class LibraryModule {
   ],
   providers: [
     AppService,
-    Repository,
+    { provide: Repository, useClass: RepositoryImpl},
   ]
 })
 export class AppModule { }
