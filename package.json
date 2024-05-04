@@ -15,7 +15,7 @@
     "mediship-cli": "ts-node -r tsconfig-paths/register --project projects/@mediship/cli/tsconfig.app.json projects/@mediship/cli/src/main.ts",
     "myhome": "ts-node -r tsconfig-paths/register --project projects/@myhome/cli/tsconfig.app.json projects/@myhome/cli/src/main.ts",
     "task334": "ts-node -r tsconfig-paths/register --project projects/@task334/bot/tsconfig.app.json projects/@task334/bot/src/main.ts",
-    "scripts:set-package-versions": "npm run scripts scripts/set-package-versions.ts",
+    "scripts:set-package-versions": "npm run scripts scripts/set-package-versions.ts $(git describe --tags $(git rev-list --tags --max-count=1))",
     "e2e": "ng e2e",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
