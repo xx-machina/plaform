@@ -11,7 +11,8 @@
         "outputPath": "dist/packages/@schematics-x/estimators",
         "tsConfig": "packages/@schematics-x/estimators/tsconfig.lib.json",
         "packageJson": "packages/@schematics-x/estimators/package.json",
-        "main": "packages/@schematics-x/estimators/src/index.ts",
+        "rootDir": "packages/@schematics-x/estimators/src/lib",
+        "main": "packages/@schematics-x/estimators/src/lib/index.ts",
         "assets": ["packages/@schematics-x/estimators/*.md"]
       }
     },

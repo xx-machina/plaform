@@ -54,15 +54,15 @@
       "@nx-ddd/notion/*": ["packages/@nx-ddd/notion/src/lib/*"],
       "@nx-ddd/spreadsheet/*": ["packages/@nx-ddd/spreadsheet/src/lib/*"],
       "@platform/api-interfaces": ["libs/api-interfaces/src/index.ts"],
-      "@schematics-x/core": ["packages/@schematics-x/core/src/index.ts"],
+      "@schematics-x/core": ["packages/@schematics-x/core/src/lib/index.ts"],
       "@schematics-x/core/*": ["packages/@schematics-x/core/src/lib/*"],
       "@schematics-x/estimators": [
-        "packages/@schematics-x/estimators/src/index.ts"
+        "packages/@schematics-x/estimators/src/lib/index.ts"
       ],
       "@schematics-x/estimators/*": [
         "packages/@schematics-x/estimators/src/lib/*"
       ],
-      "@schematics-x/server": ["packages/@schematics-x/server/src/index.ts"],
+      "@schematics-x/server": ["packages/@schematics-x/server/src/lib/index.ts"],
       "@schematics-x/server/*": ["packages/@schematics-x/server/src/lib/*"]
     }
   },

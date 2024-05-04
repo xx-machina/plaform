@@ -11,7 +11,8 @@
         "outputPath": "dist/packages/@schematics-x/server",
         "tsConfig": "packages/@schematics-x/server/tsconfig.lib.json",
         "packageJson": "packages/@schematics-x/server/package.json",
-        "main": "packages/@schematics-x/server/src/index.ts",
+        "rootDir": "packages/@schematics-x/server/src/lib",
+        "main": "packages/@schematics-x/server/src/lib/index.ts",
         "assets": ["packages/@schematics-x/server/*.md"]
       }
     },
