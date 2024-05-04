@@ -21,6 +21,12 @@
         "accessToken": "ZDlmYjY5ZjQtY2Q5Yi00NDQxLWI4Y2MtMjhjMDg3MjA1OWIxfHJlYWQtd3JpdGU=",
         "parallel": 1
       }
+    },
+    "local": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
     }
   },
   "defaultProject": "demo",
