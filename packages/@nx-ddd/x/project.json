@@ -4,6 +4,18 @@
   "sourceRoot": "packages/@nx-ddd/x/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@nx-ddd/x",
+        "tsConfig": "packages/@nx-ddd/x/tsconfig.lib.json",
+        "packageJson": "packages/@nx-ddd/x/package.json",
+        "main": "packages/@nx-ddd/x/src/index.ts",
+        "rootDir": "packages/@nx-ddd/x/src/lib",
+        "assets": ["packages/@nx-ddd/x/*.md"]
+      }
+    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
@@ -26,6 +38,13 @@
           "ci": true,
           "codeCoverage": true
         }
+      }
+    },
+    "publish": {
+      "executor": "@nx/workspace:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/@nx-ddd/x"
       }
     }
   },

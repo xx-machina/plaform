@@ -39,6 +39,13 @@
           "codeCoverage": true
         }
       }
+    },
+    "publish": {
+      "executor": "@nx/workspace:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/@nx-ddd/injection-js"
+      }
     }
   },
   "tags": ["package", "@nx-ddd"]
