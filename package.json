@@ -1,6 +1,6 @@
 {
   "name": "x-x-machina",
-  "version": "4.5.2",
+  "version": "4.5.3",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
