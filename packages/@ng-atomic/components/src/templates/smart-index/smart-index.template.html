@@ -15,9 +15,10 @@
       ></organisms-smart-list>
     </ng-container>
     <ng-container *ngSwitchDefault>
-      <!-- <organisms-grid-toolbar
-        [columns]="properties"
-      ></organisms-grid-toolbar> -->
+      <organisms-grid-toolbar
+        [actions]="gridToolbarActions"
+        (action)="onAction($event)"
+      ></organisms-grid-toolbar>
       <organisms-smart-table
         [items]="items"
         [itemActions]="itemActions"

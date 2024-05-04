@@ -1,5 +1,21 @@
 @use 'scoped-var/strict' as * with ($host: 'editor');
 @use 'atomic/component' as *;
+
 :host {
 	@include component($host);
+}
+
+:host {
+	width: 100%;
+	height: 100%;
+
+	div {
+		width: 100%;
+		height: 100%;
+
+		::ng-deep > .cm-editor {
+			width: 100%;
+			height: 100%;
+		}
+	}
 }

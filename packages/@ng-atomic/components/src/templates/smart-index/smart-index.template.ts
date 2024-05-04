@@ -43,6 +43,9 @@ export class SmartIndexTemplate<T> {
   protected ActionId = ActionId;
 
   @Input()
+  gridToolbarActions: Action[] = [];
+
+  @Input()
   tableChildrenKey: string = '';
 
   @Input()

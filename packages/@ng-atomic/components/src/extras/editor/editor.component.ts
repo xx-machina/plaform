@@ -10,7 +10,7 @@ import { ReplaySubject } from 'rxjs';
   imports: [
     CommonModule
   ],
-  templateUrl: './editor.component.html',
+  template: `<div #editor></div>`,
   styleUrls: ['./editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -17,8 +17,12 @@
 
 	.contents-container {
 		height: calc(#{var(--height)} - #{var(--navigator-height)});
-		overflow: scroll;
+		overflow: auto;
 		-webkit-overflow-scrolling: touch;
+
+		&::-webkit-scrollbar{
+			display: none;
+		}
 	}
 
 }

@@ -5,6 +5,7 @@ export interface Action<T = any> {
   icon?: string;
   color?: string;
   disabled?: boolean;
+  children?: Action<T>[],
 }
 
 export type Actions = ((...args: any[]) => Action[]) | Action[];
