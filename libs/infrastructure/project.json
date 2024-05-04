@@ -1,5 +1,5 @@
 {
-  "root": "libs/infrastructure",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/infrastructure/src",
   "projectType": "library",
   "targets": {
@@ -14,12 +14,12 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/infrastructure"],
       "options": {
-        "jestConfig": "libs/infrastructure/jest.config.js",
+        "jestConfig": "libs/infrastructure/jest.config.ts",
         "passWithNoTests": true
       }
     },
     "build": {
-      "executor": "../../../../dist/libs/executors:tsc",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/infrastructure",
@@ -27,7 +27,7 @@
         "packageJson": "libs/infrastructure/package.json",
         "main": "libs/infrastructure/src/index.ts",
         "assets": ["libs/infrastructure/*.md"],
-        "srcRootForCompilationRoot": "libs/infrastructure/src",
+        "rootDir": "libs/infrastructure/src",
         "buildableProjectDepsInPackageJsonType": "peerDependencies"
       }
     }

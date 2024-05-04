@@ -7,6 +7,11 @@
     "types": ["node"]
   },
   "files": ["src/index.ts", "src/repositories/firestore/testing/index.ts"],
-  "exclude": ["**/*.spec.ts", "**/*.test.ts", "**/testing/**/*.ts"],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/testing/**/*.ts",
+    "jest.config.ts"
+  ],
   "include": ["**/*.ts"]
 }

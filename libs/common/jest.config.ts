@@ -1,6 +1,7 @@
-module.exports = {
-  displayName: 'infrastructure',
-  preset: '../../jest.preset.js',
+/* eslint-disable */
+export default {
+  displayName: 'common',
+
   globals: {
     'ts-jest': { tsconfig: '<rootDir>/tsconfig.spec.json' },
   },
@@ -8,9 +9,7 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/infrastructure',
+  coverageDirectory: '../../coverage/libs/common',
   testEnvironment: 'node',
-  moduleNameMapper: {
-    "lodash-es": "lodash"
-  }
+  preset: '../../jest.preset.js',
 };

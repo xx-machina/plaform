@@ -1,5 +1,5 @@
 {
-  "root": "libs/common",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/common/src",
   "projectType": "library",
   "targets": {
@@ -14,12 +14,12 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/common"],
       "options": {
-        "jestConfig": "libs/common/jest.config.js",
+        "jestConfig": "libs/common/jest.config.ts",
         "passWithNoTests": true
       }
     },
     "build": {
-      "executor": "../../../../dist/libs/executors:tsc",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/common",
@@ -27,11 +27,11 @@
         "packageJson": "libs/common/package.json",
         "main": "libs/common/src/index.ts",
         "assets": ["libs/common/*.md"],
-        "srcRootForCompilationRoot": "libs/common/src",
+        "rootDir": "libs/common/src",
         "buildableProjectDepsInPackageJsonType": "peerDependencies"
       }
     }
   },
-  "implicitDependencies": ["executors"],
+  "implicitDependencies": [],
   "tags": []
 }

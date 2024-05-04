@@ -1,16 +1,16 @@
 {
-  "root": "libs/core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/core/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "../../../../dist/libs/executors:tsc",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/core",
         "tsConfig": "libs/core/tsconfig.lib.json",
         "packageJson": "libs/core/package.json",
-        "srcRootForCompilationRoot": "libs/core/src",
+        "rootDir": "libs/core/src",
         "main": "libs/core/src/index.ts",
         "assets": ["libs/core/*.md"]
       }
@@ -26,7 +26,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/core"],
       "options": {
-        "jestConfig": "libs/core/jest.config.js",
+        "jestConfig": "libs/core/jest.config.ts",
         "passWithNoTests": true
       }
     }
