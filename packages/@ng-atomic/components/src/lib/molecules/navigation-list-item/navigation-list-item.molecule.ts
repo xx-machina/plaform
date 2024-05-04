@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, ViewEncapsulation, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { Action } from '@ng-atomic/common/models';
@@ -21,11 +21,10 @@ import { IconAtom } from '@ng-atomic/components/atoms/icon';
         [name]="action?.icon"
         [color]="action?.color"
       ></atoms-icon>
-      <div matListItemTitle>{{ action.name }}</div>
+      <div matListItemLine>{{ action.name }}</div>
     </mat-list-item>
   `,
   styleUrls: ['./navigation-list-item.molecule.scss'],
-  // encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavigationListItemMolecule {

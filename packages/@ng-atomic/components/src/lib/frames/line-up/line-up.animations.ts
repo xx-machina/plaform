@@ -23,27 +23,30 @@ const MAIN_ANIMATION = trigger('modeChangeForMain', [
 const NEXT_ANIMATION = trigger('modeChangeForNext', [
   state('Next', style({
     position: 'relative',
+    display: 'block',
     width: '100%',
   })),
   state('Both', style({
     position: 'relative',
+    display: 'block',
     width: '100%',
   })),
   state('Main', style({
     position: 'relative',
-    display: 'none',
+    display: 'block',
+    width: '100%',
   })),
   transition('Main => Next', [
     query(':enter', [animate('0.5s')], { optional: true }),
     sequence([
-      style({ display: 'inherit', width: '100%' }),
+      style({ display: 'block', width: '100%' }),
       animate('0.5s'),
     ]),
   ]),
   transition('Main => Both', [
     query(':enter', [animate('0.5s')], { optional: true }),
     sequence([
-      style({ display: 'inherit', width: '100%' }),
+      style({ display: 'block', width: '100%' }),
       animate('0.5s'),
     ]),
   ]),
@@ -58,7 +61,7 @@ const NEXT_ANIMATION = trigger('modeChangeForNext', [
     query(':leave', animate('0.5s', style({width: '100%'})), { optional: true }),
     sequence([
       style({position: 'absolute', display: 'block', left: '100%'}),
-      animate('0.5s', style({})),
+      animate('0.5s', style({left: '100%'})),
     ]),
   ])),
 ]);

@@ -12,7 +12,15 @@ import { NavigationListItemMolecule } from '@ng-atomic/components/molecules/navi
     MatListModule,
     NavigationListItemMolecule,
   ],
-  templateUrl: './navigation-list.organism.html',
+  template: `
+  <mat-selection-list [multiple]="false">
+    <molecules-navigation-list-item
+      *ngFor="let _action of actions" 
+      [action]="_action"
+      (click)="action.emit(_action)"
+    ></molecules-navigation-list-item>
+  </mat-selection-list>
+  `,
   styleUrls: ['./navigation-list.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

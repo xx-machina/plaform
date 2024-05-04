@@ -39,7 +39,8 @@
         "tsConfig": "packages/@ng-atomic/web-api/tsconfig.app.json",
         "assets": [],
         "target": "node",
-        "compiler": "tsc"
+        "compiler": "tsc",
+        "babelUpwardRootMode": true
       },
       "configurations": {
         "production": {

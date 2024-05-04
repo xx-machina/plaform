@@ -5,6 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Action } from '@ng-atomic/common/models';
 import { NestedMenuMolecule } from '@ng-atomic/components/molecules/nested-menu';
+import { ChipsInputFieldMolecule } from '@ng-atomic/components/molecules/chips-input-field';
+import { FormControl } from '@angular/forms';
+import { ChipsInputAtom } from '@ng-atomic/components/atoms/chips-input';
 
 export enum ActionId {
   COLUMNS = '[@ng-atomic/components/organisms/grid-toolbar] Columns',
@@ -21,28 +24,39 @@ export enum ActionId {
     MatIconModule,
     MatMenuModule,
     NestedMenuMolecule,
+    ChipsInputFieldMolecule,
+    ChipsInputAtom,
   ],
   template: `
-    <ng-container *ngFor="let _action of actions">
-      <ng-container *ngIf="_action?.children">
-        <button
+    <div class="left">
+      <ng-container *ngFor="let _action of actions">
+        <ng-container *ngIf="_action?.children">
+          <button
           mat-button
           color="basic"
           [matMenuTriggerFor]="menu.childMenu"
-        ><mat-icon>{{ _action.icon }}</mat-icon> <span>{{ _action.name }}</span></button>
-        <molecules-nested-menu
+          ><mat-icon>{{ _action.icon }}</mat-icon> <span>{{ _action.name }}</span></button>
+          <molecules-nested-menu
           #menu
           [actions]="_action.children"
           (action)="action.emit($event)"
-        ></molecules-nested-menu>
-      </ng-container>
-      <button
+          ></molecules-nested-menu>
+        </ng-container>
+        <button
         *ngIf="!_action?.children"
         mat-button
         color="basic"
         (click)="action.emit(_action)"
-      ><mat-icon>{{ _action.icon }}</mat-icon>  <span>{{ _action.name }}</span></button>
-    </ng-container>
+        ><mat-icon>{{ _action.icon }}</mat-icon>  <span>{{ _action.name }}</span></button>
+      </ng-container>
+    </div>
+    <molecules-chips-input-field
+      [appearance]="'fill'"
+      [placeholder]="'status:active'"
+      [label]="'フィルター'"
+      [hint]="'フィルター条件を入力できます。'"
+      [control]="control"
+    ></molecules-chips-input-field>
   `,
   styleUrls: ['./grid-toolbar.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -91,6 +105,9 @@ export class GridToolbarOrganism {
       name: 'Export'
     },
   ];
+
+  @Input()
+  control = new FormControl<string>('');
 
   @Output()
   action = new EventEmitter<Action>();

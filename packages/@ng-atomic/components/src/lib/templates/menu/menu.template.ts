@@ -10,7 +10,18 @@ import { NavigationListOrganism } from '@ng-atomic/components/organisms/navigati
     NavigationListOrganism,
   ],
   selector: 'templates-menu',
-  templateUrl: './menu.template.html',
+  template: `
+  <div class="top">
+    <ng-content select=[header]></ng-content>
+    <organisms-navigation-list
+      [actions]="actions"
+      (action)="action.emit($event)"
+    ></organisms-navigation-list>
+  </div>
+  <div class="bottom">
+    <ng-content select=[footer]></ng-content>
+  </div>
+  `,
   styleUrls: ['./menu.template.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

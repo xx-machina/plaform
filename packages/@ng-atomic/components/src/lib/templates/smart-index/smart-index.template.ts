@@ -8,7 +8,7 @@ import { SmartTableOrganism } from '@ng-atomic/components/organisms/smart-table'
 import { SmartListOrganism, ActionId as ListActionId } from '@ng-atomic/components/organisms/smart-list';
 import { NavigatorOrganism } from '@ng-atomic/components/organisms/navigator';
 import { PaginatorOrganism } from '@ng-atomic/components/organisms/paginator';
-import { Action } from '@ng-atomic/common/models';
+import { Action, Actions } from '@ng-atomic/common/models';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GridToolbarOrganism } from '@ng-atomic/components/organisms/grid-toolbar';
 import { FiltersSectionOrganism } from '@ng-atomic/components/organisms/filters-section';
@@ -63,7 +63,57 @@ export class NgAtomicDirective {
     HeaderMolecule,
   ],
   selector: 'templates-smart-index',
-  templateUrl: './smart-index.template.html',
+  template: `
+  <frames-scroll>
+    <organisms-navigator
+      [startActions]="navStartActions"
+      [endActions]="navEndActions"
+      (action)="ngAtomic.onAction($event)"
+      navigator
+    >
+      <molecules-header [title]="title" [description]="description"></molecules-header>
+    </organisms-navigator>
+    <frames-auto-layout vertical contents [ngSwitch]="device">
+      <ng-container *ngSwitchCase="'sp'">
+        <organisms-smart-list
+          [items]="items"
+          (action)="ngAtomic.onAction($event)"
+        ></organisms-smart-list>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <frames-divider>
+          <ng-content first select="[dashboard]"></ng-content>
+          <div style="display: flex; flex-direction: column; width: 100%; height: 100%;" second>
+            <organisms-grid-toolbar
+              *ngIf="gridToolbarActions || true"
+              [actions]="gridToolbarActions"
+              [control]="form.get(['query'])"
+              (action)="ngAtomic.onAction($event)"
+            ></organisms-grid-toolbar>
+            <organisms-smart-table
+              [items]="items"
+              [itemActions]="itemActions"
+              [columns]="properties"
+              [selection]="selection"
+              [form]="form.get(['sort'])"
+              [childrenKey]="tableChildrenKey"
+              (action)="ngAtomic.onAction($event)"
+              (checkboxClick)="onCheckboxClickItem($event)"
+              (headerClick)="ngAtomic.onAction({id: ActionId.TABLE_HEADER_CLICK, payload: $event})"
+            ></organisms-smart-table>
+            <organisms-paginator
+              *ngIf="form.get(['pagination'])"
+              [form]="form.get(['pagination'])"
+              [pageSizeOptions]="pageSizeOptions"
+              [placeholder]="queryPlaceholder"
+            ></organisms-paginator>
+          </div>
+        </frames-divider>
+        
+      </ng-container>
+    </frames-auto-layout>
+  </frames-scroll>
+  `,
   styleUrls: ['./smart-index.template.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'template' },
@@ -76,7 +126,7 @@ export class NgAtomicDirective {
 })
 export class SmartIndexTemplate<T> {
   static ActionId = ActionId;
-
+  protected ActionId = ActionId;
   protected ngAtomic = inject(NgAtomicDirective);
 
   @Input()
@@ -87,13 +137,17 @@ export class SmartIndexTemplate<T> {
 
   @Input()
   form = new FormGroup({
-    pageIndex: new FormControl(0),
-    pageSize: new FormControl(0),
-    length: new FormControl(0),
+    query: new FormControl(''),
+    pagination: new FormGroup({
+      pageIndex: new FormControl(0),
+      pageSize: new FormControl(0),
+      length: new FormControl(0),
+    }),
+    sort: new FormGroup({
+      key: new FormControl(''),
+      order: new FormControl(''),
+    }),
   });
-
-  @Input()
-  queryControl = new FormControl<string>('');
 
   @Input()
   title: string = '';
@@ -105,25 +159,19 @@ export class SmartIndexTemplate<T> {
   items: T[] = [];
 
   @Input()
-  itemActions: (item: T) => Action[] = () => [];
+  itemActions: Actions = [];
 
   @Input()
-  navStartActions: Action[] = [{ id: ActionId.BACK, icon: 'arrow_back' }];
+  navStartActions: Actions = [{ id: ActionId.BACK, icon: 'arrow_back' }];
 
   @Input()
-  navEndActions: Action[] = [];
+  navEndActions: Actions = [];
 
   @Input()
   properties: (keyof T)[] =  [];
 
   @Input()
   selection!: SelectionModel<string>;
-
-  @Input()
-  sortKey?: string;
-
-  @Input()
-  sortOrder?: string;
 
   @Input()
   pageSizeOptions: number[] = [5, 10, 25, 100];
@@ -133,9 +181,6 @@ export class SmartIndexTemplate<T> {
 
   @Input()
   device: 'sp' | 'tablet' | 'pc' = 'sp';
-
-  @Output()
-  backButtonClick = new EventEmitter();
 
   @Output()
   pageChange = new EventEmitter<PageEvent>();

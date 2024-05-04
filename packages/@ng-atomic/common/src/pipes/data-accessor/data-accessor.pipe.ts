@@ -13,7 +13,7 @@ export const defaultDataAccessor: DataAccessor<any> = (obj, key) => get(obj, key
 export class DataAccessorPipe<T> {
 
   constructor(
-    @Optional() @Inject(DATA_ACCESSOR) protected dataAccessor: DataAccessor<T>,
+    @Optional() @Inject(DATA_ACCESSOR) protected dataAccessor?: DataAccessor<T>,
   ) {
     this.dataAccessor ??= defaultDataAccessor;
   }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,7 +10,7 @@ import { ActionsColumnMolecule } from '@ng-atomic/components/molecules/actions-c
 import { CheckboxColumnMolecule } from '@ng-atomic/components/molecules/checkbox-column';
 import { SmartColumnMolecule } from '@ng-atomic/components/molecules/smart-column';
 import { Actions, Action } from '@ng-atomic/common/models';
-
+import { SortService } from '@ng-atomic/common/services/form/sort';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import {
   MatTreeFlatDataSource,
@@ -19,10 +19,6 @@ import {
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { TreeColumnMolecule } from '@ng-atomic/components/molecules/tree-column';
 
-interface Sort {
-  key?: string;
-  order?: 'desc' | 'asc';
-}
 
 @Component({
   selector: 'organisms-smart-table',
@@ -40,13 +36,50 @@ interface Sort {
     SmartColumnMolecule,
     TreeColumnMolecule,
   ],
-  templateUrl: './smart-table.organism.html',
+  template: `
+  <table mat-table [dataSource]="dataSource" matSort matSortDisableClear matSortDirection="desc">
+    <ng-container *ngFor="let name of columns; trackBy: trackByColumnName" [ngSwitch]="name">
+      <molecules-checkbox-column
+        *ngSwitchCase="'__checkbox'"
+        name="__checkbox"
+        [selection]="selection"
+        (checkboxClick)="checkboxClick.emit($event)"
+      ></molecules-checkbox-column>
+      <molecules-actions-column 
+        *ngSwitchCase="'__actions'" 
+        name="__actions"
+        [itemActions]="itemActions"
+        (action)="action.emit($event)"
+      ></molecules-actions-column>
+      <ng-container *ngSwitchDefault>
+        <molecules-tree-column
+          *ngIf="name.startsWith('__tree_')"
+          [name]="name"
+          [headerText]="name | D"
+          [sort]="form.value.key === name ? form.value.order : 'none'"
+          [treeControl]="treeControl"
+          (headerClick)="headerClick.emit(name)"
+        ></molecules-tree-column>
+        <molecules-smart-column
+          *ngIf="!name.startsWith('__tree_')"
+          [name]="name"
+          [headerText]="name | D"
+          [sort]="form.value.key === name ? form.value.order : 'none'"
+          (headerClick)="headerClick.emit(name)"
+        ></molecules-smart-column>
+      </ng-container>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let item; columns: columns;"></tr>
+    <div class="mat-row" *matNoDataRow>No Data</div>
+  </table>
+  `,
   styleUrls: ['./smart-table.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {class: 'organism'}
 })
 export class SmartTableOrganism<Item extends object> {
-
+  #form = inject(SortService);
   protected dataSource: DataSource<Item>;
 
   @Input('columns')
@@ -60,22 +93,18 @@ export class SmartTableOrganism<Item extends object> {
   childrenKey = 'children';
 
   @Input()
-  // items: Item[] = [];
   set items(items: Item[]) {
     this.dataSource = this.buildTreeFlatDatasource(items, this.childrenKey);
   }
 
   @Input()
-  itemActions: Actions = () => [];
-
-  @Input()
-  pageSize: number = 0;
+  itemActions: Actions = [];
 
   @Input()
   selection = new SelectionModel<string>(true, []);
 
   @Input()
-  sort: Sort = {};
+  form = this.#form.build();
 
   @Output()
   action = new EventEmitter<Action>();

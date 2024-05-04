@@ -2,7 +2,7 @@ import { Inject, InjectionToken, Optional, Pipe } from "@angular/core";
 
 export type SelectId = (entity: object) => string | number;
 export const SELECT_ID = new InjectionToken<SelectId>('[@ng-atomic/common] Select Id');
-export const defaultSelectId: SelectId = (entity: any) => entity.Id;
+export const defaultSelectId: SelectId = (entity: any) => entity.id;
 
 @Pipe({
   name: 'selectId',

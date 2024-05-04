@@ -9,3 +9,10 @@ export interface Action<T = any> {
 }
 
 export type Actions = ((...args: any[]) => Action[]) | Action[];
+
+export function resolveActions(actions: Actions, ...args: any[]) {
+  if (typeof actions === 'function') {
+    return actions(...args);
+  }
+  return actions;
+}

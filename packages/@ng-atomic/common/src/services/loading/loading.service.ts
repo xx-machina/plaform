@@ -43,11 +43,12 @@ export class LoadingService {
     callback(() => this.removeKey(key));
   }
 
-  async await(callback: (...args: any[]) => Promise<void>) {
+  async await<T = any>(callback: (...args: any[]) => Promise<T>): Promise<T> {
     const key = randomStr(16);
     this.setKey(key);
-    await callback();
+    const res = await callback();
     this.removeKey(key);
+    return res;
   }
 }
 

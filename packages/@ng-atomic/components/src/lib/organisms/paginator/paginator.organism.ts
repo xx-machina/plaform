@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { map, shareReplay, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'organisms-paginator',
@@ -36,15 +35,6 @@ export class PaginatorOrganism {
 
   @Input()
   pageSizeOptions: number[] = [10, 50, 100];
-
-  protected get formValue$() {
-    return this.form.valueChanges.pipe(
-      startWith(null),
-      map(() => this.form.getRawValue()),
-      shareReplay(1),
-      tap((value) => console.debug('value:', value)),
-    );
-  }
 
   protected onPageChange(page: PageEvent) {
     this.form.patchValue({

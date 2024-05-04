@@ -35,7 +35,8 @@ export class MermaidSectionOrganism implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['mermaid']) {
-      this.renderMermaid();
+      this.renderMermaid()
+      // this.ngZone.runOutsideAngular(() => this.renderMermaid());
     }
   }
 
@@ -44,6 +45,5 @@ export class MermaidSectionOrganism implements OnChanges {
       this.view.nativeElement.innerHTML = svg;
     });
   }
-
 
 }

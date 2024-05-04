@@ -69,6 +69,12 @@
         "packages/@schematics-x/server/src/lib/index.ts"
       ],
       "@schematics-x/server/*": ["packages/@schematics-x/server/src/lib/*"],
+      "@task334/app": ["projects/@task334/app/src/app/index.ts"],
+      "@task334/app/*": ["projects/@task334/app/src/app/*"],
+      "@task334/api": ["projects/@task334/api/src/app/index.ts"],
+      "@task334/api/*": ["projects/@task334/api/src/app/*"],
+      "@task334/common": ["projects/@task334/common/src/lib/index.ts"],
+      "@task334/common/*": ["projects/@task334/common/src/lib/*"],
       "@x-lt/challenge": ["projects/@x-lt/challenge/src/app/index.ts"],
       "@x-lt/challenge/*": ["projects/@x-lt/challenge/src/app/*"],
       "@x-lt/common": ["projects/@x-lt/common/src/lib/index.ts"],

@@ -17,7 +17,6 @@ export class LineUpFrameService {
 
   register(frame: LineUpFrame) {
     this.frames.push(frame);
-    console.debug('this.frames:', this.frames);
   }
 
   unregister(frame: LineUpFrame) {
