@@ -2,7 +2,7 @@ import { FileEntry } from "@angular-devkit/schematics";
 import { Configuration, OpenAIApi } from "openai";
 import { AxiosError } from 'axios';
 import { PromiseQueue } from "../promise-queue";
-import { logger } from "../../cli/logger";
+// import { logger } from "../../cli/logger";
 
 export interface WriteOptions {
   model?: 'text-curie-001' | 'text-babbage-001' | 'text-ada-001' | 'code-davinci-002' | 'code-cushman-001',
@@ -57,7 +57,7 @@ export class OpenAiPrompter {
         // n: 1,
       }));
 
-      logger.debug('choices:', res.data.choices.length);
+      // logger.debug('choices:', res.data.choices.length);
       this._prompt += res.data.choices?.[0].text;
       this._prompt += res.data.choices?.[0].finish_reason === 'stop' ? this.stop : '';
     } catch (error) {

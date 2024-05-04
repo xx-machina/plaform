@@ -53,7 +53,17 @@
       "@nx-ddd/indexed-db/*": ["packages/@nx-ddd/indexed-db/src/lib/*"],
       "@nx-ddd/notion/*": ["packages/@nx-ddd/notion/src/lib/*"],
       "@nx-ddd/spreadsheet/*": ["packages/@nx-ddd/spreadsheet/src/lib/*"],
-      "@platform/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+      "@platform/api-interfaces": ["libs/api-interfaces/src/index.ts"],
+      "@schematics-x/core": ["packages/@schematics-x/core/src/index.ts"],
+      "@schematics-x/core/*": ["packages/@schematics-x/core/src/lib/*"],
+      "@schematics-x/estimators": [
+        "packages/@schematics-x/estimators/src/index.ts"
+      ],
+      "@schematics-x/estimators/*": [
+        "packages/@schematics-x/estimators/src/lib/*"
+      ],
+      "@schematics-x/server": ["packages/@schematics-x/server/src/index.ts"],
+      "@schematics-x/server/*": ["packages/@schematics-x/server/src/lib/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
