@@ -1,10 +1,10 @@
 import { NgModule } from "@angular/core";
 
 @NgModule({})
-export class NgAtomicExtrasModule {
+export class NgAtomicFramesModule {
   static forRoot() {
     return {
-      ngModule: NgAtomicExtrasModule,
+      ngModule: NgAtomicFramesModule,
       providers: []
     };
   }

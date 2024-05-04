@@ -40,6 +40,11 @@
       "factory": "./src/atomic-component/index#frame",
       "schema": "./src/atomic-component/schema.json"
     },
+    "sheet": {
+      "description": "Create a sheet",
+      "factory": "./src/atomic-component/index#sheet",
+      "schema": "./src/atomic-component/schema.json"
+    },
     "page": {
       "description": "Create a page",
       "factory": "./src/page/index#page",

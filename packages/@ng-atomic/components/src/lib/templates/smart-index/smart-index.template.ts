@@ -28,6 +28,7 @@ export enum ActionId {
   BACK = '[@ng-atomic/components/templates/smart-index] Back',
   TABLE_HEADER_CLICK = '[@ng-atomic/components/templates/smart-index] Table Header Click',
   ITEM_CLICK = '[@ng-atomic/components/templates/smart-index] Item Click',
+  LIST_ITEM_BUTTON_CLICKED = '[@ng-atomic/components/templates/smart-index] List Item Button Clicked',
   CHECKBOX_CLICK = '[@ng-atomic/components/templates/smart-index] Check Item',
 }
 
@@ -180,8 +181,9 @@ export class SmartIndexCountPipe implements PipeTransform {
       <ng-container *ngSwitchCase="'list'">
         <organisms-smart-list
           [items]="store.items"
-          [groupedBy]="groupedBy"
-          [groupKeys]="groupKeys"
+          [itemActions]="store.itemActions"
+          [groupedBy]="store.groupedBy"
+          [groupKeys]="store.groupKeys"
           (action)="dispatch($event)"
         ></organisms-smart-list>
         <!-- <organisms-selection-list
@@ -248,12 +250,17 @@ export class SmartIndexTemplate<T> extends NgAtomicComponent {
   protected ActionId = ActionId;
   protected store = inject(SmartIndexTemplateStore);
 
-  onCheckboxClickItem(item: T) {
+  protected onCheckboxClickItem(item: T) {
     this.dispatch({id: ActionId.CHECKBOX_CLICK, payload: item});
   }
 
   @Effect(SmartListOrganism.ActionId.CLICK_ITEM)
-  onItemClicked(item: T) {
+  protected onItemClicked(item: T) {
     this.dispatch({id: ActionId.ITEM_CLICK, payload: item});
+  }
+
+  @Effect(SmartListOrganism.ActionId.ITEM_BUTTON_CLICK)
+  protected onItemButtonClicked(item: T) {
+    this.dispatch({id: ActionId.LIST_ITEM_BUTTON_CLICKED, payload: item});
   }
 }

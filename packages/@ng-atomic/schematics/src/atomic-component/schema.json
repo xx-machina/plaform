@@ -135,6 +135,16 @@
       "type": "boolean",
       "default": true,
       "x-user-analytics": "ep.ng_standalone"
+    },
+    "story": {
+      "description": "When true, creates a storybook file for the component.",
+      "type": "boolean",
+      "default": false
+    },
+    "ngPackage": {
+      "description": "When true, creates a ng-package file for the component.",
+      "type": "boolean",
+      "default": true
     }
   },
   "required": [

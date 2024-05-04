@@ -19,4 +19,6 @@ export interface Schema {
   styleHeader?: string;
   standalone?: boolean;
   useTypeAsExtension: boolean;
+  story?: boolean;
+  ngPackage?: boolean;
 }

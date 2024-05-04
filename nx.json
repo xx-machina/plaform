@@ -72,6 +72,16 @@
         "project": "@ng-atomic/components",
         "path": "frames",
         "inlineTemplate": true
+      },
+      "sheet": {
+        "project": "@ng-atomic/components",
+        "path": "sheets",
+        "inlineTemplate": true
+      },
+      "dialogs": {
+        "project": "@ng-atomic/components",
+        "path": "dialogs",
+        "inlineTemplate": true
       }
     },
     "@nx/angular": {

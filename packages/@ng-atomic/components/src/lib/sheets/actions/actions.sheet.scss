@@ -1,0 +1,5 @@
+@use 'scoped-var/strict' as * with ($host: 'actions');
+// @use 'atomic/sheet' as *;
+:host {
+	// @include sheet($host);
+}
