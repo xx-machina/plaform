@@ -24,8 +24,21 @@
       "@nx-ddd/domain/*": ["libs/domain/src/*"],
       "@nx-ddd/executors": ["libs/executors/src/index.ts"],
       "@nx-ddd/executors/*": ["libs/executors/src/*"],
-      "@nx-ddd/infrastructure": ["libs/infrastructure/src/index.ts"],
-      "@nx-ddd/infrastructure/*": ["libs/infrastructure/src/*"],
+      "@nx-ddd/firestore": ["libs/firestore/src/lib/index.ts"],
+      "@nx-ddd/firestore-adapter": ["libs/firestore-adapter/src/index.ts"],
+      "@nx-ddd/firestore-admin-adapter": [
+        "libs/firestore-admin-adapter/src/index.ts"
+      ],
+      "@nx-ddd/firestore-angular-adapter": [
+        "libs/firestore-angular-adapter/src/index.ts"
+      ],
+      "@nx-ddd/firestore-nest-adapter": [
+        "libs/firestore-nest-adapter/src/index.ts"
+      ],
+      "@nx-ddd/firestore/*": ["libs/firestore/src/lib/*"],
+      "@nx-ddd/indexed-db/*": ["libs/indexed-db/src/lib/*"],
+      "@nx-ddd/notion/*": ["libs/notion/src/lib/*"],
+      "@nx-ddd/spreadsheet/*": ["libs/spreadsheet/src/lib/*"],
       "@platform/api-interfaces": ["libs/api-interfaces/src/index.ts"]
     }
   },
