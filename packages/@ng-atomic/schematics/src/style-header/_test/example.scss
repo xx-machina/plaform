@@ -1,6 +1,0 @@
-@use 'scoped-var/strict' as * with ($host: 'example');
-@use 'atomic/component' as *;
-
-:host {
-  @include component($host);
-}

@@ -1,0 +1,36 @@
+{
+  "name": "spreadsheet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/spreadsheet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/spreadsheet",
+        "tsConfig": "libs/spreadsheet/tsconfig.lib.json",
+        "packageJson": "libs/spreadsheet/package.json",
+        "rootDir": "libs/spreadsheet/src/lib",
+        "main": "libs/spreadsheet/src/lib/index.ts",
+        "assets": ["libs/spreadsheet/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/spreadsheet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/spreadsheet"],
+      "options": {
+        "jestConfig": "libs/spreadsheet/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,6 +1,0 @@
-@use 'scoped-var' as *;
-@use 'atomic/component' as *;
-
-@mixin template($host) {
-	@include component($host);
-}

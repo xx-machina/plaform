@@ -1,6 +1,0 @@
-{
-  "name": "@nx-ddd/indexed-db",
-  "version": "0.0.0-PLACEHOLDER",
-  "main": "./index.js",
-  "types": "./index.d.ts"
-}

@@ -1,6 +1,0 @@
-{
-  "name": "@nx-ddd/firestore-nest-adapter",
-  "version": "0.0.0-PLACEHOLDER",
-  "main": "./index.js",
-  "types": "./index.d.ts"
-}

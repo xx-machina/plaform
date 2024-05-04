@@ -1,0 +1,36 @@
+{
+  "name": "indexed-db",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/indexed-db/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/indexed-db",
+        "tsConfig": "libs/indexed-db/tsconfig.lib.json",
+        "packageJson": "libs/indexed-db/package.json",
+        "rootDir": "libs/indexed-db/src/lib",
+        "main": "libs/indexed-db/src/lib/index.ts",
+        "assets": ["libs/indexed-db/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/indexed-db/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/indexed-db"],
+      "options": {
+        "jestConfig": "libs/indexed-db/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

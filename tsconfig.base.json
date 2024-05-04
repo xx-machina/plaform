@@ -8,49 +8,37 @@
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true,
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom", "es2021.String"],
+    "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ng-atomic/common": ["packages/@ng-atomic/common/src/index.ts"],
-      "@ng-atomic/common/*": ["packages/@ng-atomic/common/src/*"],
-      "@ng-atomic/components": ["packages/@ng-atomic/components/src/index.ts"],
-      "@ng-atomic/components/*": ["packages/@ng-atomic/components/src/*"],
-      "@ng-atomic/elements": ["packages/@ng-atomic/elements/src/index.ts"],
-      "@ng-atomic/elements/*": ["packages/@ng-atomic/elements/src/*"],
-      "@ng-atomic/executors": ["packages/@ng-atomic/executors/src/index.ts"],
-      "@ng-atomic/schematics": ["packages/@ng-atomic/schematics/src/index.ts"],
-      "@ng-atomic/schematics/*": ["packages/@ng-atomic/schematics/src/*"],
-      "@ng-atomic/storybook": ["packages/@ng-atomic/storybook/src/index.ts"],
-      "@ng-atomic/web-api": ["packages/@ng-atomic/web-api/src/index.ts"],
-      "@nx-ddd/common": ["packages/@nx-ddd/common/src/index.ts"],
-      "@nx-ddd/common/*": ["packages/@nx-ddd/common/src/*"],
-      "@nx-ddd/core": ["packages/@nx-ddd/core/src/index.ts"],
-      "@nx-ddd/core/*": ["packages/@nx-ddd/core/src/*"],
-      "@nx-ddd/domain": ["packages/@nx-ddd/domain/src/index.ts"],
-      "@nx-ddd/domain/*": ["packages/@nx-ddd/domain/src/*"],
-      "@nx-ddd/executors": ["packages/@nx-ddd/executors/src/index.ts"],
-      "@nx-ddd/executors/*": ["packages/@nx-ddd/executors/src/*"],
-      "@nx-ddd/firestore": ["packages/@nx-ddd/firestore/src/lib/index.ts"],
-      "@nx-ddd/firestore-adapter": ["packages/@nx-ddd/firestore-adapter/src/index.ts"],
+      "@nx-ddd/common": ["libs/common/src/index.ts"],
+      "@nx-ddd/common/*": ["libs/common/src/*"],
+      "@nx-ddd/core": ["libs/core/src/index.ts"],
+      "@nx-ddd/core/*": ["libs/core/src/*"],
+      "@nx-ddd/domain": ["libs/domain/src/index.ts"],
+      "@nx-ddd/domain/*": ["libs/domain/src/*"],
+      "@nx-ddd/executors": ["libs/executors/src/index.ts"],
+      "@nx-ddd/executors/*": ["libs/executors/src/*"],
+      "@nx-ddd/firestore": ["libs/firestore/src/lib/index.ts"],
+      "@nx-ddd/firestore-adapter": ["libs/firestore-adapter/src/index.ts"],
       "@nx-ddd/firestore-admin-adapter": [
-        "packages/@nx-ddd/firestore-admin-adapter/src/index.ts"
+        "libs/firestore-admin-adapter/src/index.ts"
       ],
       "@nx-ddd/firestore-angular-adapter": [
-        "packages/@nx-ddd/firestore-angular-adapter/src/index.ts"
+        "libs/firestore-angular-adapter/src/index.ts"
       ],
       "@nx-ddd/firestore-nest-adapter": [
-        "packages/@nx-ddd/firestore-nest-adapter/src/index.ts"
+        "libs/firestore-nest-adapter/src/index.ts"
       ],
-      "@nx-ddd/firestore/*": ["packages/@nx-ddd/firestore/src/lib/*"],
-      "@nx-ddd/indexed-db/*": ["packages/@nx-ddd/indexed-db/src/lib/*"],
-      "@nx-ddd/notion/*": ["packages/@nx-ddd/notion/src/lib/*"],
-      "@nx-ddd/spreadsheet/*": ["packages/@nx-ddd/spreadsheet/src/lib/*"],
+      "@nx-ddd/firestore/*": ["libs/firestore/src/lib/*"],
+      "@nx-ddd/indexed-db/*": ["libs/indexed-db/src/lib/*"],
+      "@nx-ddd/notion/*": ["libs/notion/src/lib/*"],
+      "@nx-ddd/spreadsheet/*": ["libs/spreadsheet/src/lib/*"],
       "@platform/api-interfaces": ["libs/api-interfaces/src/index.ts"]
     }
   },

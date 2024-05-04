@@ -1,9 +1,0 @@
-{
-  "name": "@ng-atomic/schematics",
-  "version": "0.0.0-PLACEHOLDER",
-  "license": "MIT",
-  "schematics": "./collection.json",
-  "ng-add": {
-    "save": "devDependencies"
-  }
-}
