@@ -12,7 +12,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom", "es2021.String"],
+    "lib": ["es2018", "dom", "es2021.String"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -51,6 +51,7 @@
       ],
       "@nx-ddd/firestore/*": ["packages/@nx-ddd/firestore/src/lib/*"],
       "@nx-ddd/indexed-db/*": ["packages/@nx-ddd/indexed-db/src/lib/*"],
+      "@nx-ddd/notion": ["packages/@nx-ddd/notion/src/lib"],
       "@nx-ddd/notion/*": ["packages/@nx-ddd/notion/src/lib/*"],
       "@nx-ddd/spreadsheet/*": ["packages/@nx-ddd/spreadsheet/src/lib/*"],
       "@platform/api-interfaces": ["libs/api-interfaces/src/index.ts"],
@@ -62,8 +63,18 @@
       "@schematics-x/estimators/*": [
         "packages/@schematics-x/estimators/src/lib/*"
       ],
-      "@schematics-x/server": ["packages/@schematics-x/server/src/lib/index.ts"],
-      "@schematics-x/server/*": ["packages/@schematics-x/server/src/lib/*"]
+      "@schematics-x/server": [
+        "packages/@schematics-x/server/src/lib/index.ts"
+      ],
+      "@schematics-x/server/*": ["packages/@schematics-x/server/src/lib/*"],
+      "@x-x-machina/common": ["packages/@x-x-machina/common/src/lib/index.ts"],
+      "@x-x-machina/common/*": ["packages/@x-x-machina/common/src/lib/*"],
+      "@x-lt/forward": ["apps/forward/src/app/index.ts"],
+      "@x-lt/forward/*": ["apps/forward/src/app/*"],
+      "@x-lt/common": ["packages/@x-lt/common/src/lib/index.ts"],
+      "@x-lt/common/*": ["packages/@x-lt/common/src/lib/*"],
+      "@x-lt/components": ["packages/@x-lt/components/src/lib/index.ts"],
+      "@x-lt/components/*": ["packages/@x-lt/components/src/lib/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,7 +1,7 @@
 import { 
 	Rule, Tree, SchematicContext, apply, chain,
 	externalSchematic, schematic,
-	url, applyTemplates, mergeWith, move
+	url, applyTemplates, mergeWith, move, noop
 } from '@angular-devkit/schematics';
 import * as strings from '@angular-devkit/core/src/utils/strings';
 import { parseName } from '@schematics/angular/utility/parse-name';
@@ -13,15 +13,15 @@ export const atomicComponent = (options: Schema): Rule => async (host: Tree, _: 
 	options.prefix ||= `${options.type}s`;
 	options.path = join(await createDefaultPath(host, options.project), options?.path ?? '');
 
-	const { name, path, type, project } = options = {...options, ...parseName(options.path, options.name)};
+	const { name, path, type, project, standalone } = options = {...options, ...parseName(options.path, options.name)};
 	const { styleHeader, useTypeAsExtension, ...opt } = options;
 	const componentExt = useTypeAsExtension ? type : 'component';
 	const scssPath = `${path}/${name}/${name}.${componentExt}.scss`;
 
 	return chain([
-		externalSchematic('@schematics/angular', 'module', {name, path, project}),
+		options.standalone ? noop() : externalSchematic('@schematics/angular', 'module', {name, path, project}),
 		externalSchematic('@schematics/angular', 'component', {...opt, type: componentExt, export: true}),
-		mergeWith(apply(url('./files'), [applyTemplates({...strings, name, type: type ?? 'component'}), move(path)])),
+		mergeWith(apply(url('./files'), [applyTemplates({...strings, name, type: type ?? 'component', standalone}), move(path)])),
 		schematic('style-header', {...options, styleHeader, name, type, path: scssPath}),
 	]);
 };

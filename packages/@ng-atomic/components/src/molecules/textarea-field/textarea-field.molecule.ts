@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Action } from '@ng-atomic/common/models';
+
+export enum ActionId {
+  CTRL_ENTER_KEY_UP = 'Ctrl Enter Key Up',
+}
 
 @Component({
   selector: 'molecules-textarea-field',
@@ -17,5 +23,21 @@ export class TextareaFieldMolecule {
 
   @Input()
   placeholder = 'placeholder';
+
+  @Input()
+  control = new FormControl('');
+
+  @Input()
+  rows = 10;
+
+  @Output()
+  action = new EventEmitter<Action>();
+
+  protected onKeyup($event) {
+    if($event.ctrlKey && $event.key === 'Enter') {
+      this.action.emit({id: ActionId.CTRL_ENTER_KEY_UP});
+      $event.preventDefault();
+    }
+  }
 
 }

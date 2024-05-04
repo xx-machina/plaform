@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Action } from '@ng-atomic/common/models';
 
 @Component({
   selector: 'organisms-textarea-section',
@@ -10,5 +12,14 @@ export class TextareaSectionOrganism {
 
   @Input()
   label = 'label';
+
+  @Input()
+  rows = 10;
+
+  @Input()
+  control = new FormControl('');
+
+  @Output()
+  action = new EventEmitter<Action>();
 
 }

@@ -1,5 +1,11 @@
-<mat-form-field class="example-full-width">
+<mat-form-field appearance="outline">
   <mat-label>{{ label }}</mat-label>
-  <textarea matInput [placeholder]="placeholder" rows="10"></textarea>
+  <textarea
+    matInput
+    [formControl]="control"
+    [placeholder]="placeholder"
+    (keyup)="onKeyup($event)"
+    [rows]="rows"
+  ></textarea>
   <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
 </mat-form-field>

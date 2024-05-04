@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, ViewEncapsulation, Input } from '@angular/core';
-import { ActionItem } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/common/models';
 
 @Component({
   selector: 'molecules-navigation-list-item',
@@ -11,7 +11,7 @@ import { ActionItem } from '@ng-atomic/common/models';
 export class NavigationListItemMolecule {
 
   @Input()
-  item!: ActionItem;
+  action!: Action;
 
   @Input()
   selected = false;

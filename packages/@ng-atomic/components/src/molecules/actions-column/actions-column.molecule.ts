@@ -1,6 +1,6 @@
 import { CdkCellDef, CdkColumnDef, CdkHeaderCellDef, CdkTable, TextColumnOptions, TEXT_COLUMN_OPTIONS } from '@angular/cdk/table';
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Optional, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Action, ActionItem } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/common/models';
 
 @Component({
   selector: 'molecules-actions-column',
@@ -21,7 +21,7 @@ export class ActionsColumnMolecule<T> {
   _name!: string;
 
   @Input()
-  itemActions: (item: T) => ActionItem[] = () => [];
+  itemActions: (item: T) => Action[] = () => [];
 
   @Output()
   action = new EventEmitter<Action>();

@@ -70,7 +70,7 @@ export class FirestoreQuery<
     return collection.stateChanges().pipe(
       tap(actions => actions.forEach(({type, payload: {doc}}) => {
         if (new Set(['added', 'modified']).has(type)) {
-          _map.set(doc.id, this.converter.fromRecord(doc));
+          _map.set(doc.id, this.converter.fromFirestore((doc as any)));
         } else if (type === 'removed') {
           _map.delete(doc.id);
         }

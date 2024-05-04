@@ -1,7 +1,7 @@
 <mat-selection-list [multiple]="false">
   <molecules-navigation-list-item
-    *ngFor="let item of items" 
-    [item]="item"
-    (click)="action.emit(item)"
+    *ngFor="let _action of actions" 
+    [action]="_action"
+    (click)="action.emit(_action)"
   ></molecules-navigation-list-item>
 </mat-selection-list>

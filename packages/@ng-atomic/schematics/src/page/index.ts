@@ -1,4 +1,5 @@
-import { Rule, Tree, chain, externalSchematic, schematic } from '@angular-devkit/schematics';
+import { strings } from '@angular-devkit/core';
+import { Rule, Tree, apply, applyTemplates, chain, externalSchematic, mergeWith, move, schematic, url } from '@angular-devkit/schematics';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { dasherize, classify } from '@angular-devkit/core/src/utils/strings';
 import { Schema } from '../atomic-component/schema';
@@ -24,13 +25,17 @@ export const page = (options: Schema): Rule => async (host: Tree) => {
 
 	return chain([
 		schematic('pages', {...pages, project}),
-		addRouteIntoPagesModule(options, pages),
-		schematic('pages', {name, path, project}),
+		addRouteIntoPagesRoutes(options, pages),
+		generateRoutes({name, path, project, type}),
 		externalSchematic('@schematics/angular', 'component', {...opt, changeDetection: 'Default', export: true}),
 		schematic('style-header', {...options, styleHeader, name, type, path: scssPath}),
-		addRouteIntoPageModule(options, {path, name}),
+		addRouteIntoPageRoutes(options, {path, name}),
 	]);
 };
+
+const generateRoutes = (options) => {
+	return mergeWith(apply(url('./files'), [applyTemplates({...strings, ...options}), move(options.path)]));
+}
 
 const getPagesOptions = (fullPath: string): {path: string, name: string} => {
 	const [_, name, ...paths] = fullPath.split('/').reverse();
@@ -41,32 +46,35 @@ const resolveName = (name: string) => {
 	return 'pages/' + name.split('/').filter(path => path !== 'pages').join('/pages/');
 };
 
-const addRouteIntoPagesModule = (options: Schema, target: Target) => {
+const addRouteIntoPagesRoutes = (options: Schema, target: Target) => {
 	const routeOptions = buildOption(options, target, 'pages');
 	return addPathToRoutes(routeOptions);
 };
 
-const addRouteIntoPageModule = (options: Schema, target: Target) => {
+const addRouteIntoPageRoutes = (options: Schema, target: Target) => {
 	const routeOptions = buildOption(options, target, 'page');
 	return addPathToRoutes(routeOptions);
 };
 
-const buildOption = (options, {path, name}: Target, type: TargetType) => ({
-	...options,
-	routingModulePath: `${path}/${name}/${name}.module.ts`,
-	route: type === 'pages' ? buildPagesRoute(options.name) : buildPageRoute(name),
-	removeOtherRoutes: type === 'page',
-});
+const buildOption = (options, {path, name}: Target, type: TargetType) => {
+	console.debug(`${path}/${name}/${name}.routes.ts`);
+	return {
+		...options,
+		routesPath: `${path}/${name}/${name}.routes.ts`,
+		route: type === 'pages' ? buildPagesRoute(options.name) : buildPageRoute(name),
+		removeOtherRoutes: type === 'page',
+	}
+};
 
 const buildPagesRoute = (name): string => `
 	{
 		path: '${name}',
-		loadChildren: () => import('./${dasherize(name)}/${dasherize(name)}.module').then(m => m.${classify(name)}Module)
+		loadChildren: () => import('./${dasherize(name)}/${dasherize(name)}.routes').then(m => m.routes)
 	}`;
 
 const buildPageRoute = (name): string => `
 	{
 		path: '',
 		component: ${classify(name)}Page,
-		// loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule)
+		// loadChildren: () => import('./pages/pages.routes').then(m => m.routes)
 	}`;

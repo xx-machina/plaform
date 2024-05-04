@@ -49,3 +49,7 @@ storage
 # env
 .env
 .env.*
+.secret/*
+
+# Cache
+.firebase

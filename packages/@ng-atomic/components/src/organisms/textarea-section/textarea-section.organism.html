@@ -1,3 +1,6 @@
 <molecules-textarea-field
+  [control]="control"
   [label]="label"
+  [rows]="rows"
+  (action)="action.emit($event)"
 ></molecules-textarea-field>

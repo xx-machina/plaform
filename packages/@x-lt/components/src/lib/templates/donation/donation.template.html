@@ -1,0 +1,55 @@
+<frames-scroll>
+  <organisms-navigator
+    [title]="title"    
+    [endActions]="menuActions"
+    (action)="action.emit($event)"
+    (backButtonClick)="backButtonClick.emit()"
+    navigator
+  ></organisms-navigator>
+  <mat-horizontal-stepper linear #stepper contents>
+    <mat-step [stepControl]="form.get('card')" [editable]="true">
+      <form [formGroup]="form.get('card')">
+        <ng-template matStepLabel>決済情報の入力</ng-template>
+        <organisms-card-input-section
+          [control]="form.get('card.number')"
+        ></organisms-card-input-section>
+        <organisms-cvc-and-exp-input-section
+          [form]="form.get('card')"
+        ></organisms-cvc-and-exp-input-section>
+        <organisms-capacity-and-amount-input-section
+          [form]="form.get('donation')"
+        ></organisms-capacity-and-amount-input-section>
+        <organisms-action-buttons-section
+          [actions]="ACTIONS_2"
+        ></organisms-action-buttons-section>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="form.get('donation')" [editable]="true">
+      <form [formGroup]="form.get('donation')">
+        <ng-template matStepLabel>寄付者様情報の入力</ng-template>
+          <organisms-text-input-section
+            label="寄付者様のご氏名"
+            placeholder="田中 太郎"
+            [control]="form.get('userInfo.fullName')"
+          ></organisms-text-input-section>
+          <organisms-text-input-section
+            label="寄付者様のご住所"
+            placeholder=""
+            [control]="form.get('userInfo.address')"
+          ></organisms-text-input-section>
+          <organisms-action-buttons-section
+            [actions]="ACTIONS_1"
+          ></organisms-action-buttons-section>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>ツイートで共有</ng-template>
+      <organisms-textarea-section
+        label="ツイート内容"
+      ></organisms-textarea-section>
+      <organisms-action-buttons-section
+        [actions]="ACTIONS_3"
+      ></organisms-action-buttons-section>
+    </mat-step>
+  </mat-horizontal-stepper>
+</frames-scroll>

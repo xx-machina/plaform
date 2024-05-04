@@ -2,10 +2,11 @@ import dayjs from 'dayjs';
 import { firestore } from 'firebase-admin';
 import { DocumentReference, FirestoreCollection, FirestoreCollectionGroup } from '../../interfaces'
 import { FirestoreAdapter, QueryFn } from '../base';
+import { Injectable } from '@nx-ddd/core';
 
-export class AdminFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
-
-  constructor(private firestore = firestore()) { super() }
+@Injectable()
+export class FirestoreAdminAdapter extends FirestoreAdapter<dayjs.Dayjs> {
+  protected firestore = firestore();
 
   get FieldValue(): typeof firestore.FieldValue {
     return firestore.FieldValue;  

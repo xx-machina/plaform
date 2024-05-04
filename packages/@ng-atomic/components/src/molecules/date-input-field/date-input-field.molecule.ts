@@ -11,10 +11,10 @@ import { filter } from 'rxjs/operators';
   host: {class: 'molecule field'},
 })
 export class DateInputFieldMolecule {
-  control = new FormControl<Dayjs>();
+  protected readonly _control = new FormControl<Dayjs>();
 
-  @Input('control')
-  private _control = new FormControl<Dayjs>();
+  @Input()
+  control = new FormControl<Dayjs>();
 
   @Input()
   label = '';
@@ -26,11 +26,11 @@ export class DateInputFieldMolecule {
   hint?: string;
 
   ngOnInit(): void {
-    this.control.valueChanges.pipe(
-      filter(value => this._control.value !== value),
-    ).subscribe(value => this._control.setValue(value));
+    this._control.valueChanges.pipe(
+      filter(value => this.control.value !== value),
+    ).subscribe(value => this.control.setValue(value));
 
-    this._control.valueChanges.subscribe(value => this.control.setValue(value));
-    this.control.setValue(this._control.value);
+    this.control.valueChanges.subscribe(value => this._control.setValue(value));
+    this._control.setValue(this.control.value);
   }
 }

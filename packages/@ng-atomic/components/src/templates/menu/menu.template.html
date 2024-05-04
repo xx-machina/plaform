@@ -1,7 +1,7 @@
 <div class="top">
   <ng-content select=[header]></ng-content>
   <organisms-navigation-list
-    [items]="items"
+    [actions]="actions"
     (action)="action.emit($event)"
   ></organisms-navigation-list>
 </div>

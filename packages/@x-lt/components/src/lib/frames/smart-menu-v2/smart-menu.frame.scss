@@ -1,0 +1,20 @@
+@use 'scoped-var/strict' as * with ($host: 'smart-menu');
+
+:host {
+	@include property(--gap, 1px);
+	@include property(--background, #ccc);
+	@include property(--contents-background, transparent);
+	@include property(--height, 100vh);
+}
+
+:host {
+	display: block;
+	height: var(--height);
+
+	frames-drawer {
+		width: 100vw;
+    min-width: 300px;
+    max-width: 600px;
+    height: var(--height);
+	}
+}

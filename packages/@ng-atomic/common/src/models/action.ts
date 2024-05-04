@@ -3,6 +3,7 @@ export interface Action<T = any> {
   payload?: T;
   name?: string;
   icon?: string;
+  color?: string;
   disabled?: boolean;
 }
 

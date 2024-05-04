@@ -29,7 +29,7 @@ export class SmartListOrganism<T> {
   action = new EventEmitter<Action>();
 
   get statusMap() {
-    return this.items.reduce((acc, item) => {
+    return (this.items ?? []).reduce((acc, item) => {
       const key = this.dataAccessor(item, '__status');
       acc[key] ??= [],
       acc[key].push(item);
