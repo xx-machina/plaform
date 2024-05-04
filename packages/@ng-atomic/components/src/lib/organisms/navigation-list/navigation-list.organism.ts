@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, Input, Directive, InjectionToken, inject } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
-import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/common/core';
-import { Action } from '@ng-atomic/common/models';
+import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/core';
+import { Action } from '@ng-atomic/core';
 import { NavigationListItemMolecule, NavigationListItemMoleculeStore } from '@ng-atomic/components/molecules/navigation-list-item';
 
 @Directive({ standalone: true, selector: 'organisms-navigation-list' })

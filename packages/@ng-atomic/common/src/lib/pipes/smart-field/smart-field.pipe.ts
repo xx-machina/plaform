@@ -1,5 +1,5 @@
 import { Inject, InjectionToken, Optional, Pipe, PipeTransform, Signal } from '@angular/core';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 import { SignalOrValue } from '@ng-atomic/common/pipes/signal';
 import get from 'lodash.get';
 

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 
 export enum ActionId {
   SEND = 'send',

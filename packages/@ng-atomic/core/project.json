@@ -1,0 +1,56 @@
+{
+  "name": "@ng-atomic/core",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@ng-atomic/core/src",
+  "prefix": "lib",
+  "tags": ["package", "@ng-atomic"],
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:package",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "packages/@ng-atomic/core/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "packages/@ng-atomic/core/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "packages/@ng-atomic/core/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/@ng-atomic/core/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/@ng-atomic/core/**/package.json"
+        ]
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/@ng-atomic/core"
+      }
+    }
+  }
+}

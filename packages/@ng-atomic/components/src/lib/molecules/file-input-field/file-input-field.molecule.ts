@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { SmartMenuButtonAtom } from '@ng-atomic/components/atoms/smart-menu-button';
-import { Effect, NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { Effect, NgAtomicComponent } from '@ng-atomic/core';
 import { ErrorPipe } from '@ng-atomic/common/pipes/error';
 
 enum ActionId {

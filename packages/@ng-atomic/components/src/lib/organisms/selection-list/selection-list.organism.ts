@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { MatListModule, MatSelectionList } from '@angular/material/list';
 import { DataAccessorPipe } from '@ng-atomic/common/pipes/data-accessor';
 import { SelectionModel } from '@angular/cdk/collections';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SmartMenuButtonAtom } from '@ng-atomic/components/atoms/smart-menu-button';
-import { Action } from '@ng-atomic/common/models/action';
+import { Action } from '@ng-atomic/core';
 
 enum ActionId {
   TOGGLE_OPTION = '[@ng-atomic/components/organisms/selection-list] Toggle Option',

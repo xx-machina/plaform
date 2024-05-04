@@ -7,7 +7,7 @@ import { ScrollFrame } from '@ng-atomic/components/frames/scroll';
 import { NavigatorOrganism } from '@ng-atomic/components/organisms/navigator';
 import { FormGroup } from '@angular/forms';
 import { FormControl } from '@angular/forms';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 
 
 @Component({

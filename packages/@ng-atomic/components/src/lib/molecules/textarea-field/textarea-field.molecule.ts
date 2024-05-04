@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 import { ErrorPipe } from '@ng-atomic/common/pipes/error';
 
 export enum ActionId {

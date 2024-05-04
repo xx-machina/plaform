@@ -6,7 +6,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import {MatTreeModule} from '@angular/material/tree';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 
 export interface TreeNode {
   name: string;

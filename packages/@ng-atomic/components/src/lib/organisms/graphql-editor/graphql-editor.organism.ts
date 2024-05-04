@@ -11,10 +11,10 @@ import { graphql } from 'cm6-graphql';
 import { basicSetup, EditorView } from "codemirror"
 import { ReplaySubject, combineLatest, distinctUntilChanged, filter, startWith, tap } from 'rxjs';
 import { AbstractControl, FormControl } from '@angular/forms';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 import { CommonModule } from '@angular/common';
 import { EditorComponent } from '@ng-atomic/components/extras/editor';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 
 export class GraphqlExtractor {
   extract(output: string): string {

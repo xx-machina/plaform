@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { Action, Actions } from '@ng-atomic/common/models';
+import { Action, Actions } from '@ng-atomic/core';
 
 @Component({
   selector: 'atoms-smart-menu-button',

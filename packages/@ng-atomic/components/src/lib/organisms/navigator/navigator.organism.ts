@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Actions } from '@ng-atomic/common/models';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { Actions } from '@ng-atomic/core';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { SmartMenuButtonAtom } from '@ng-atomic/components/atoms/smart-menu-button';
 
 @Component({

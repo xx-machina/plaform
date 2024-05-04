@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 import { NestedMenuMolecule } from '@ng-atomic/components/molecules/nested-menu';
 import { ChipsInputFieldMolecule } from '@ng-atomic/components/molecules/chips-input-field';
 import { FormControl } from '@angular/forms';

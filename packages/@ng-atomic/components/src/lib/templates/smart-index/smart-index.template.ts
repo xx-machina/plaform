@@ -8,14 +8,14 @@ import { SmartTableOrganism } from '@ng-atomic/components/organisms/smart-table'
 import { SmartListOrganism } from '@ng-atomic/components/organisms/smart-list';
 import { NavigatorOrganism } from '@ng-atomic/components/organisms/navigator';
 import { PaginatorOrganism } from '@ng-atomic/components/organisms/paginator';
-import { Action, Actions } from '@ng-atomic/common/models';
+import { Action, Actions } from '@ng-atomic/core';
 import { FormBuilder } from '@angular/forms';
 import { GridToolbarOrganism } from '@ng-atomic/components/organisms/grid-toolbar';
 import { FiltersSectionOrganism } from '@ng-atomic/components/organisms/filters-section';
 import { DividerFrame } from '@ng-atomic/components/frames/divider';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SelectionListOrganism } from '@ng-atomic/components/organisms/selection-list';
-import { Effect, NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { Effect, NgAtomicComponent } from '@ng-atomic/core';
 import { SortService } from '@ng-atomic/common/services/form/sort';
 import { PaginationService } from '@ng-atomic/common/services/form/pagination';
 import { QueryPipe } from '@ng-atomic/common/pipes/query';

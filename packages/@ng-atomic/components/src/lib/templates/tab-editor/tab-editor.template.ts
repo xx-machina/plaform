@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CodeEditorTemplate } from '@ng-atomic/components/templates/code-editor';
 import { ToolbarOrganism } from '@ng-atomic/components/organisms/toolbar';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({

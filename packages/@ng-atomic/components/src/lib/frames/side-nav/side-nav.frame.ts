@@ -4,11 +4,11 @@ import { injectUiConfig } from '@ng-atomic/common/services/ui';
 import { DrawerFrame } from '@ng-atomic/components/frames/drawer';
 import { LineUpFrame } from '@ng-atomic/components/frames/line-up';
 import { MenuTemplateStore } from '@ng-atomic/components/templates/menu';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { signalize } from '@ng-atomic/common/pipes/signal';
 import { IconButtonMenuTemplateStore } from '@ng-atomic/components/templates/icon-button-menu';
-import { Action } from '@ng-atomic/common/models';
-import { InjectableComponent } from '@ng-atomic/common/core';
+import { Action } from '@ng-atomic/core';
+import { InjectableComponent } from '@ng-atomic/core';
 
 @Directive({ standalone: true, selector: 'frames-side-nav' })
 export class SideNavFrameStore extends InjectableComponent {

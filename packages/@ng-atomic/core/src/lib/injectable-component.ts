@@ -1,6 +1,6 @@
 import { ComponentRef, DestroyRef, Directive, ElementRef, EmbeddedViewRef, EventEmitter, Injector, Input, Output, Type, ViewContainerRef, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Action } from "@ng-atomic/common/models";
+import { Action } from "./action";
 import { NgAtomicComponentStore } from "./component-store";
 
 export type TypeFactoryAsync<T> = () => Promise<Type<T>>;
@@ -18,23 +18,23 @@ export function provideComponent<ABS = any, IMPL = any>(
       return typeOrFactory as Type<IMPL>;
     }
   };
-  return { provide: abstract['TOKEN'], useValue: loadComponentType };
+  return { provide: (abstract as any)['TOKEN'], useValue: loadComponentType };
 }
 
 export function getInputs<T>(type: Type<T>, meta: 'ɵcmp' | 'ɵdir' = 'ɵcmp'): [string, string][] {
-  return Object.entries(type[meta]['inputs']);
+  return Object.entries((type as any)[meta]['inputs']);
 }
 
 export function getInputsByComponentRef<T = any>(cmp: ComponentRef<T>): [string, string][] {
-  return getInputs(cmp.instance.constructor as Type<T>);
+  return getInputs((cmp.instance as any).constructor as Type<T>);
 }
 
 export function getOutputsByInstance<T = any>(cmp: ComponentRef<T>): [string, string][] {
-  return Object.entries(cmp.instance.constructor['ɵcmp']['outputs']);
+  return Object.entries((cmp.instance as any).constructor['ɵcmp']['outputs']);
 }
 
 @Directive({ standalone: true })
-export class InjectableComponent<T extends NgAtomicComponentStore = any> {
+export abstract class InjectableComponent<T extends NgAtomicComponentStore = any> {
   readonly #outlet = inject(ViewContainerRef);
   readonly #injector = inject(Injector);
   readonly #destroy$ = inject(DestroyRef);
@@ -44,7 +44,7 @@ export class InjectableComponent<T extends NgAtomicComponentStore = any> {
     const hostElement = (component.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
     const attributes: NamedNodeMap = this.#el.nativeElement.attributes;
     for (let i = 0; i < attributes.length; i++) {
-      const attr = attributes.item(i);
+      const attr = attributes.item(i)!;
       if (attr.name.startsWith('_ngcontent')) {
         hostElement.setAttribute(attr.name, attr.value);
       }
@@ -52,23 +52,23 @@ export class InjectableComponent<T extends NgAtomicComponentStore = any> {
   }
 
   #bindInputs(component: ComponentRef<T>) {
-    Object.entries(this.constructor['ɵdir']['inputs']).forEach(([key, value]: [string, string]) => {
+    Object.entries<string>((this.constructor as any)['ɵdir']['inputs']).forEach(([key, value]: [string, string]) => {
       if (key === 'injectable') return;
-      component.setInput(key, this[value]);
+      component.setInput(key, (this as any)[value]);
     });
   }
 
   #bindOutputs(component: ComponentRef<T>) {
     getOutputsByInstance(component).forEach(([alias, attr]: [string, string]) => {
-      component.instance[attr].pipe(
+      (component.instance as any)[attr].pipe(
         takeUntilDestroyed(this.#destroy$)
-      ).subscribe((value) => this[attr].emit(value));
+      ).subscribe((value: any) => (this as any)[attr].emit(value));
     });
   }
 
   ngOnInit() {
     if (this.injectable) {
-      this.#injector.get<TypeFactoryAsync<T>>(this.constructor['TOKEN'])().then(type => {
+      this.#injector.get<TypeFactoryAsync<T>>((this.constructor as any)['TOKEN'])().then(type => {
         const ref = this.#outlet.createComponent(type);
         this.#bindInputs(ref);
         this.#bindOutputs(ref);

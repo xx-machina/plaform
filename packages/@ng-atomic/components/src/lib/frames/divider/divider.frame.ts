@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject } fro
 import { CommonModule } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { CdkDrag, CdkDragMove, CdkDragStart } from '@angular/cdk/drag-drop';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 
 enum ActionId {
   DRAG_STARTED = '[@ng-atomic/divider] drag start',

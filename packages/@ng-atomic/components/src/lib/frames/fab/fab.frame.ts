@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 import { FabService } from './fab.service';
 import { ReplaySubject, takeUntil } from 'rxjs';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 
 @Component({
   selector: 'frames-fab',

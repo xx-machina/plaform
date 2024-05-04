@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActionInputFieldMolecule } from '@ng-atomic/components/molecules/action-input-field';
 import { FormControl } from '@angular/forms';
-import { Action } from '@ng-atomic/common/models';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { Action } from '@ng-atomic/core';
+import { NgAtomicComponent } from '@ng-atomic/core';
 
 @Component({
   selector: 'organisms-action-input-section',

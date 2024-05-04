@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Directive, InjectionToken, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Action } from '@ng-atomic/common/models';
-import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/common/core';
+import { Action } from '@ng-atomic/core';
+import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 

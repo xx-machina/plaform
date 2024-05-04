@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 
 @Injectable({providedIn: 'root'})
 export class FabService {

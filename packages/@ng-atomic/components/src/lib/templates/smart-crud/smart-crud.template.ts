@@ -13,10 +13,10 @@ import { SelectInputSectionOrganism } from '@ng-atomic/components/organisms/sele
 import { SmartFieldPipe } from '@ng-atomic/common/pipes/smart-field';
 import { DomainPipe } from '@ng-atomic/common/pipes/domain';
 import { AbstractControl } from '@angular/forms';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 import { FormGroup } from '@angular/forms';
 import { ActionInputSectionOrganism } from '@ng-atomic/components/organisms/action-input-section';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { FileInputSectionOrganism } from '@ng-atomic/components/organisms/file-input-section';
 import { SignalPipe } from '@ng-atomic/common/pipes/signal';
 

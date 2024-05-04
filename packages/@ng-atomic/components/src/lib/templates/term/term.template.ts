@@ -4,7 +4,7 @@ import { ScrollFrame } from '@ng-atomic/components/frames/scroll';
 import { MarkdownModule } from 'ngx-markdown';
 import { NavigatorOrganism } from '@ng-atomic/components/organisms/navigator';
 import { HeaderMolecule } from '@ng-atomic/components/molecules/header';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 
 enum ActionId {
   BACK = '[@ng-atomic/components/templates/term] Back',

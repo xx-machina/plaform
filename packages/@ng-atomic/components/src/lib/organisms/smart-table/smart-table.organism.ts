@@ -9,7 +9,7 @@ import { DomainPipe } from '@ng-atomic/common/pipes/domain';
 import { ActionsColumnMolecule } from '@ng-atomic/components/molecules/actions-column';
 import { CheckboxColumnMolecule } from '@ng-atomic/components/molecules/checkbox-column';
 import { SmartColumnMolecule } from '@ng-atomic/components/molecules/smart-column';
-import { Actions, Action } from '@ng-atomic/common/models';
+import { Actions, Action } from '@ng-atomic/core';
 import { SortService } from '@ng-atomic/common/services/form/sort';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import {

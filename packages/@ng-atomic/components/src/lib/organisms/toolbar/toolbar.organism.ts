@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSliderModule } from '@angular/material/slider';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 
 enum ActionId {
 }

@@ -44,6 +44,8 @@
         "packages/@ng-atomic/components/src/lib/index.ts"
       ],
       "@ng-atomic/components/*": ["packages/@ng-atomic/components/src/lib/*"],
+      "@ng-atomic/core": ["packages/@ng-atomic/core/src/lib/index.ts"],
+      "@ng-atomic/core/*": ["packages/@ng-atomic/core/src/lib/*"],
       "@ng-atomic/elements": ["packages/@ng-atomic/elements/src/index.ts"],
       "@ng-atomic/elements/*": ["packages/@ng-atomic/elements/src/*"],
       "@ng-atomic/executors": ["packages/@ng-atomic/executors/src/index.ts"],

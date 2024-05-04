@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, Input, Pipe, ViewChild } from '@ang
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInput, MatInputModule } from '@angular/material/input';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 import { SmartMenuButtonAtom } from '@ng-atomic/components/atoms/smart-menu-button';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { MatFormField } from '@angular/material/form-field';
 import { ErrorPipe } from '@ng-atomic/common/pipes/error';
 import { startWith } from 'rxjs';

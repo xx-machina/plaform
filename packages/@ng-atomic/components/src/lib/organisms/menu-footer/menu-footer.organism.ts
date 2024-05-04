@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Directive, InjectionToken } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/common/core';
+import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/core';
 
 @Directive({standalone: true, selector: 'organisms-menu-footer'})
 export class MenuFooterOrganismStore extends InjectableComponent {

@@ -6,7 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
 import { DataAccessorPipe } from '@ng-atomic/common/pipes/data-accessor';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { KeysPipe } from '@ng-atomic/common/pipes/keys';
 import { GroupedByPipe } from '@ng-atomic/common/pipes/grouped-by';
 

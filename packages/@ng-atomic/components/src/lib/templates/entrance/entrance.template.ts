@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 import { FormGroup, FormControl} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AutoLayoutFrame } from '@ng-atomic/components/frames/auto-layout';

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { Action } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/core';
 
 @Component({
   selector: 'organisms-action-buttons-section',

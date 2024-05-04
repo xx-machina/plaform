@@ -1,5 +1,5 @@
 import { Pipe } from "@angular/core";
-import { resolveActions } from "@ng-atomic/common/models";
+import { resolveActions } from "@ng-atomic/core";
 
 @Pipe({
   standalone: true,

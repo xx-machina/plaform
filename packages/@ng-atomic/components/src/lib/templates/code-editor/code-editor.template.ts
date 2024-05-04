@@ -11,7 +11,7 @@ import { oneDarkHighlightStyle, oneDark } from '@codemirror/theme-one-dark';
 import { EditorState } from '@codemirror/state';
 import { lineNumbers } from '@codemirror/view';
 import { basicSetup, EditorView } from "codemirror"
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { ReplaySubject, distinctUntilChanged, map, switchMap } from 'rxjs';
 import { html } from "@codemirror/lang-html";
 import prettier from "prettier/standalone";

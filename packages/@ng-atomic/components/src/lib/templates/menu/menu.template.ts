@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Directive, InjectionToken, Input, Type, inject } from '@angular/core';
-import { Action } from '@ng-atomic/common/models';
-import { InjectableComponent } from '@ng-atomic/common/core';
-import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { Action } from '@ng-atomic/core';
+import { InjectableComponent } from '@ng-atomic/core';
+import { NgAtomicComponent } from '@ng-atomic/core';
 import { NavigationListOrganismStore } from '@ng-atomic/components/organisms/navigation-list';
 import { MenuFooterOrganismStore } from '@ng-atomic/components/organisms/menu-footer';
 import { MenuHeaderOrganismStore } from '@ng-atomic/components/organisms/menu-header';

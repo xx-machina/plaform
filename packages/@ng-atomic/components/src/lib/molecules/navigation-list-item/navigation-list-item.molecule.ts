@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, Input, Directive, inject, InjectionToken } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { InjectableComponent } from '@ng-atomic/common/core';
-import { Action } from '@ng-atomic/common/models';
+import { InjectableComponent } from '@ng-atomic/core';
+import { Action } from '@ng-atomic/core';
 import { IconAtom } from '@ng-atomic/components/atoms/icon';
 
 @Directive({ standalone: true, selector: 'molecules-navigation-list-item' })

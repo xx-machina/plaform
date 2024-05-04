@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
-import { Action, Actions } from '@ng-atomic/common/models';
+import { Action, Actions } from '@ng-atomic/core';
 import { ActionsPipe } from '@ng-atomic/common/pipes/actions';
 import { SmartMenuButtonAtom } from '@ng-atomic/components/atoms/smart-menu-button';
 

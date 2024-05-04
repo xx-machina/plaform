@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FileInputFieldMolecule } from '@ng-atomic/components/molecules/file-input-field';
-import { Effect, NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
+import { Effect, NgAtomicComponent } from '@ng-atomic/core';
 import { FormControl } from '@angular/forms';
 
 enum ActionId {
