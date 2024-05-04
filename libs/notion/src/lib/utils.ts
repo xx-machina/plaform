@@ -46,7 +46,7 @@ export class NotionUtils {
       case 'rollup': return NotionUtils.toRollup(value);
       case 'url': return NotionUtils.toUrl(value);
       case 'date': return NotionUtils.toDate(value);
-      // case 'select': return NotionUtils.toSelect(value);
+      case 'select': return NotionUtils.toSelect(value);
       // case 'number': return NotionUtils.toNumber(value);
     }
   }
@@ -83,6 +83,10 @@ export class NotionUtils {
   static toDate(value: dayjs.Dayjs) {
     // TODO(nontangent): endも考慮する。
     return value ? {type: 'date', date: {start: value.format() }} : undefined;
+  }
+
+  static toSelect(value: string) {
+    return value ? {type: 'select', select: {name: value}} : undefined;
   }
 
   static fromNotionValue(value: NotionValue) {
