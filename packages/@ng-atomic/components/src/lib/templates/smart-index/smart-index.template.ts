@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Directive, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, EventEmitter, Input, Output, inject } from '@angular/core';
 import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { CommonModule } from '@angular/common';
 import { AutoLayoutFrame } from '@ng-atomic/components/frames/auto-layout';
@@ -73,7 +73,7 @@ export class NgAtomicDirective {
     }
   ],
 })
-export class SmartIndexTemplate<T> implements OnChanges {
+export class SmartIndexTemplate<T> {
   static ActionId = ActionId;
 
   protected ngAtomic = inject(NgAtomicDirective);
@@ -140,14 +140,9 @@ export class SmartIndexTemplate<T> implements OnChanges {
   pageChange = new EventEmitter<PageEvent>();
 
   onCheckboxClickItem(item: T) {
-    console.debug('onCheckboxClickItem', item);
     this.ngAtomic.action.emit({
       id: ActionId.CHECKBOX_CLICK,
       payload: item,
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    console.debug('changed!', changes);
   }
 }

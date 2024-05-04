@@ -19,6 +19,7 @@
         <ng-content first select="[dashboard]"></ng-content>
         <div style="display: flex; flex-direction: column; width: 100%; height: 100%;" second>
           <organisms-grid-toolbar
+            *ngIf="gridToolbarActions"
             [actions]="gridToolbarActions"
             (action)="ngAtomic.onAction($event)"
           ></organisms-grid-toolbar>
@@ -35,6 +36,7 @@
             (headerClick)="ngAtomic.onAction({id: ActionId.TABLE_HEADER_CLICK, payload: $event})"
           ></organisms-smart-table>
           <organisms-paginator
+            *ngIf="form"
             [form]="form"
             [pageSizeOptions]="pageSizeOptions"
             [placeholder]="queryPlaceholder"
