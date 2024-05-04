@@ -21,7 +21,7 @@ import { MatInputModule } from '@angular/material/input';
     MatInputModule,
   ],
   template: `
-    <mat-chip-grid #chipGrid aria-label="Enter fruits">
+    <mat-chip-grid #chipGrid>
       <mat-chip-row *ngFor="let chip of chipsManager.chips"
         (removed)="remove(chip)"
         [editable]="false"
