@@ -19,8 +19,8 @@
     "paths": {
       "@ng-atomic/common": ["packages/@ng-atomic/common/src/index.ts"],
       "@ng-atomic/common/*": ["packages/@ng-atomic/common/src/*"],
-      "@ng-atomic/components": ["packages/@ng-atomic/components/src/index.ts"],
-      "@ng-atomic/components/*": ["packages/@ng-atomic/components/src/*"],
+      "@ng-atomic/components": ["packages/@ng-atomic/components/src/lib/index.ts"],
+      "@ng-atomic/components/*": ["packages/@ng-atomic/components/src/lib/*"],
       "@ng-atomic/elements": ["packages/@ng-atomic/elements/src/index.ts"],
       "@ng-atomic/elements/*": ["packages/@ng-atomic/elements/src/*"],
       "@ng-atomic/executors": ["packages/@ng-atomic/executors/src/index.ts"],

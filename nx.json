@@ -19,6 +19,9 @@
     }
   },
   "defaultProject": "demo",
+  "cli": {
+    "defaultCollection": "./dist/packages/@ng-atomic/schematics"
+  },
   "generators": {
     "@nrwl/angular": {
       "application": {
@@ -43,6 +46,32 @@
     },
     "@nrwl/angular:component": {
       "style": "scss"
+    },
+    "./dist/packages/@ng-atomic/schematics": {
+      "atom": {
+        "project": "@ng-atomic/components",
+        "path": "atoms"
+      },
+      "molecule": {
+        "project": "@ng-atomic/components",
+        "path": "molecules"
+      },
+      "organism": {
+        "project": "@ng-atomic/components",
+        "path": "organisms"
+      },
+      "template": {
+        "project": "@ng-atomic/components",
+        "path": "templates"
+      },
+      "page": {
+        "project": "@ng-atomic/components",
+        "path": "pages"
+      },
+      "frame": {
+        "project": "@ng-atomic/components",
+        "path": "frames"
+      }
     }
   },
   "$schema": "./node_modules/nx/schemas/nx-schema.json",

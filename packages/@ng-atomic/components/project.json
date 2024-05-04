@@ -9,7 +9,7 @@
       "executor": "@nrwl/angular:package",
       "options": {
         "tsConfig": "packages/@ng-atomic/components/tsconfig.lib.json",
-        "project": "packages/@ng-atomic/components/src/ng-package.json",
+        "project": "packages/@ng-atomic/components/src/lib/ng-package.json",
         "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {

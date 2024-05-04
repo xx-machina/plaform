@@ -1,0 +1,5 @@
+@use 'scoped-var/strict' as * with ($host: 'divider');
+// @use 'atomic/frame' as *;
+:host {
+	// @include frame($host);
+}
