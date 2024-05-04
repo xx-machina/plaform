@@ -1,2 +1,5 @@
 export type HasId = { id: string };
-export const compareById = (a: HasId, b: HasId) => parseInt(a.id, 10) - parseInt(b.id, 10);
+export function compareByIdFactory(key: string) {
+  return (a: any, b: any) => parseInt(a?.[key], 10) - parseInt(b?.[key], 10);
+}
+export const compareById = compareByIdFactory('id');
