@@ -42,10 +42,19 @@ export class EntryService {
     return this.infra.repo.notion.entry.update(entry);
   }
 
+  private async makeCommunityTwitterClient(id: string) {
+    const community = await this.infra.repo.firestore.community.get({id});
+    let token = community.twitter.token;
+    if (this.infra.twitter.isExpired(token)) {
+      token = await this.infra.twitter.refreshToken(token);
+      await this.infra.repo.firestore.community.update({...community, twitter: {token}});
+    }
+    return this.infra.twitter.getClientV2Next(token);
+  }
+
   @Status(EntryStatus._201_受付連絡中, {auto: false})
   async sendFirstSelectionStartMessage(entry: Partial<Entry>) {
-    const community = await this.infra.repo.firestore.community.get({id: 'default'});
-    const client = this.infra.twitter.getV2Client(community.twitter.token);
+    const client = await this.makeCommunityTwitterClient('default');
     await this.infra.twitter.sendReply(client, entry.tweetId, entry.firstSelectionStartMessage); 
     await this.updateStatus(entry, EntryStatus._202_一次選考中);
   }
@@ -62,16 +71,14 @@ export class EntryService {
 
   @Status(EntryStatus._203_一次選考通過連絡中, {auto: false})
   async sendFirstSelectionPassMessage(entry: Partial<Entry>) {
-    const community = await this.infra.repo.firestore.community.get({id: 'default'});
-    const client = this.infra.twitter.getClientV2Next(community.twitter.token);
+    const client = await this.makeCommunityTwitterClient('default');
     await this.infra.twitter.sendDirectMessage(client, entry.twitterId, entry.firstSelectionPassMessage);
     await this.updateStatus(entry, EntryStatus._204_二次選考応募待ち);
   }
 
   @Status(EntryStatus._205_二次選考受付連絡中, {auto: false})
   async sendSecondSelectionStartMessage(entry: Partial<Entry>) {
-    const community = await this.infra.repo.firestore.community.get({id: 'default'});
-    const client = this.infra.twitter.getClientV2Next(community.twitter.token);
+    const client = await this.makeCommunityTwitterClient('default');
     await this.infra.twitter.sendDirectMessage(client, entry.twitterId, entry.secondSelectionReceptionMessage);
     await this.updateStatus(entry, EntryStatus._206_二次選考中);
   }
@@ -88,16 +95,14 @@ export class EntryService {
 
   @Status(EntryStatus._207_二次選考通過連絡中, {auto: false})
   async sendSecondSelectionPassMessage(entry: Partial<Entry>) {
-    const community = await this.infra.repo.firestore.community.get({id: 'default'});
-    const client = this.infra.twitter.getClientV2Next(community.twitter.token);
+    const client = await this.makeCommunityTwitterClient('default');
     await this.infra.twitter.sendDirectMessage(client, entry.twitterId, entry.secondSelectionPassMessage);
     await this.updateStatus(entry, EntryStatus._208_採択_口座情報登録待ち_);
   }
 
   @Status(EntryStatus._209_口座情報受付連絡中, {auto: false})
   async sendBankAccountPassMessage(entry: Partial<Entry>) {
-    const community = await this.infra.repo.firestore.community.get({id: 'default'});
-    const client = this.infra.twitter.getClientV2Next(community.twitter.token);
+    const client = await this.makeCommunityTwitterClient('default');
     await this.infra.twitter.sendDirectMessage(client, entry.twitterId, entry.bankAccountReceptionMessage);
     await this.updateStatus(entry, EntryStatus._210_採択_入金中_);
   }

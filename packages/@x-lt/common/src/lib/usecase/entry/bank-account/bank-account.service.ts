@@ -50,6 +50,6 @@ export class BankAccountService {
 }
 
 function isAlreadyLinkWithEntry(bankAccount: BankAccount): boolean {
-  return !!bankAccount.entryIds.length;
+  return !!bankAccount.entryId;
 }
 

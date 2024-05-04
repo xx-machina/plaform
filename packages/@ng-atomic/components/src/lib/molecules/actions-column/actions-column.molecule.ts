@@ -22,7 +22,7 @@ import { SmartMenuButtonAtom } from '@ng-atomic/components/atoms/smart-menu-butt
   templateUrl: './actions-column.molecule.html',
   styleUrls: ['./actions-column.molecule.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActionsColumnMolecule<T> {
   @Input()

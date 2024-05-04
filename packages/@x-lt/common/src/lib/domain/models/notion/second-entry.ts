@@ -2,24 +2,24 @@ import { Entity } from '@nx-ddd/common/domain/models';
 import { Relation, RichText, Title } from "@nx-ddd/notion/decorators";
 
 export class SecondEntry extends Entity {
-  @Title({name: 'タイトル'})
+  @Title('タイトル')
   title: string;
 
-  @RichText({name: '氏名'})
+  @RichText('氏名')
   fullName: string;
 
-  @Relation({name: '顧客'})
-  customerIds: string[];
+  @Relation('顧客')
+  customerId: string;
 
-  @RichText({name: 'twitterId'})
+  @RichText('twitterId')
   twitterId: string;
 
-  @RichText({name: 'ハンドルネーム'})
+  @RichText('ハンドルネーム')
   handleName: string;
 
-  @RichText({name: '備考'})
+  @RichText('備考')
   備考: string;
 
-  @Relation({name: '応募'})
-  entryIds: string[];
+  @Relation('応募')
+  entryId: string;
 }

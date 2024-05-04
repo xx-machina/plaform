@@ -24,7 +24,7 @@ import { SmartExpModule } from '@ng-atomic/common/pipes/smart-exp';
   templateUrl: './smart-column.molecule.html',
   styleUrls: ['./smart-column.molecule.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SmartColumnMolecule<T> extends MatTextColumn<T> {
 

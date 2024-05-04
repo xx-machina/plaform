@@ -1,9 +1,5 @@
 import { Twitter } from '@x-lt/common/domain/twitter';
-import Twit from 'twit';
 import * as _ from 'lodash';
-import camelize from 'camelcase-keys';
-import { Client } from "twitter-api-sdk";
-import { OAuth2User } from 'twitter-api-sdk/dist/OAuth2User';
 import { TwitterApi } from 'twitter-api-v2';
 import { Inject, Injectable, InjectionToken } from '@nx-ddd/core/di';
 import dayjs from 'dayjs';
@@ -16,9 +12,6 @@ type CamelToSnakeCase<S extends string> =
 type CamelToSnake<T extends object> = {
   [K in keyof T as `${CamelToSnakeCase<string & K>}`]: T[K] extends object ? CamelToSnake<T[K]> : T[K]
 }
-
-export const TWITTER_OAUTH_CONFIG = new InjectionToken('[@x-lt/common] Twitter Oauth Config');
-export const TWITTER_OAUTH2_CONFIG = new InjectionToken('[@x-lt/common] Twitter Oauth2 Config');
 
 export interface TwitterToken {
   token_type: string;
@@ -33,7 +26,7 @@ export interface TwitterOauth2Config {
   client_secret: string;
   callback: string;
   scopes: [];
-  // token: TwitterToken;
+  token: string;
 }
 
 export interface TwitterOauthConfig {
@@ -43,22 +36,44 @@ export interface TwitterOauthConfig {
   access_token_secret: string;
 }
 
+export interface TwitterClientConfig {
+  oauth: TwitterOauthConfig;
+  oauth2: TwitterOauth2Config;
+}
+
+export const TWITTER_CLIENT_CONFIG = new InjectionToken<TwitterClientConfig>('[@x-lt/common/infrastructure] Twitter Client Config');
+
 @Injectable({providedIn: 'root'})
 export class TwitterClient {
   constructor(
-    @Inject(TWITTER_OAUTH_CONFIG) private config: TwitterOauthConfig,
-    @Inject(TWITTER_OAUTH2_CONFIG) private oauth2Config: TwitterOauth2Config,
+    @Inject(TWITTER_CLIENT_CONFIG) private config: TwitterClientConfig,
   ) { }
 
-  private client = new Twit(this.config);
+  isExpired(token: TwitterToken): boolean {
+    return dayjs().isBefore(dayjs.unix(token.expires_at).add(-5, 'minutes'));
+  }
+
+  async refreshToken(token: TwitterToken): Promise<TwitterToken> {
+    const client = this.getCunsulerClient();
+    const data = await client.refreshOAuth2Token(token.refresh_token);
+    return {
+      token_type: 'bearer',
+      access_token: data.accessToken,
+      scope: data.scope.join(' '),
+      refresh_token: data.refreshToken,
+      expires_at: (dayjs().unix() + data.expiresIn),
+    }
+  }
+
+  getCunsulerClient() {
+    return new TwitterApi({
+      clientId: this.config.oauth2.client_id,
+      clientSecret: this.config.oauth2.client_secret,
+    });    
+  }
 
   getClientV2Next(token: TwitterToken): TwitterApi {
     return new TwitterApi(token.access_token);
-  }
-
-  getV2Client(token: TwitterToken): Client {
-    const auth = new OAuth2User({...this.oauth2Config, token});
-    return new Client(auth);
   }
 
   async getDirectMessageEventsList(
@@ -102,8 +117,9 @@ export class TwitterClient {
   }
 
   async getUserShow(options: {user_id?: string}): Promise<Twitter.UserShow> {
-    const {data} = await this.client.get('users/show', options) as any;
-    return camelize(data);
+    // const {data} = await this.client.get('users/show', options) as any;
+    // return camelize(data);
+    return null;
   }
 
   async getUser(client: TwitterApi, id: string) {
@@ -132,30 +148,27 @@ export class TwitterClient {
     }
   }
 
-  async sendReply(client: Client, tweetId: string, text: string) {
+  async sendReply(client: TwitterApi, tweetId: string, text: string) {
     try {
-      await client.tweets.createTweet({
-        reply: { in_reply_to_tweet_id: tweetId },
-        text,
-      });
+      await client.v2.reply(text, tweetId);
     } catch(error) {
       console.error('error:', error.error);
       throw error;
     }
   }
 
-  async searchTweets(client: Client, query: string, sinceId?: string) {
+  async searchTweets(client: TwitterApi, query: string, sinceId?: string) {
     try {
-      const res = await client.tweets.tweetsRecentSearch({
-          query, since_id: sinceId,
-          "tweet.fields": ["created_at", "lang", "conversation_id", 'author_id'],
-          'user.fields': ['id', 'name', 'username'],
+      const res = await client.v2.search({
+        query, since_id: sinceId,
+        "tweet.fields": ["created_at", "lang", "conversation_id", 'author_id'],
+        'user.fields': ['id', 'name', 'username'],
         expansions: ['author_id'],
       });
 
-      if (!res?.data) return [];
+      if (!res?.data?.data) return [];
       
-      return res?.data?.map((tweet) => {
+      return res?.data?.data.map((tweet) => {
         const author = res.includes.users.find(user => user.id === tweet.author_id);
         return {
           id: tweet.id,

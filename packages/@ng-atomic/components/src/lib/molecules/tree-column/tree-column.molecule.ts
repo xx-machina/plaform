@@ -60,7 +60,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
   </ng-container> `,
   styleUrls: ['./tree-column.molecule.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TreeColumnMolecule<T> extends MatTextColumn<T> {
 

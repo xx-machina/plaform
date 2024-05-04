@@ -2,17 +2,18 @@ export const NOTION_ANNOTATIONS = 'notion_annotations';
 export type NotionFieldType = 'title' | 'url' | 'rich_text' 
   | 'relation' | 'status' | 'formula' | 'rollup' | 'timestamp'
   | 'number' | 'created_time' | 'last_edited_time' | 'date' | 'select';
-export interface NotionAnnotation {
+export interface NotionAnnotation<T extends object = undefined> {
   type: NotionFieldType;
   fieldName: string;
   propName: string;
+  options?: T;
 };
 
-function createDecorator(type: NotionFieldType) {
-  return (props?: {name?: string}) => {
+function createDecorator<T extends object = undefined>(type: NotionFieldType, defaultOptions?: T) {
+  return (name?: string, options?: Partial<T>) => {
     return (target: any, propName: string) => {
-      const fieldName = props.name || propName;
-      const ANNOTATION: NotionAnnotation = {type, fieldName, propName};
+      const fieldName = name || propName;
+      const ANNOTATION: NotionAnnotation<T> = {type, fieldName, propName, options: {...defaultOptions, ...options}};
       target.constructor[NOTION_ANNOTATIONS] ??= [];
       target.constructor[NOTION_ANNOTATIONS].push(ANNOTATION);
     };
@@ -22,7 +23,7 @@ function createDecorator(type: NotionFieldType) {
 export const Title = createDecorator('title');
 export const Url = createDecorator('url');
 export const RichText = createDecorator('rich_text');
-export const Relation = createDecorator('relation');
+export const Relation = createDecorator<{multi: boolean}>('relation', {multi: false});
 export const Status = createDecorator('status');
 export const Formula = createDecorator('formula');
 export const Rollup = createDecorator('rollup');

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { CommonModule } from '@angular/common';
 import { AutoLayoutFrame } from '@ng-atomic/components/frames/auto-layout';
@@ -18,6 +18,32 @@ export enum ActionId {
   BACK = '[@ng-atomic/components/templates/smart-index] Back',
   TABLE_HEADER_CLICK = '[@ng-atomic/components/templates/smart-index] Table Header Click',
   ITEM_CLICK = '[@ng-atomic/components/templates/smart-index] Item Click',
+  CHECKBOX_CLICK = '[@ng-atomic/components/templates/smart-index] Check Item',
+}
+
+
+@Directive({ standalone: true })
+export class NgAtomicDirective {
+  @Output()
+  action = new EventEmitter<Action>();
+
+  ngOnInit() {
+    this.action.subscribe(action => {
+      console.debug('NgAtomicDirective.action', action);
+    });
+  }
+
+  onAction(action: Action): void {
+    switch(action.id) {
+      case ListActionId.CLICK_ITEM:
+        return this.action.emit({...action, id: ActionId.ITEM_CLICK});
+      default: return this.action.emit(action);
+    }
+  }
+
+  dispatch(action: Action): void {
+    this.action.emit(action);
+  }
 }
 
 @Component({
@@ -40,9 +66,17 @@ export enum ActionId {
   styleUrls: ['./smart-index.template.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'template' },
+  hostDirectives: [
+    {
+      directive: NgAtomicDirective,
+      outputs: ['action'],
+    }
+  ],
 })
-export class SmartIndexTemplate<T> {
+export class SmartIndexTemplate<T> implements OnChanges {
   protected ActionId = ActionId;
+
+  protected ngAtomic = inject(NgAtomicDirective);
 
   @Input()
   gridToolbarActions: Action[] = [];
@@ -91,13 +125,6 @@ export class SmartIndexTemplate<T> {
   sortOrder?: string;
 
   @Input()
-  page?: PageEvent = {
-    pageIndex: 0,
-    pageSize: 20,
-    length: 100,
-  };
-
-  @Input()
   pageSizeOptions: number[] = [5, 10, 25, 100];
 
   @Input()
@@ -107,22 +134,20 @@ export class SmartIndexTemplate<T> {
   device: 'sp' | 'tablet' | 'pc' = 'sp';
 
   @Output()
-  action = new EventEmitter<Action>();
-
-  @Output()
   backButtonClick = new EventEmitter();
-
-  @Output()
-  checkboxClick = new EventEmitter<T>();
 
   @Output()
   pageChange = new EventEmitter<PageEvent>();
 
-  onAction(action: Action): void {
-    switch(action.id) {
-      case ListActionId.CLICK_ITEM:
-        return this.action.emit({...action, id: ActionId.ITEM_CLICK});
-      default: return this.action.emit(action);
-    }
+  onCheckboxClickItem(item: T) {
+    console.debug('onCheckboxClickItem', item);
+    this.ngAtomic.action.emit({
+      id: ActionId.CHECKBOX_CLICK,
+      payload: item,
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.debug('changed!', changes);
   }
 }

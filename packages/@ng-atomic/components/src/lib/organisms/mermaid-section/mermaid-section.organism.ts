@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import mermaid from 'mermaid';
 
@@ -7,22 +7,43 @@ import mermaid from 'mermaid';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <pre #view> {{ mermaid}} </pre>
+    <pre #view></pre>
   `,
   styleUrls: ['./mermaid-section.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MermaidSectionOrganism {
-  @ViewChild('view', { static: true }) view: ElementRef;
+export class MermaidSectionOrganism implements OnChanges {
+  constructor(
+    private ngZone: NgZone,
+  ) { }
+
+  @ViewChild('view', { static: true })
+  view: ElementRef<HTMLElement>;
 
   @Input()
   mermaid!: string;
 
-  ngAfterViewInit(): void {
-    mermaid.init({securityLevel: 'loose'}, this.view.nativeElement);
+  ngOnInit() {
+    mermaid.initialize({
+      // securityLevel: 
+    });
   }
 
-  ngOnDestroy(): void {
-    
+  ngAfterViewInit() {
+    this.renderMermaid();
   }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['mermaid']) {
+      this.renderMermaid();
+    }
+  }
+
+  private renderMermaid() {
+    mermaid.render('graphDiv', this.mermaid, this.view.nativeElement).then(({svg}) => {
+      this.view.nativeElement.innerHTML = svg;
+    });
+  }
+
+
 }

@@ -1,8 +1,9 @@
 import { CdkCellDef, CdkColumnDef, CdkHeaderCellDef, CdkTable } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Optional, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Optional, Output, ViewChild, ViewEncapsulation, inject } from '@angular/core';
 import { MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
+import { SelectIdPipe } from '@ng-atomic/common/pipes/select-id';
 
 @Component({
   selector: 'molecules-checkbox-column',
@@ -11,6 +12,7 @@ import { MatTableModule } from '@angular/material/table';
     CommonModule,
     MatTableModule,
     MatCheckboxModule,
+    SelectIdPipe,
   ],
   providers: [
     {provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } as MatCheckboxDefaultOptions}
@@ -21,6 +23,7 @@ import { MatTableModule } from '@angular/material/table';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckboxColumnMolecule<T> implements OnInit {
+
   @Input()
   get name(): string {
     return this._name;

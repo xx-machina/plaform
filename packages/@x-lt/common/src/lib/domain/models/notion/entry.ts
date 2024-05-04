@@ -14,7 +14,7 @@ export enum EntryStatus {
   _208_採択_口座情報登録待ち_ = '208_採択(口座情報登録待ち)',
   _209_口座情報受付連絡中 = '209_口座情報受付連絡中',
   _210_採択_入金中_ = '210_採択(入金中)',
-  _211_採択_公開設定中_ = '211_採択(公開設定中)',
+  _211_採択_公開準備中_ = '211_採択(公開準備中)',
   _212_採択_公開待ち_ = '212_採択(公開待ち)',
   _213_採択_公開済み_ = '213_採択(公開済み)',
   _400_不採択 = '400_不採択',
@@ -23,94 +23,90 @@ export enum EntryStatus {
 
 export class Entry extends Entity {
 
-  @Title({name: 'タイトル'})
+  @Title('タイトル')
   title: string;
 
-  @Formula({name: '表示名'})
+  @Formula('表示名')
   displayName: string;
 
-  @Status({name: 'ステータス'})
+  @Status('ステータス')
   status: EntryStatus;
 
-  @Relation({name: '一次選考'})
-  firstEntryIds: string[];
+  @Relation('一次選考')
+  firstEntryId: string;
 
-  @Relation({name: '二次選考'})
-  secondEntryIds: string[];
+  @Relation('二次選考')
+  secondEntryId: string;
 
-  @Formula({name: '受付連絡メッセージ(Twitter)'})
+  @Formula('受付連絡メッセージ(Twitter)')
   firstSelectionStartMessage: string;
 
-  @Formula({name: '一次選考通過メッセージ(Twitter)'})
+  @Formula('一次選考通過メッセージ(Twitter)')
   firstSelectionPassMessage: string;
 
-  @Formula({name: '二次選考受付連絡メッセージ(Twitter)'})
+  @Formula('二次選考受付連絡メッセージ(Twitter)')
   secondSelectionReceptionMessage: string;
 
-  @Formula({name: '二次選考通過メッセージ(Twitter)'})
+  @Formula('二次選考通過メッセージ(Twitter)')
   secondSelectionPassMessage: string;
 
-  @Formula({name: '口座情報受付連絡メッセージ(Twitter)'})
+  @Formula('口座情報受付連絡メッセージ(Twitter)')
   bankAccountReceptionMessage: string;
 
-  @Formula({name: '振込依頼メッセージ'})
+  @Formula('振込依頼メッセージ')
   振込依頼メッセージ: string;
 
-  @Formula({name: '送金後メッセージ'})
+  @Formula('送金後メッセージ')
   postTransferMessage: string;
 
-  @Formula({name: '一次選考開始文(Discord)'})
+  @Formula('一次選考開始文(Discord)')
   discordFirstSelectionStartMessage: string;
 
-  @Formula({name: '二次選考開始文(Discord)'})
+  @Formula('二次選考開始文(Discord)')
   discordSecondSelectionStartMessage: string;
   
-  @RichText({name: 'discordFirstSelectionChannelId'})
+  @RichText('discordFirstSelectionChannelId')
   discordFirstSelectionChannelId: string;
 
-  @RichText({name: 'discordFirstSelectionMessageId'})
+  @RichText('discordFirstSelectionMessageId')
   discordFirstSelectionMessageId: string;
 
-  @RichText({name: 'discordSecondSelectionChannelId'})
+  @RichText('discordSecondSelectionChannelId')
   discordSecondSelectionChannelId: string;
 
-  @RichText({name: 'discordSecondSelectionMessageId'})
+  @RichText('discordSecondSelectionMessageId')
   discordSecondSelectionMessageId: string;
 
-  @Relation({name: '奨学金'})
-  scholarshipIds: string[];
-
-  get scholarshipId(): string | null {
-    return this.scholarshipIds?.[0] ?? null;
-  }
+  @Relation('奨学金')
+  scholarshipId: string;
 
   scholarship?: Scholarship;
 
-  @Rollup({name: 'tweetId'})
+  @Rollup('tweetId')
   tweetIds: string[];
 
   get tweetId(): string {
     return this.tweetIds?.[0];
   }
 
-  @Rollup({name: 'twitterId'})
+  @Rollup('twitterId')
   twitterIds: string[];
 
   get twitterId(): string | null {
     return this.twitterIds?.[0] ?? null;
   }
 
-  @Rollup({name: 'twitterScreenName'})
+  @Rollup('twitterScreenName')
   twitterScreenNames: string[];
 
   get twitterScreenName(): string | null {
     return this.twitterScreenNames?.[0] ?? null;
   }
 
-  @Relation({name: '口座'})
+  @Relation('口座', {multi: true})
   bankAccountIds: string[];
 
-  @CreatedTime({name: '作成日時'})
+  @CreatedTime('作成日時')
   createdAt: any;
 
   get hasDiscordFirstSelection(): boolean {

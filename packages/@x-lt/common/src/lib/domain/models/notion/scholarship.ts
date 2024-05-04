@@ -1,48 +1,72 @@
 import { Entity } from "@nx-ddd/common/domain/models";
 import { Relation, RichText, Date, Title, Number } from "@nx-ddd/notion/decorators";
 import dayjs from "dayjs";
-import { Entry } from "./entry";
+import { Entry, EntryStatus } from "./entry";
+
+export interface ScholarshipSatusCounter {
+  応募者数: number;
+  一次選考中: number;
+  一次選考通過者数: number;
+  二次選考中: number;
+  二次選考通過者数: number;
+}
+
 
 export class Scholarship extends Entity {
-  @Title({name: '名前'})
+  @Title('名前')
   name: string;
 
-  @Relation({name: '奨学金(pre)'})
-  preScholarshipIds: string[];
+  @Relation('奨学金(pre)')
+  preScholarshipId: string;
 
-  @Relation({name: '奨学金(next)'})
-  nextScholarshipIds: string[];
+  @Relation('奨学金(next)')
+  nextScholarshipId: string;
 
-  @Relation({name: 'オーナー'})
-  ownerIds: string;
+  @Relation('オーナー')
+  ownerId: string;
 
-  @RichText({name: 'discordSelectionChannelId'})
+  @RichText('discordSelectionChannelId')
   discordSelectionChannelId: string;
 
-  @RichText({name: 'discordSelectionRoleId'})
+  @RichText('discordSelectionRoleId')
   discordSelectionRoleId: string;
 
-  @RichText({name: 'discordOperationChannelId'})
+  @RichText('discordOperationChannelId')
   discordOperationChannelId: string;
 
-  @RichText({name: 'discordOperationRoleId'})
+  @RichText('discordOperationRoleId')
   discordOperationRoleId: string;
 
-  @Number({name: 'approvalCount'})
+  @Number('approvalCount')
   approvalCount: number;
 
-  @Date({name: '開始日時'})
+  @Date('開始日時')
   startAt: dayjs.Dayjs;
 
-  @Date({name: '終了日時'})
+  @Date('終了日時')
   endAt: dayjs.Dayjs;
 
-  @RichText({name: 'tweetUrl'})
+  @RichText('tweetUrl')
   tweetUrl: string;
 
-  get ownerId(): string | null {
-    return this.ownerIds?.[0] ?? null;
-  }
-
   entries?: Entry[];
+
+  get statusCount(): ScholarshipSatusCounter {
+    const counter = {
+      応募者数: 0,
+      一次選考中: 0,
+      一次選考通過者数: 0,
+      二次選考中: 0,
+      二次選考通過者数: 0,
+    };
+
+    (this.entries ?? []).forEach(entry => {
+      if(entry.isEntry) counter.応募者数++;
+      if(entry.status === EntryStatus._202_一次選考中) counter.一次選考中++;
+      if(entry.isPassedFirstSelection) counter.一次選考通過者数++;
+      if(entry.isWorkInSecondSelection) counter.二次選考中++;
+      if(entry.isPassedSecondSelection) counter.二次選考通過者数++;
+    });
+    return counter
+  }
 }

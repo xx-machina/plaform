@@ -21,7 +21,7 @@ export class FirstEntryService {
 
   async handle(firstEntry: FirstEntry) {
     // 一次選考のデータが応募とすでに紐付いていたら処理をしない
-    if (firstEntry.entryIds.length) return;
+    if (firstEntry.entryId) return;
 
     await this.createEntry(firstEntry);
   }
@@ -31,8 +31,8 @@ export class FirstEntryService {
     await this.infra.repo.notion.entry.create(Entry.from<Entry>({
       title: firstEntry.title,
       status: EntryStatus._201_受付連絡中,
-      firstEntryIds: [firstEntry.id],
-      scholarshipIds: [firstEntry.scholarshipId],
+      firstEntryId: firstEntry.id,
+      scholarshipId: firstEntry.scholarshipId,
     }));
   }
 }

@@ -3,38 +3,30 @@ import { Url, Relation, RichText, Title, Date } from '@nx-ddd/notion/decorators'
 import dayjs from 'dayjs';
 
 export class FirstEntry extends Entity {
-  @Title({name: 'タイトル'})
+  @Title('タイトル')
   title: string;
 
-  @Url({name: 'tweetURL'})
+  @Url('tweetURL')
   tweetURL: string;
 
-  @RichText({name: 'tweetId'})
+  @RichText('tweetId')
   tweetId: string;
 
-  @RichText({name: 'authorId'})
+  @RichText('authorId')
   authorId: string;
 
-  @RichText({name: 'userName'})
+  @RichText('userName')
   userName: string;
 
-  @RichText({name: 'name'})
+  @RichText('name')
   name: string;
 
-  @Relation({name:'応募'})
-  entryIds: string[];
+  @Relation('応募')
+  entryId: string;
 
-  @Relation({name: 'scholarshipIds'})
-  scholarshipIds: string[];
+  @Relation('scholarshipId')
+  scholarshipId: string;
 
-  get entryId(): string | null {
-    return this.entryIds?.[0] ?? null;
-  }
-
-  get scholarshipId(): string | null {
-    return this.scholarshipIds?.[0] ?? null;
-  }
-
-  @Date({name: 'tweetedAt'})
+  @Date('tweetedAt')
   tweetedAt: dayjs.Dayjs;
 }

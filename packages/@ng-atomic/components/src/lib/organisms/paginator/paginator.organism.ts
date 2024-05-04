@@ -3,6 +3,7 @@ import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator
 import { FormControl, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { map, shareReplay, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'organisms-paginator',
@@ -13,8 +14,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
   ],
   template: `
     <mat-paginator
-      [length]="page.length"
-      [pageSize]="page.pageSize"
+      [length]="(form.get(['length']).valueChanges | async) ?? form.get(['length']).value"
+      [pageSize]="(form.get(['pageSize']).valueChanges | async) ?? form.get(['pageSize']).value"
       [pageSizeOptions]="pageSizeOptions"
       (page)="onPageChange($event)"
       aria-label="Select page">
@@ -25,10 +26,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
   host: {class: 'organism'},
 })
 export class PaginatorOrganism {
-
-  @Input()
-  control = new FormControl<string>('');
-
+  
   @Input()
   form = new FormGroup({
     pageIndex: new FormControl(0),
@@ -37,16 +35,16 @@ export class PaginatorOrganism {
   });
 
   @Input()
-  placeholder = '';
+  pageSizeOptions: number[] = [10, 50, 100];
 
-  @Input()
-  page!: PageEvent;
-
-  @Input()
-  pageSizeOptions: number[] = [5, 10, 25, 100];
-
-  @Output()
-  pageChange = new EventEmitter<PageEvent>();
+  protected get formValue$() {
+    return this.form.valueChanges.pipe(
+      startWith(null),
+      map(() => this.form.getRawValue()),
+      shareReplay(1),
+      tap((value) => console.debug('value:', value)),
+    );
+  }
 
   protected onPageChange(page: PageEvent) {
     this.form.patchValue({

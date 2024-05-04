@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { NotionFieldType } from "./decorators";
+import { NotionAnnotation } from "./decorators";
 
 type NotionText = {
   type: 'text', 
@@ -36,11 +36,16 @@ export type NotionValue = NotionTitle | NotionUrl | NotionRichText | NotionNumbe
   | NotionCreatedTime | NotionLastEditedTime | NotionDate | NotionSelect;
 
 export class NotionUtils {
-  static toNotionValue(value: any, type: NotionFieldType) {
-    switch(type) {
+  static toNotionValue(value: any, annotation: NotionAnnotation) {
+    switch(annotation.type) {
       case 'title': return NotionUtils.toNotionTitle(value);
       case 'status': return NotionUtils.toNotionStatus(value);
-      case 'relation': return NotionUtils.toRelation(value);
+      case 'relation':
+        if ((annotation.options as any).multi) {
+          return NotionUtils.toRelationMulti(value);
+        } else {
+          return NotionUtils.toRelation(value);
+        }
       case 'formula': return NotionUtils.toNotionFormula(value);
       case 'rich_text': return NotionUtils.toRichText(value);
       case 'rollup': return NotionUtils.toRollup(value);
@@ -59,9 +64,12 @@ export class NotionUtils {
     return value ? {type: 'status', status: {name: value}} : undefined; 
   }
 
-  static toRelation(ids: string[]) {
-    console.log('ids', ids);
+  static toRelationMulti(ids: string[]) {
     return Array.isArray(ids) ? {type: 'relation', relation: (ids).map(id => ({id}))} : undefined;
+  }
+
+  static toRelation(value: string) {
+    return value ? this.toRelationMulti([value]) : undefined;
   }
   
   static toRichText(text?: string) {
@@ -89,11 +97,16 @@ export class NotionUtils {
     return value ? {type: 'select', select: {name: value}} : undefined;
   }
 
-  static fromNotionValue(value: NotionValue) {
+  static fromNotionValue(value: NotionValue, annotation: NotionAnnotation) {
     switch(value.type) {
       case 'title': return this.fromTitle(value);
       case 'formula': return this.fromFormula(value);
-      case 'relation': return this.fromRelation(value);
+      case 'relation':
+        if ((annotation.options as any).multi) {
+          return this.fromRelationMulti(value);
+        } else {
+          return this.fromRelation(value);
+        }
       case 'rich_text': return this.fromRichText(value);
       case 'status': return this.fromStatus(value);
       case 'url': return this.fromUrl(value);
@@ -118,7 +131,11 @@ export class NotionUtils {
     return notionRichText.rich_text.map(({plain_text}) => plain_text).join('') || null;
   }
 
-  static fromRelation(notionRelation: NotionRelation): string[] {
+  static fromRelation(notionRelation: NotionRelation): string | null {
+    return this.fromRelationMulti(notionRelation)?.[0] ?? null;
+  }
+
+  static fromRelationMulti(notionRelation: NotionRelation): string[] {
     return notionRelation.relation.map(r => r.id);
   }
 

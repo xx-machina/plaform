@@ -23,7 +23,7 @@ export class SecondEntryService {
   }
 
   async handle(secondEntry: SecondEntry) {
-    if (secondEntry.entryIds.length) return;
+    if (secondEntry.entryId) return;
     await this.linkWithEntry(secondEntry);
   }
 
@@ -40,7 +40,7 @@ export class SecondEntryService {
       id: entry.id,
       title: entry.title,
       status: EntryStatus._205_二次選考受付連絡中,
-      secondEntryIds: [secondEntry.id]
+      secondEntryId: secondEntry.id
     }));
   }
 

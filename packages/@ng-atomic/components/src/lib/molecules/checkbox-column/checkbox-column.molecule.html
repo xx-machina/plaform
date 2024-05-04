@@ -3,7 +3,7 @@
   <td mat-cell *matCellDef="let item">
     <mat-checkbox
       (click)="checkboxClick.emit(item)"
-      [checked]="selectedIdSet.has(item.id)"
+      [checked]="selectedIdSet.has(item | selectId)"
     ></mat-checkbox>
   </td>
 </ng-container>

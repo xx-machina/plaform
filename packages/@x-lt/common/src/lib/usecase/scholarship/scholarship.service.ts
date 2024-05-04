@@ -29,8 +29,7 @@ export class ScholarshipService {
     const URL = encodeURIComponent(scholarship.tweetUrl);
     const firstEntry = await this.infra.repo.notion.firstEntry.getLatestFirstEntry();
     const sinceId = firstEntry.tweetedAt.isAfter(dayjs().add(-5, 'day')) ? firstEntry.tweetId : null;
-    const community = await this.infra.repo.firestore.community.get({id: 'default'});
-    const client = await this.infra.twitter.getV2Client(community.twitter.token);
+    const client = await this.makeCommunityTwitterClient('default');
     const tweets = await this.infra.twitter.searchTweets(client, `url:${URL} is:quote -RT`, sinceId);
     console.debug('tweets:', tweets);
 
@@ -43,15 +42,25 @@ export class ScholarshipService {
         name: tweet.author.name,
         userName: tweet.author.username,
         tweetedAt: tweet.createdAt,
-        scholarshipIds: [scholarship.id],
+        scholarshipId: scholarship.id,
       })).then((firstEntry) => {
         return this.infra.repo.notion.entry.create(Entry.from<Entry>({
           title: firstEntry.title,
           status: EntryStatus._201_受付連絡中,
-          firstEntryIds: [firstEntry.id],
-          scholarshipIds: [firstEntry.scholarshipIds[0]],
+          firstEntryId: firstEntry.id,
+          scholarshipId: firstEntry.scholarshipId,
         }));
       });
     }));
+  }
+
+  private async makeCommunityTwitterClient(id: string) {
+    const community = await this.infra.repo.firestore.community.get({id});
+    let token = community.twitter.token;
+    if (this.infra.twitter.isExpired(token)) {
+      token = await this.infra.twitter.refreshToken(token);
+      await this.infra.repo.firestore.community.update({...community, twitter: {token}});
+    }
+    return this.infra.twitter.getClientV2Next(token);
   }
 }

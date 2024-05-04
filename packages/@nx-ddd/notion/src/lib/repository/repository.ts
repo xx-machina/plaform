@@ -2,7 +2,7 @@ import { Client } from '@notionhq/client';
 import { Entity } from '@nx-ddd/common/domain/models';
 import { Repository } from '@nx-ddd/common/domain/repository';
 import { Inject, Injectable, InjectionToken } from '@nx-ddd/core/di';
-import { createConverter, NotionConverter } from '../converter';
+import { NotionConverter } from '../converter';
 import { NotionBaseQuery } from '../query';
 import { NotionQueryBuilder } from '../query-builder';
 
