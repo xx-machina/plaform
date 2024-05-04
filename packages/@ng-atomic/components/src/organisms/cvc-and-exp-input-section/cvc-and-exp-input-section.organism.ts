@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { FormControl } from '@ngneat/reactive-forms';
+import { FormControl } from '@angular/forms';
 import { Option } from '@ng-atomic/components/molecules/select-input-field';
 
 const generateOptions = (n: number, start: number): Option<number>[] => {

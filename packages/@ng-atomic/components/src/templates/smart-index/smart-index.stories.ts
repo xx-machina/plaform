@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/angular';
 import { action } from '@storybook/addon-actions';
 import { SmartIndexTemplate } from '.';
 import { buildActions } from '@ng-atomic/storybook';
-import { FormControl } from '@ngneat/reactive-forms';
+import { FormControl } from '@angular/forms';
 
 export default {
   title: 'Templates/SmartIndex',

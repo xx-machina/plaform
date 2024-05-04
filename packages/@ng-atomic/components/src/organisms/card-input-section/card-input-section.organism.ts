@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormControl } from '@ngneat/reactive-forms';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'organisms-card-input-section',

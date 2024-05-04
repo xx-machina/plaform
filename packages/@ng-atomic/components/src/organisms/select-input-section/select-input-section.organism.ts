@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormControl } from '@ngneat/reactive-forms';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'organisms-select-input-section',
@@ -13,7 +13,7 @@ export class SelectInputSectionOrganism<T> {
   label: string = '';
 
   @Input()
-  control = new FormControl<T>();
+  control = new FormControl<T>({} as T);
 
   @Input()
   options: {name: string, value: T}[] = [];

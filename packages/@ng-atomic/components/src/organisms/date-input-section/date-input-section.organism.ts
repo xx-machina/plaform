@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormControl } from '@ngneat/reactive-forms';
+import { FormControl } from '@angular/forms';
 import dayjs from 'dayjs';
 
 @Component({
@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 })
 export class DateInputSectionOrganism {
   @Input()
-  control = new FormControl<dayjs.Dayjs>();
+  control = new FormControl<dayjs.Dayjs>(dayjs());
 
   @Input()
   label = '';

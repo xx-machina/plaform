@@ -14,7 +14,7 @@ import { SmartFieldModule } from '@ng-atomic/common/pipes/smart-field';
 import { DomainModule } from '@ng-atomic/common/pipes/domain';
 import { AbstractControl } from '@angular/forms';
 import { Action } from '@ng-atomic/common/models';
-import { FormGroup } from '@ngneat/reactive-forms';
+import { FormGroup } from '@angular/forms';
 
 export enum ActionId {
   BACK = '[@ng-atomic/components/templates/smart-crud] Back',

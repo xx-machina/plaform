@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormControl } from '@ngneat/reactive-forms';
-import { Dayjs } from 'dayjs';
+import { FormControl } from '@angular/forms';
+import dayjs, { Dayjs } from 'dayjs';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -11,10 +11,10 @@ import { filter } from 'rxjs/operators';
   host: {class: 'molecule field'},
 })
 export class DateInputFieldMolecule {
-  protected readonly _control = new FormControl<Dayjs>();
+  protected readonly _control = new FormControl<Dayjs>(dayjs());
 
   @Input()
-  control = new FormControl<Dayjs>();
+  control = new FormControl<Dayjs>(dayjs());
 
   @Input()
   label = '';

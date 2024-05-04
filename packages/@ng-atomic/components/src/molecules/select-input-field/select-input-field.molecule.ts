@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormControl } from '@ngneat/reactive-forms';
+import { FormControl } from '@angular/forms';
 
 export interface Option<T> {
   name: string;
@@ -19,7 +19,7 @@ export class SelectInputFieldMolecule<T> {
   label: string = '';
 
   @Input()
-  control = new FormControl<T>();
+  control = new FormControl<T>({} as T);
 
   @Input()
   options: Option<T>[] = [];

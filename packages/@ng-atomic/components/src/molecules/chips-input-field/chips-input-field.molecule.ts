@@ -1,8 +1,8 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { ChangeDetectorRef, Component, Input } from '@angular/core';
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
-import { MatLegacyFormFieldAppearance as MatFormFieldAppearance } from '@angular/material/legacy-form-field';
-import { FormControl } from '@ngneat/reactive-forms';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { FormControl } from '@angular/forms';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ChipsManager } from '@ng-atomic/common/services/chips-manager';
 

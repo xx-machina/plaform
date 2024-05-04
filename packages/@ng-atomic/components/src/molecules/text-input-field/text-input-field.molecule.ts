@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormControl } from '@ngneat/reactive-forms';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'molecules-text-input-field',
@@ -20,7 +20,7 @@ export class TextInputFieldMolecule {
   label = 'label';
 
   @Input()
-  control = new FormControl<string | number>();
+  control = new FormControl<string | number>('');
 
   @Input()
   placeholder = 'placeholder';

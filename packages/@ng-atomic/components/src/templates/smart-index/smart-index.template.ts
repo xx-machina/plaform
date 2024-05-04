@@ -9,7 +9,7 @@ import { SmartListModule } from '@ng-atomic/components/organisms/smart-list';
 import { NavigatorModule } from '@ng-atomic/components/organisms/navigator';
 import { PaginatorModule } from '@ng-atomic/components/organisms/paginator';
 import { Action } from '@ng-atomic/common/models';
-import { FormControl } from '@ngneat/reactive-forms';
+import { FormControl } from '@angular/forms';
 
 export enum ActionId {
   BACK = '[@ng-atomic/components/templates/smart-index] Back',

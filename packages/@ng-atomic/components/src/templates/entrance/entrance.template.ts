@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Action } from '@ng-atomic/common/models';
-import { FormGroup, FormControl} from '@ngneat/reactive-forms';
+import { FormGroup, FormControl} from '@angular/forms';
 
 export enum ActionId {
   SIGN_IN = '[@ng-atomic/components] Sign In',
