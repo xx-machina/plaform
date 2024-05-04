@@ -2,5 +2,7 @@
   "name": "@ng-atomic/executors",
   "version": "0.0.0-PLACEHOLDER",
   "type": "commonjs",
-  "builders": "./executors.json"
+  "builders": "./executors.json",
+  "peerDependencies": {},
+  "dependencies": {}
 }

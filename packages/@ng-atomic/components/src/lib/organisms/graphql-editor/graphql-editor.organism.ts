@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { keymap, KeyBinding } from "@codemirror/view"
+import { keymap } from "@codemirror/view"
 import { indentWithTab } from "@codemirror/commands"
 import { history } from '@codemirror/commands';
 import { autocompletion, closeBrackets } from '@codemirror/autocomplete';
@@ -9,11 +9,12 @@ import { EditorState } from '@codemirror/state';
 import { lineNumbers } from '@codemirror/view';
 import { graphql } from 'cm6-graphql';
 import { basicSetup, EditorView } from "codemirror"
-import { ReplaySubject, combineLatest, distinctUntilChanged, filter, map, shareReplay, startWith, tap } from 'rxjs';
+import { ReplaySubject, combineLatest, distinctUntilChanged, filter, startWith, tap } from 'rxjs';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { Action } from '@ng-atomic/common/models';
 import { CommonModule } from '@angular/common';
 import { EditorComponent } from '@ng-atomic/components/extras/editor';
+import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
 
 export class GraphqlExtractor {
   extract(output: string): string {
@@ -37,33 +38,17 @@ export enum ActionId {
     EditorComponent,
   ],
   selector: 'organisms-graphql-editor',
-  template: `<extras-editor [state]="state$ | async"></extras-editor>`,
+  template: `<extras-editor *ngIf="state" [state]="state"></extras-editor>`,
   styleUrls: ['./graphql-editor.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GraphqlEditorOrganism {
-  // private readonly extractor = new GraphqlExtractor();
-  private readonly value$ = new ReplaySubject<string>(1);
+export class GraphqlEditorOrganism extends NgAtomicComponent {
   private readonly schema$ = new ReplaySubject(1);
-  private stop = false;
-
-  state!: EditorState;
-  state$ = combineLatest({
-    schema: this.schema$,
-    value: this.value$.pipe(
-      distinctUntilChanged(),
-      filter(() => !this.stop),
-    ),
-  }).pipe(
-    filter(({schema}) => !!schema),
-    map(params => this.makeEditorState(params)),
-    shareReplay(1),
-  );
-
-  private readonly _control = new FormControl('');
 
   @Input()
-  control: AbstractControl = new FormControl('');
+  control = new FormControl('');
+
+  state!: EditorState;
 
   @Input()
   set schema(value: any) {
@@ -77,58 +62,64 @@ export class GraphqlEditorOrganism {
   action = new EventEmitter<Action>();
 
   ngOnInit() {
-    this.state$.subscribe(state => this.state = state);
-    this.control.valueChanges.pipe(
-      startWith(this.control.value),
-    ).subscribe(value => {
-      this.value$.next(value);
-      // this.value$.next(this.extractor.extract(value));
+    combineLatest({
+      schema: this.schema$,
+      value: this.control.valueChanges.pipe(
+        startWith(this.control.value),
+        filter(value => value !== this.state?.doc?.toString()),
+      ),
+    }).pipe(
+      filter(({schema}) => !!schema),
+      distinctUntilChanged(),
+    ).subscribe(params => {
+      console.debug('params:', params);
+      this.state = this.makeEditorState(params);
     });
   }
 
-  private setValue(doc: string) {
-    this.stop = true;
-    // this.control.setValue(this.extractor.insert(doc));
-    this.control.setValue(doc);
-    this.stop = false;
-  }
-
-  makeEditorState({schema, value}: {schema: any, value: string}) {
-    console.debug('schema:', schema);
+  private makeEditorState({schema, value}: {schema: any, value: string}) {
     return EditorState.create({
       doc: value,
       extensions: [
-        keymap.of([
-          ...this.keyActions.map(({key, actionId}) => ({
-            key,
-            run: () => (this.action.emit({id: actionId}), true),
-          })),
-          indentWithTab,
-        ]),
-        basicSetup,
-        EditorView.updateListener.of((update) => this.setValue(update.state.doc.toString())),
-        bracketMatching(),
-        closeBrackets(),
-        history(),
-        autocompletion(),
-        lineNumbers(),
-        oneDark,
-        syntaxHighlighting(oneDarkHighlightStyle),
-        graphql(schema, {
-          onShowInDocs(field, type, parentType) {
-            alert(
-              `Showing in docs.: Field: ${field}, Type: ${type}, ParentType: ${parentType}`,
-            );
-          },
-          onFillAllFields(view, schema, _query, cursor, token) {
-            alert(`Filling all fields. Token: ${token}`);
-          },
+        makeKeymapExtension(this.keyActions, action => this.dispatch(action)),
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) return;
+          this.control.setValue(update.state.doc.toString());
         }),
+        ...CODEMIRROR_EXTENSIONS,
+        makeGraphqlExtension(schema),
       ],
     });
   }
+}
 
-  private execute() {
-    this.action.emit({id: ActionId.EXECUTE});
-  }
+const CODEMIRROR_EXTENSIONS = [
+  basicSetup,
+  bracketMatching(),
+  closeBrackets(),
+  history(),
+  autocompletion(),
+  lineNumbers(),
+  oneDark,
+  syntaxHighlighting(oneDarkHighlightStyle),
+];
+
+function makeKeymapExtension(
+  keyActions: {key: string, actionId: string}[],
+  callback: (action: Action) => void
+) {
+  return keymap.of([
+    ...keyActions.map(({key, actionId}) => ({
+      key,
+      run: () => (callback({id: actionId, payload: {key}}), true),
+    })),
+    indentWithTab,
+  ]);
+}
+
+function makeGraphqlExtension(schema) {
+  return graphql(schema, {
+    onShowInDocs: (field, type, parentType) => alert(`Showing in docs.: Field: ${field}, Type: ${type}, ParentType: ${parentType}`),
+    onFillAllFields: (view, schema, _query, cursor, token) => alert(`Filling all fields. Token: ${token}`),
+  });
 }

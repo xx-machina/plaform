@@ -1,6 +1,6 @@
 import { EMPTY_ARRAY } from '../util/empty';
 import { stringify } from '../util/stringify';
-import { Injector, resolveAndCreate } from './injector';
+import { Injector, MyReflectiveInjector } from './injector';
 import { StaticProvider } from './interface/provider';
 import { internalImportProvidersFrom } from './provider-collection';
 
@@ -24,5 +24,5 @@ export function createInjectorWithoutInjectorInstances(
     ...(additionalProviders || EMPTY_ARRAY),
   ];
   name = name || (typeof defType === 'object' ? undefined : stringify(defType));
-  return resolveAndCreate(providers, parent || Injector.NULL);
+  return MyReflectiveInjector.resolveAndCreate(providers, parent || Injector.NULL);
 }

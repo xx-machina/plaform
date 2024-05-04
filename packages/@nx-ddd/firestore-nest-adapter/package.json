@@ -2,5 +2,12 @@
   "name": "@nx-ddd/firestore-nest-adapter",
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
-  "types": "./index.d.ts"
+  "types": "./index.d.ts",
+  "peerDependencies": {
+    "@aginix/nestjs-firebase-admin": "^2.2.0",
+    "@nestjs/common": "^10.0.0",
+    "@nx-ddd/firestore": "0.0.0-PLACEHOLDER",
+    "tslib": "^2.3.0"
+  },
+  "dependencies": {}
 }

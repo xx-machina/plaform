@@ -3,6 +3,7 @@
 
 :host {
   @include property(--navigator-height, 56px);
+  @include property(--primary-color, #012148);
 }
 
 :host {

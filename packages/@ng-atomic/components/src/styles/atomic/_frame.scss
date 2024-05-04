@@ -1,0 +1,5 @@
+@use 'atomic/component' as *;
+
+@mixin frame($host) {
+  @include component($host);
+}

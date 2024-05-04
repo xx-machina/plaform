@@ -116,10 +116,14 @@ export class NotionOr extends NotionBaseQuery {
   }
 }
 
-export const Query = <E extends typeof Entity<any>>(Entity: E) => {
+export const Query = <E = any>(Entity: E) => {
   const Filter = (_propName: string, evaluation: Evaluation, value: string | number): NotionFilter => {
     const annotation: NotionAnnotation = Entity[NOTION_ANNOTATIONS].find(({propName}) => propName === _propName);
-    // TODO(nontangent): propertyが無いときはエラーにした方が良いかもしれない。
+
+    // if(!annotation) {
+    //   throw new Error(`NotionFilter: ${Entity} does not have ${_propName}.`);
+    // }
+
     return new NotionFilter(annotation?.type, annotation?.fieldName ?? _propName, evaluation, value);
   };
   const OrderBy = (_propName: string, direction: 'asc' | 'desc'): NotionSort => {

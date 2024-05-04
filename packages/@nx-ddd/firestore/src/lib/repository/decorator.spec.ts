@@ -26,8 +26,6 @@ describe('FirestoreDecorator', () => {
   
   it('should create repository', () => {
     const repository = injector.get(ExampleRepository);
-    console.debug('repository:', repository);
     expect(repository).toBeTruthy();
-    
   });
 });

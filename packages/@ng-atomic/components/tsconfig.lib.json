@@ -7,7 +7,7 @@
     "declarationMap": true,
     "inlineSources": true,
     "types": [],
-    "lib": ["dom", "es2018"],
+    "lib": ["dom", "es2022"],
     "rootDir": "src/lib",
     "useDefineForClassFields": false
   },
@@ -24,5 +24,5 @@
     "src/**/*.stories.js",
     "jest.config.ts"
   ],
-  "include": ["src/**/*.ts"]
+  "include": ["src/lib/index.ts"]
 }

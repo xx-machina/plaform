@@ -24,35 +24,50 @@ export type NotionNumber = {id: string, type: 'number', number: number};
 export type NotionRelation = {id: string, type: 'relation', relation: {id: string}[], has_more: boolean};
 export type NotionStatus = {id: string, type: 'status', status: {id: string, name: string, color: string}};
 export type NotionFormula = {id: string, type: 'formula', formula: {type: 'string', string: string} | {type: 'number', number: number}};
-export type NotionRollup = {id: string, type: 'rollup', rollup: NotionArray};
+export type NotionRollup = {id: string, type: 'rollup', rollup: NotionArray | NotionNumber};
 
 export type NotionCreatedTime = {id: string, type: 'created_time', created_time: string};
 export type NotionLastEditedTime = {id: string, type: 'last_edited_time', last_edited_time: string};
 export type NotionDate = {id: string, type: 'date', date: any };
 export type NotionSelect = {id: string, type: 'select', select: {id: string, name: string, color: string}};
 
+export type NotionPhoneNumber = {id: string, type: 'phone_number', phone_number: string};
+export type NotionEmail = {id: string, type: 'email', email: string};
+export type NotionID = {id: string, type: 'unique_id', unique_id: {prefix: string | null, number: number}};
+// export type NotionCheckbox = {id: string, type: 'checkbox', checkbox: boolean};
+// export type NotionCreatedBy = {id: string, type: 'created_by', created_by: {id: string, name: string, avatar_url: string, type: string}};
+// export type NotionFiles = {id: string, type: 'files', files: {name: string, type: string, file_id: string, size: number}[]};
+// export type NotionLastEditedBy = {id: string, type: 'last_edited_by', last_edited_by: {id: string, name: string, avatar_url: string, type: string}};
+// export type NotionMultiSelect = {id: string, type: 'multi_select', multi_select: {id: string, name: string, color: string}[]};
+// export type NotionPeople = {id: string, type: 'people', people: {id: string, name: string, avatar_url: string, type: string}[]};
+
+
 export type NotionValue = NotionTitle | NotionUrl | NotionRichText | NotionNumber
   | NotionRelation | NotionStatus | NotionFormula | NotionRollup 
-  | NotionCreatedTime | NotionLastEditedTime | NotionDate | NotionSelect;
+  | NotionCreatedTime | NotionLastEditedTime | NotionDate | NotionSelect
+  | NotionPhoneNumber | NotionEmail | NotionID;
+  //  | NotionCheckbox;
 
 export class NotionUtils {
   static toNotionValue(value: any, annotation: NotionAnnotation) {
     switch(annotation.type) {
-      case 'title': return NotionUtils.toNotionTitle(value);
-      case 'status': return NotionUtils.toNotionStatus(value);
+      case 'title': return this.toNotionTitle(value);
+      case 'status': return this.toNotionStatus(value);
       case 'relation':
         if ((annotation.options as any).multi) {
-          return NotionUtils.toRelationMulti(value);
+          return this.toRelationMulti(value);
         } else {
-          return NotionUtils.toRelation(value);
+          return this.toRelation(value);
         }
-      case 'formula': return NotionUtils.toNotionFormula(value);
-      case 'rich_text': return NotionUtils.toRichText(value);
-      case 'rollup': return NotionUtils.toRollup(value);
-      case 'url': return NotionUtils.toUrl(value);
-      case 'date': return NotionUtils.toDate(value);
-      case 'select': return NotionUtils.toSelect(value);
-      // case 'number': return NotionUtils.toNumber(value);
+      case 'formula': return this.toNotionFormula(value);
+      case 'rich_text': return this.toRichText(value);
+      case 'rollup': return this.toRollup(value);
+      case 'url': return this.toUrl(value);
+      case 'date': return this.toDate(value);
+      case 'select': return this.toSelect(value);
+      case 'number': return this.toNumber(value);
+      case 'phone_number': return this.toPhoneNumber(value);
+      case 'email': return this.toEmail(value);
     }
   }
 
@@ -97,6 +112,18 @@ export class NotionUtils {
     return value ? {type: 'select', select: {name: value}} : undefined;
   }
 
+  static toPhoneNumber(value: string) {
+    return value ? {type: 'phone_number', phone_number: value} : undefined;
+  }
+
+  static toNumber(value: number) {
+    return value ? {type: 'number', number: value} : undefined;
+  }
+
+  static toEmail(value: string) {
+    return value ? {type: 'email', email: value} : undefined;
+  }
+
   static fromNotionValue(value: NotionValue, annotation: NotionAnnotation) {
     switch(value.type) {
       case 'title': return this.fromTitle(value);
@@ -110,12 +137,20 @@ export class NotionUtils {
       case 'rich_text': return this.fromRichText(value);
       case 'status': return this.fromStatus(value);
       case 'url': return this.fromUrl(value);
-      case 'rollup': return this.fromRollup(value);
+      case 'rollup':
+        if ((annotation.options as any).multi) {
+          return this.fromRollupMulti(value);
+        } else {
+          return this.fromRollup(value);
+        }
       case 'created_time': return this.fromCreatedTime(value);
       case 'last_edited_time': return this.fromLastEditedTime(value);
       case 'date': return this.fromDate(value);
       case 'number': return this.fromNumber(value);
-      case 'select': return NotionUtils.fromSelect(value);
+      case 'select': return this.fromSelect(value);
+      case 'phone_number': return this.fromPhoneNumber(value);
+      case 'email': return this.fromEmail(value);
+      case 'unique_id': return this.fromUniqueID(value);
     }
   }
 
@@ -149,7 +184,17 @@ export class NotionUtils {
       : notionFormula.formula?.number;
   }
 
-  static fromRollup(notionRollup: NotionRollup): string[] | number[] {
+  static fromRollup(notionRollup: NotionRollup): string | number {
+    if (notionRollup.rollup.type === 'number') {
+      return this.fromNumber(notionRollup.rollup);
+    }
+    return this.fromRollupMulti(notionRollup)?.[0] ?? null;
+  }
+
+  static fromRollupMulti(notionRollup: NotionRollup): string[] | number[] {
+    if (notionRollup.rollup.type === 'number') {
+      return [];
+    }
     return (notionRollup.rollup.array ?? []).map(notionValue => {
       if (notionValue.type === 'rich_text') {
         return (notionValue.rich_text ?? []).map(text => text.plain_text).join();
@@ -179,4 +224,17 @@ export class NotionUtils {
   static fromSelect(notionSelect: NotionSelect) {
     return notionSelect.select?.name ?? null;
   }
+
+  static fromPhoneNumber(notionPhoneNumber: NotionPhoneNumber) {
+    return notionPhoneNumber.phone_number ?? null;
+  }
+
+  static fromEmail(notionEmail: NotionEmail) {
+    return notionEmail.email ?? null;
+  }
+
+  static fromUniqueID(value: NotionID) {
+    return value.unique_id.number;
+  }
+
 }

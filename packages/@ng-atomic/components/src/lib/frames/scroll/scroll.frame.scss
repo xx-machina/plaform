@@ -9,14 +9,16 @@
 	height: var(--height);
 	overflow: hidden;
 
-	.navigator-container {
+	.navigator {
 		height: var(--navigator-height);
+		transition: 0.5s height;
 		overflow: hidden;
 		touch-action: none;
 	}
 
-	.contents-container {
+	.contents {
 		height: calc(#{var(--height)} - #{var(--navigator-height)});
+		transition: 0.5s height;
 		overflow: auto;
 		-webkit-overflow-scrolling: touch;
 

@@ -1,6 +1,0 @@
-{
-  "name": "@x-x-machina/common",
-  "version": "0.0.0-PLACEHOLDER",
-  "main": "./index.js",
-  "types": "./index.d.ts"
-}

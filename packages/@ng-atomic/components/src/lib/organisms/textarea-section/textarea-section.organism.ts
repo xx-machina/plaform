@@ -11,7 +11,15 @@ import { TextareaFieldMolecule } from '@ng-atomic/components/molecules/textarea-
     CommonModule,
     TextareaFieldMolecule,
   ],
-  templateUrl: './textarea-section.organism.html',
+  template: `
+  <molecules-textarea-field
+    [control]="control"
+    [label]="label"
+    [hint]="hint"
+    [rows]="rows"
+    [placeholder]="placeholder"
+    (action)="action.emit($event)"
+  ></molecules-textarea-field>`,
   styleUrls: ['./textarea-section.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -22,6 +30,12 @@ export class TextareaSectionOrganism {
 
   @Input()
   rows = 10;
+
+  @Input()
+  placeholder = 'placeholder';
+
+  @Input()
+  hint?: string;
 
   @Input()
   control = new FormControl('');

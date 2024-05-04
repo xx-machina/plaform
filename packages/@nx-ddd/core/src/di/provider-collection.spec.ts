@@ -52,7 +52,6 @@ describe('internalImportProvidersFrom', () => {
     ];
 
     const providers = internalImportProvidersFrom(modules);
-    console.debug('providers:', providers);
   });
 });
 

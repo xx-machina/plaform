@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Action } from '@ng-atomic/common/models';
 import { FabService } from './fab.service';
 import { ReplaySubject, takeUntil } from 'rxjs';
+import { NgAtomicComponent } from '@ng-atomic/common/stores/component-store';
 
 @Component({
   selector: 'frames-fab',
@@ -16,39 +17,19 @@ import { ReplaySubject, takeUntil } from 'rxjs';
   ],
   template: `
     <ng-content></ng-content>
-    <ng-container *ngFor="let action of actions">
-      <button mat-fab color="primary" (click)="service.onAction(action)">
+    <ng-container *ngFor="let action of fab.actions">
+      <button mat-fab color="primary" (click)="dispatch(action)">
         <mat-icon>{{ action?.icon ?? 'add' }}</mat-icon>
       </button>
     </ng-container>
   `,
   styleUrls: ['./fab.frame.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FabFrame implements OnInit, OnDestroy {
-
-  constructor(
-    protected service: FabService,
-  ) { }
-
-  private readonly destroy$ = new ReplaySubject<void>(1);
+export class FabFrame extends NgAtomicComponent {
+  protected fab = inject(FabService);
 
   @Input()
   actions: Action[] = [];
-
-  @Output()
-  protected action = new EventEmitter<Action>();
-
-  ngOnInit(): void {
-    this.service.action$.pipe(
-      takeUntil(this.destroy$),
-    ).subscribe((action) => {
-      this.action.emit(action);
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-  }
 
 }

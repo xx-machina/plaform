@@ -1,27 +1,46 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, Pipe, PipeTransform, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { DomainModule } from '@ng-atomic/common/pipes/domain';
+import { DomainPipe } from '@ng-atomic/common/pipes/domain';
 import { ActionsColumnMolecule } from '@ng-atomic/components/molecules/actions-column';
 import { CheckboxColumnMolecule } from '@ng-atomic/components/molecules/checkbox-column';
 import { SmartColumnMolecule } from '@ng-atomic/components/molecules/smart-column';
 import { Actions, Action } from '@ng-atomic/common/models';
-
+import { SortService } from '@ng-atomic/common/services/form/sort';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import {
   MatTreeFlatDataSource,
   MatTreeFlattener,
 } from '@angular/material/tree';
-import { DataSource } from '@angular/cdk/collections';
+import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { TreeColumnMolecule } from '@ng-atomic/components/molecules/tree-column';
+import { get } from 'lodash-es';
 
-interface Sort {
-  key?: string;
-  order?: 'desc' | 'asc';
+@Pipe({name: 'resolveColumns', standalone: true, pure: true})
+export class ResolveColumnsPipe implements PipeTransform {
+  transform(columns: string[]): {type: 'key' | 'actions' | 'checkbox', name: string, payload?: any}[] {
+    const data = columns.map((column, i) => {
+      if (typeof column === 'string') {
+        if (column === '__checkbox') return {type: 'checkbox', name: `__checkbox_${i}`};
+        if (column === '__actions') return {type: 'actions', name: `__actions_${i}`};
+        return {type: 'key', name: column};
+      }
+      return {type: 'actions', name: `__actions_${i}`, payload: column};
+    });
+    return data as any;
+  }
+}
+
+@Pipe({name: 'get', standalone: true, pure: true})
+export class GetPipe<T> implements PipeTransform {
+  transform(itemOrItems: T | T[], path: string): any | any[] {
+    if (Array.isArray(itemOrItems)) return itemOrItems.map(item => get(item, path));
+    return get(itemOrItems, path);
+  }
 }
 
 @Component({
@@ -29,7 +48,7 @@ interface Sort {
   standalone: true,
   imports: [
     CommonModule,
-    DomainModule,
+    DomainPipe,
     MatTableModule,
     MatCheckboxModule,
     MatMenuModule,
@@ -39,14 +58,56 @@ interface Sort {
     CheckboxColumnMolecule,
     SmartColumnMolecule,
     TreeColumnMolecule,
+    ResolveColumnsPipe,
+    GetPipe,
   ],
-  templateUrl: './smart-table.organism.html',
+  template: `
+  <table mat-table [dataSource]="dataSource" matSort matSortDisableClear matSortDirection="desc">
+    <ng-container
+      *ngFor="let column of (columns | resolveColumns); trackBy: trackByColumnName; let i = index"
+      [ngSwitch]="column.type"
+    >
+      <molecules-checkbox-column
+        *ngSwitchCase="'checkbox'"
+        name="__checkbox"
+        [selection]="selection"
+        (checkboxClick)="checkboxClick.emit($event)"
+      ></molecules-checkbox-column>
+      <molecules-actions-column 
+        *ngSwitchCase="'actions'" 
+        [name]="column.name"
+        [itemActions]="column?.payload || itemActions"
+        (action)="action.emit($event)"
+      ></molecules-actions-column>
+      <ng-container *ngSwitchDefault>
+        <molecules-tree-column
+          *ngIf="column.name.startsWith('__tree_')"
+          [name]="column.name"
+          [headerText]="column.name | domain"
+          [sort]="form.value.key === column.payload ? form.value.order : 'none'"
+          [treeControl]="treeControl"
+          (headerClick)="headerClick.emit(column.payload)"
+        ></molecules-tree-column>
+        <molecules-smart-column
+          *ngIf="!column.name.startsWith('__tree_')"
+          [name]="column.name"
+          [headerText]="column.name | domain"
+          [sort]="form.value.key === column.payload ? form.value.order : 'none'"
+          (headerClick)="headerClick.emit(column.payload)"
+        ></molecules-smart-column>
+      </ng-container>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="(columns | resolveColumns | get:'name'); sticky: true"></tr>
+    <tr mat-row *matRowDef="let item; columns: (columns | resolveColumns | get:'name');"></tr>
+    <div class="mat-row" *matNoDataRow>No Data</div>
+  </table>
+  `,
   styleUrls: ['./smart-table.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {class: 'organism'}
 })
 export class SmartTableOrganism<Item extends object> {
-
+  #form = inject(SortService);
   protected dataSource: DataSource<Item>;
 
   @Input('columns')
@@ -60,22 +121,18 @@ export class SmartTableOrganism<Item extends object> {
   childrenKey = 'children';
 
   @Input()
-  // items: Item[] = [];
   set items(items: Item[]) {
     this.dataSource = this.buildTreeFlatDatasource(items, this.childrenKey);
   }
 
   @Input()
-  itemActions: Actions = () => [];
+  itemActions: Actions = [];
 
   @Input()
-  pageSize: number = 0;
+  selection = new SelectionModel<string>(true, []);
 
   @Input()
-  selectedIdSet = new Set<string>();
-
-  @Input()
-  sort: Sort = {};
+  form = this.#form.build();
 
   @Output()
   action = new EventEmitter<Action>();

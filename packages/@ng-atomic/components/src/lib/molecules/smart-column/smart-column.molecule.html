@@ -19,7 +19,7 @@
       (click)="copied(); tooltip.show()"
       #tooltip="matTooltip" [matTooltip]="text" matTooltipPosition="below"
     >
-      {{ data | dataAccessor: name }}
+      {{ data | dataAccessor: name | smartExp: name }}
     </p>
   </td>
 </ng-container>

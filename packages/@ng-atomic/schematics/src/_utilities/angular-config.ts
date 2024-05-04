@@ -1,5 +1,6 @@
 import { Tree } from '@angular-devkit/schematics';
-import { get, set } from 'lodash';
+import get from 'lodash.get';
+import set from 'lodash.set';
 import { overwrite } from './overwrite';
 
 const PACKAGE_NAME = '@ng-atomic/schematics';

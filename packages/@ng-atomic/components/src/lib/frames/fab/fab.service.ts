@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ng-atomic/common/models';
-import { Subject } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class FabService {
-  private _actions: Action[] = [];
-  private actionSubject = new Subject<Action>();
-
+  private actionMap = new Map<string, Action[]>;
+  private contexts: string[] = [];
   get actions(): Action[] {
-    return this._actions;
+    return this.actionMap.get(this.contexts.at(-1)) ?? [];
   }
 
-  action$ = this.actionSubject.asObservable();
-
-  onAction(action: Action) {
-    this.actionSubject.next(action);
+  set(name, actions: Action[]) {
+    return this.actionMap.set(name, actions);
   }
 
-  setActions(actions: Action[]) {
-    this._actions = actions;
+  push(name: string) {
+    return this.contexts.push(name);
+  }
+
+  pop() {
+    return this.contexts.pop();
   }
 }

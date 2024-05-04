@@ -2,7 +2,7 @@
 // @use 'atomic/frame' as *;
 :host {
 	// @include frame($host);
-	@include property('--first-content-height');
+	@include property('--first-content-height', 0px);
 }
 
 :host {

@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import { FirestoreAdapter } from '../adapters/base';
-import { FirestoreConverter } from '../converter';
 import { FirestoreCollection,  FirestoreCollectionGroup,  FirestoreDocument, ToFirestoreData } from '../interfaces';
 import { FirestorePathBuilder } from '../path-builder';
 
@@ -13,21 +12,24 @@ export abstract class FirestoreDAO<
 
   constructor(
     protected adapter: FirestoreAdapter,
-    protected converter: FirestoreConverter<Entity>,
   ) { }
 
-  protected collection(paramMap?: Partial<Entity>):FirestoreCollection<FirestoreData> {
+  collection(paramMap?: Partial<Entity>): FirestoreCollection<FirestoreData> {
     const path = this.pathBuilder.collection(paramMap)
     return this.adapter.collection<FirestoreData>(path);
   }
 
-  protected collectionGroup():FirestoreCollectionGroup<FirestoreData> {
+  collectionGroup():FirestoreCollectionGroup<FirestoreData> {
     const path = this.pathBuilder.collectionGroup();
     return this.adapter.collectionGroup<FirestoreData>(path);
   }
 
-  protected doc(paramMap: Partial<Entity> & {id: string}): FirestoreDocument<FirestoreData> {
+  doc(paramMap: Partial<Entity> & {id: string}): FirestoreDocument<FirestoreData> {
     const path = this.pathBuilder.doc(paramMap);
     return this.adapter.doc<FirestoreData>(path);
+  }
+
+  getCollection(paramMap?: Partial<Entity>) {
+    return paramMap ? this.collection(paramMap) : this.collectionGroup();
   }
 }

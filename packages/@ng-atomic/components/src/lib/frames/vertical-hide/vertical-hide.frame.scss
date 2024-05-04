@@ -1,0 +1,29 @@
+@use 'scoped-var/strict' as * with ($host: 'vertical-hide');
+// @use 'atomic/frame' as *;
+
+:host {
+	// @include frame($host);
+	@include property(--collapsed-height, 200px);
+	@include property(--expanded-height, 400px);
+}
+
+:host {
+	position: relative;
+	display: block;
+	transition: 0.5s height;
+
+	organisms-vertical-divider {
+		position: absolute;
+		bottom: 0;
+
+		width: 100%;
+	}
+}
+
+:host[mode=collapsed] {
+	height: var(--collapsed-height);
+}
+
+:host[mode=expanded] {
+	height: var(--expanded-height);
+}

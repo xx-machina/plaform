@@ -5,14 +5,14 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["packages/@ng-atomic/web-api/**/*.ts"]
       },
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/ng-atomic/web-api"],
       "options": {
         "jestConfig": "packages/@ng-atomic/web-api/jest.config.ts",
@@ -20,7 +20,7 @@
       }
     },
     "pack": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/@ng-atomic/web-api",
@@ -31,7 +31,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/@ng-atomic/web-api",
@@ -39,7 +39,8 @@
         "tsConfig": "packages/@ng-atomic/web-api/tsconfig.app.json",
         "assets": [],
         "target": "node",
-        "compiler": "tsc"
+        "compiler": "tsc",
+        "babelUpwardRootMode": true
       },
       "configurations": {
         "production": {
@@ -51,20 +52,20 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/js:node",
       "options": {
         "buildTarget": "web-api:build"
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@ng-atomic/web-api"
       }
     },
     "link": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "options": {
         "commands": ["npm link"],
         "cwd": "dist/packages/@ng-atomic/web-api"

@@ -24,38 +24,70 @@ export abstract class NotionRepository<E extends Entity> extends Repository<E> {
     super();
   }
 
-  protected async query(
+  async query(
     filterQuery?: NotionBaseQuery, 
     sortQuery?: NotionBaseQuery,
+    startCursor?: string,
+    pageSize?: number,
   ) {
     try {
       const obj = this.queryBuilder.build(filterQuery, sortQuery);
-      const {results} = await this.client.databases.query({
-        database_id: this.databaseId, ...obj,
+      const res = await this.client.databases.query({
+        database_id: this.databaseId,
+        ...obj,
+        start_cursor: startCursor,
+        page_size: pageSize,
       });
-      return results.map(result => this.converter.fromRecord(result));
+      return {
+        results: res.results.map(result => this.converter.fromNotion(result)),
+        nextCursor: res.next_cursor,
+        hasMore: res.has_more,
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async queryV2(args?: any) {
+    try {
+      const res = await this.client.databases.query({
+        database_id: this.databaseId,
+        ...(args ?? {}),
+      });
+      return {
+        results: res.results.map(result => this.converter.fromNotion(result)),
+        nextCursor: res.next_cursor,
+        hasMore: res.has_more,
+      }
     } catch (error) {
       throw error;
     }
   }
 
   async list(): Promise<E[]> {
-    return this.query();
+    const orders: E[] = [];
+    let nextCursor: string;
+    while(true) {
+      const res = await this.query(undefined, undefined, nextCursor, 100);
+      orders.push(...res.results);
+      nextCursor = res.nextCursor;
+      if (!res.hasMore) break;
+    }
+    return orders;
   }
 
   async get({id}: {id: string}): Promise<E> {
     const data = await this.client.pages.retrieve({page_id: id});
-    return this.converter.fromRecord(data);
+    return this.converter.fromNotion(data);
   }
 
   async create(entity: Partial<E>) {
     try {
-
       const res = await this.client.pages.create({
         parent: this.parent,
-        properties: {...this.converter.toRecord(entity)},
+        properties: {...this.converter.toNotion(entity)},
       }); 
-      return this.converter.fromRecord(res);
+      return this.converter.fromNotion(res);
     } catch (error) {
       throw error;
     }
@@ -64,7 +96,7 @@ export abstract class NotionRepository<E extends Entity> extends Repository<E> {
   async update(entity: Partial<E>) {
     const data = {
       page_id: (entity as any).id,
-      properties: {...this.converter.toRecord(entity)},
+      properties: {...this.converter.toNotion(entity)},
     };
     await this.client.pages.update(data);
   }

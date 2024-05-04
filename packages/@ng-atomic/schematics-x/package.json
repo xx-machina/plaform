@@ -18,5 +18,7 @@
     "save": "devDependencies"
   },
   "main": "./src/lib/bin/schematics-x.js",
-  "types": "./src/lib/bin/schematics-x.d.ts"
+  "types": "./src/lib/bin/schematics-x.d.ts",
+  "peerDependencies": {},
+  "dependencies": {}
 }

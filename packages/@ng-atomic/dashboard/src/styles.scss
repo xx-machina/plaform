@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+@use 'xterm/css/xterm.css' as *;
+@use '@angular/material' as mat;
+
+body {
+  margin: 0;
+  height: 100vh;
+  width: 100%;
+}

@@ -1,43 +1,38 @@
 @use 'scoped-var/strict' as * with ($host: 'line-up');
 
 :host {
-	@include property(--gap, 1px);
+	@include property(--gap, 0px);
 	@include property(--background, #ccc);
-	@include property(--contents-background, transparent);
+	@include property(--next-width, 100%);
+	@include property(--next-max-width, fit-content);
+
+	@include property(--translate-x, 0px);
 }
 
 :host {
 	position: relative;
 
+	transform: translateX(var(--translate-x));
+	transition: transform 0.3s ease-in-out;
+
 	display: flex;
-	justify-content: flex-start;
+	justify-content: start;
 	gap: var(--gap);
 
-	width: fit-content;
+	width: 100%;
 	height: 100%;
-
 	background: var(--background);
 
-	div {
-		display: flex;
-
-		max-width: fit-content;
+	.main{
+		max-width: 100%;
 		height: 100%;
-		background: var(--contents-background);
+		z-index: 2;
+	}
 
-		&.main{
-			overflow: hidden;
-			justify-content: flex-end;
-		}
-
-		&.next{
-			// position: relative;
-			overflow: visible;
-			justify-content: flex-start;
-		}
-
-		// &.next:empty {
-		// 	display: none;
-		// }
+	.next{
+		width: 100%;
+		height: 100%;
+		// max-width: 100%;
+		z-index: 1;
 	}
 }

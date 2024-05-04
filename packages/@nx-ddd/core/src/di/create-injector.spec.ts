@@ -1,6 +1,6 @@
 import { createInjectorWithoutInjectorInstances } from './create-injector';
 import { AppModule, AppService, EXAMPLE_VALUE, Repository } from '../_testing';
-import { Injectable } from 'injection-js';
+import { Injectable } from '@nx-ddd/injection-js';
 
 @Injectable()
 class ExampleRepository extends Repository {

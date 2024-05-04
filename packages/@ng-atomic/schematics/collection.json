@@ -1,5 +1,7 @@
 {
-  "extends": [],
+  "extends": [
+    "@schematics/angular"
+  ],
   "schematics": {
     "style-header": {
       "aliases": ["sh"],

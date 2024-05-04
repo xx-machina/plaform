@@ -9,7 +9,7 @@ import { HeadingOrganism } from '@ng-atomic/components/organisms/heading';
 import { SocialLoginSectionOrganism } from '@ng-atomic/components/organisms/social-login-section';
 import { TextInputSectionOrganism } from '@ng-atomic/components/organisms/text-input-section';
 
-export enum ActionId {
+enum ActionId {
   SIGN_IN = '[@ng-atomic/components] Sign In',
   SIGN_IN_WITH_GOOGLE = '[@ng-atomic/components] Sign In With Google',
   SIGN_IN_WITH_TWITTER = '[@ng-atomic/components] Sign In With Twitter',
@@ -45,12 +45,33 @@ export const Actions: Action[] = [
     SocialLoginSectionOrganism,
     TextInputSectionOrganism,
   ],
-  templateUrl: './entrance.template.html',
+  template: `
+  <frames-card>
+    <frames-auto-layout vertical>
+      <organisms-heading>ログイン</organisms-heading>
+      <organisms-text-input-section
+        *ngIf="form.get('email')"
+        label="メールアドレス"
+        [control]="form.get('email')"
+      ></organisms-text-input-section>
+      <organisms-text-input-section
+        *ngIf="form.get('password')"
+        label="パスワード"
+        [control]="form.get('password')"
+      ></organisms-text-input-section>
+      <organisms-action-buttons-section
+        [actions]="actions"
+        (action)="action.emit($event)"
+      ></organisms-action-buttons-section>
+    </frames-auto-layout>
+  </frames-card>
+  `,
   styleUrls: ['./entrance.template.scss'],
   host: {class: 'template'},
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EntranceTemplate {
+  static ActionId = ActionId;
   protected ActionId = ActionId
 
   @Input()
@@ -58,12 +79,6 @@ export class EntranceTemplate {
     email: new FormControl(''),
     password: new FormControl(''),
   });
-
-  @Input()
-  isEmailSectionShown = true;
-
-  @Input()
-  isPasswordSectionShown = true;
 
   @Input()
   actions = Actions;

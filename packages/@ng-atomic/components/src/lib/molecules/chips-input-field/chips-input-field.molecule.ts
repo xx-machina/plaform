@@ -1,5 +1,5 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ChipsInputAtom } from '@ng-atomic/components/atoms/chips-input';
+import { ErrorPipe } from '@ng-atomic/common/pipes/error';
 
 
 @Component({
@@ -21,12 +22,35 @@ import { ChipsInputAtom } from '@ng-atomic/components/atoms/chips-input';
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
-    MatInputModule,
     ChipsInputAtom,
+    ErrorPipe,
   ],
-  templateUrl: './chips-input-field.molecule.html',
+  template: `
+  <mat-form-field [appearance]="appearance" [floatLabel]="floatLabel">
+    <mat-label>{{ label }}</mat-label>
+    <mat-chip-grid #chipGrid>
+      <mat-chip-row *ngFor="let chip of chipsManager.chips"
+        (removed)="remove(chip)"
+        [editable]="false"
+      >
+        {{ chip }}
+        <button matChipRemove><mat-icon>cancel</mat-icon></button>
+      </mat-chip-row>
+      <input
+        matInput
+        [placeholder]="placeholder"
+        [matChipInputFor]="chipGrid"
+        [matChipInputSeparatorKeyCodes]="separators"
+        [matChipInputAddOnBlur]="true"
+        (matChipInputTokenEnd)="onChiInputTokenEnd($event)"
+      >
+    </mat-chip-grid>
+    <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+    <mat-error>{{ control.errors | error }}</mat-error>
+  </mat-form-field>
+  `,
   styleUrls: ['./chips-input-field.molecule.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ChipsManager],
 })
 export class ChipsInputFieldMolecule {

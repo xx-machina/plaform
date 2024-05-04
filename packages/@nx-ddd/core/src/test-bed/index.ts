@@ -1,4 +1,4 @@
-import { Injector } from "injection-js";
+import { Injector } from "@nx-ddd/injection-js";
 import { createNxModuleRef, NxModule, NxModuleRef } from "../nx-module";
 
 export class TestBed {

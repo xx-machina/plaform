@@ -1,6 +1,7 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { CdkCellDef, CdkColumnDef, CdkHeaderCellDef, CdkTable } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Optional, Output, ViewChild, ViewEncapsulation, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Optional, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { SelectIdPipe } from '@ng-atomic/common/pipes/select-id';
@@ -17,7 +18,16 @@ import { SelectIdPipe } from '@ng-atomic/common/pipes/select-id';
   providers: [
     {provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } as MatCheckboxDefaultOptions}
   ],
-  templateUrl: './checkbox-column.molecule.html',
+  template: `
+  <ng-container matColumnDef>
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let item">
+      <mat-checkbox
+        (click)="checkboxClick.emit(item)"
+        [checked]="selection.isSelected(item | selectId)"
+      ></mat-checkbox>
+    </td>
+  </ng-container>`,
   styleUrls: ['./checkbox-column.molecule.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,7 +45,7 @@ export class CheckboxColumnMolecule<T> implements OnInit {
   _name!: string;
 
   @Input()
-  selectedIdSet = new Set<string>();
+  selection = new SelectionModel<string>(true, []);
 
   @Output()
   checkboxClick = new EventEmitter<T>();

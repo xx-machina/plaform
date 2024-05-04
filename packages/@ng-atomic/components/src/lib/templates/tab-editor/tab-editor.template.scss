@@ -1,0 +1,15 @@
+@use 'scoped-var/strict' as * with ($host: 'tab-editor');
+@use 'atomic/template' as *;
+:host {
+	@include template($host);
+}
+
+:host {
+	mat-tab-group {
+		height: calc(100% - 56px);
+
+		::ng-deep .mat-mdc-tab-body-wrapper {
+			height: 100%;
+		}
+	}
+}

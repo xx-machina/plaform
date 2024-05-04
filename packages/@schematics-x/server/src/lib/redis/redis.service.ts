@@ -1,7 +1,7 @@
 import { Inject, Injectable, InjectionToken } from "@nx-ddd/core";
 import { createClient, commandOptions, SchemaFieldTypes, VectorAlgorithms } from 'redis';
-import { bufferFloat32, bufferFloat64, float32Buffer, float64Buffer } from "@x-x-machina/common/utils";
-import { Context } from '@x-x-machina/common/domain/models';
+import { bufferFloat32, bufferFloat64, float32Buffer, float64Buffer } from "@machina/common/utils";
+import { Context } from '@machina/common/domain/models';
 
 export enum VectorSize {
   // TEST = 3,

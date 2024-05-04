@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Injectable as _Injectable, Injector, ReflectiveKey } from 'injection-js';
+import { Injectable as _Injectable, Injector, ReflectiveKey } from '@nx-ddd/injection-js';
 
 export function Injectable(params?: { providedIn: 'root'}) {
   return (target: any) => {
@@ -28,5 +28,5 @@ function compileFactory(target, deps) {
   return () => target['Θins'] ??= new target(...deps.map(dep => inject(dep)));
 }
 
-export { Inject, Optional, InjectionToken } from 'injection-js';
+export { Inject, Optional, InjectionToken } from '@nx-ddd/injection-js';
 

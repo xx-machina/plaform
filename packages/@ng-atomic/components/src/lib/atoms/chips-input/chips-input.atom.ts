@@ -1,5 +1,5 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
@@ -7,7 +7,8 @@ import { takeUntil } from 'rxjs/operators';
 import { ChipsManager } from '@ng-atomic/common/services/chips-manager';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatFormFieldControl } from '@angular/material/form-field';
 
 
 @Component({
@@ -31,6 +32,7 @@ import { MatInputModule } from '@angular/material/input';
       </mat-chip-row>
       <input
         matInput
+        type="search"
         [placeholder]="placeholder"
         [matChipInputFor]="chipGrid"
         [matChipInputSeparatorKeyCodes]="separators"
@@ -40,8 +42,12 @@ import { MatInputModule } from '@angular/material/input';
     </mat-chip-grid>
   `,
   styleUrls: ['./chips-input.atom.scss'],
+  // encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ChipsManager],
+  providers: [
+    ChipsManager,
+  ],
+  hostDirectives: [],
 })
 export class ChipsInputAtom implements OnInit {
   private readonly destroy$ = new ReplaySubject<void>(1);

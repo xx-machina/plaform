@@ -12,14 +12,37 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2018", "dom", "es2021.String"],
+    "lib": ["es2022", "dom", "es2021.String"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ng-atomic/common": ["packages/@ng-atomic/common/src/index.ts"],
-      "@ng-atomic/common/*": ["packages/@ng-atomic/common/src/*"],
-      "@ng-atomic/components": ["packages/@ng-atomic/components/src/lib/index.ts"],
+      "@@secret/*": [".secret/*"],
+      "@machina/backend": ["projects/@machina/backend/src/app/index.ts"],
+      "@machina/backend/*": ["projects/@machina/backend/src/app/*"],
+      "@machina/common": ["projects/@machina/common/src/lib/index.ts"],
+      "@machina/common/*": ["projects/@machina/common/src/lib/*"],
+      "@machina/demo": ["projects/@machina/demo/src/app/index.ts"],
+      "@machina/demo/*": ["projects/@machina/demo/src/app/*"],
+      "@mediship/api": ["projects/@mediship/api/src/app/index.ts"],
+      "@mediship/api/*": ["projects/@mediship/api/src/app/*"],
+      "@mediship/challenge": ["projects/@mediship/challenge/src/app/index.ts"],
+      "@mediship/challenge/*": ["projects/@mediship/challenge/src/app/*"],
+      "@mediship/common": ["projects/@mediship/common/src/lib/index.ts"],
+      "@mediship/common/*": ["projects/@mediship/common/src/lib/*"],
+      "@mediship/components": [
+        "projects/@mediship/components/src/lib/index.ts"
+      ],
+      "@mediship/components/*": ["projects/@mediship/components/src/lib/*"],
+      "@mediship/forward": ["projects/@mediship/forward/src/app/index.ts"],
+      "@mediship/forward/*": ["projects/@mediship/forward/src/app/*"],
+      "@myhome/common": ["projects/@myhome/common/src/index.ts"],
+      "@myhome/common/*": ["projects/@myhome/common/src/lib/*"],
+      "@ng-atomic/common": ["packages/@ng-atomic/common/src/lib/index.ts"],
+      "@ng-atomic/common/*": ["packages/@ng-atomic/common/src/lib/*"],
+      "@ng-atomic/components": [
+        "packages/@ng-atomic/components/src/lib/index.ts"
+      ],
       "@ng-atomic/components/*": ["packages/@ng-atomic/components/src/lib/*"],
       "@ng-atomic/elements": ["packages/@ng-atomic/elements/src/index.ts"],
       "@ng-atomic/elements/*": ["packages/@ng-atomic/elements/src/*"],
@@ -28,6 +51,8 @@
       "@ng-atomic/schematics/*": ["packages/@ng-atomic/schematics/src/*"],
       "@ng-atomic/storybook": ["packages/@ng-atomic/storybook/src/index.ts"],
       "@ng-atomic/web-api": ["packages/@ng-atomic/web-api/src/index.ts"],
+      "@notionql/common": ["projects/@notionql/common/src/index.ts"],
+      "@notionql/common/*": ["projects/@notionql/common/src/lib/*"],
       "@nx-ddd/common": ["packages/@nx-ddd/common/src/index.ts"],
       "@nx-ddd/common/*": ["packages/@nx-ddd/common/src/*"],
       "@nx-ddd/core": ["packages/@nx-ddd/core/src/index.ts"],
@@ -44,16 +69,25 @@
         "packages/@nx-ddd/firestore-admin-adapter/src/index.ts"
       ],
       "@nx-ddd/firestore-angular-adapter": [
-        "packages/@nx-ddd/firestore-angular-adapter/src/index.ts"
+        "packages/@nx-ddd/firestore-angular-adapter/src/lib/index.ts"
+      ],
+      "@nx-ddd/firestore-angular-adapter/*": [
+        "packages/@nx-ddd/firestore-angular-adapter/src/lib/*"
       ],
       "@nx-ddd/firestore-nest-adapter": [
         "packages/@nx-ddd/firestore-nest-adapter/src/index.ts"
       ],
       "@nx-ddd/firestore/*": ["packages/@nx-ddd/firestore/src/lib/*"],
       "@nx-ddd/indexed-db/*": ["packages/@nx-ddd/indexed-db/src/lib/*"],
+      "@nx-ddd/injection-js": [
+        "packages/@nx-ddd/injection-js/src/lib/index.ts"
+      ],
+      "@nx-ddd/injection-js/*": ["packages/@nx-ddd/injection-js/src/lib/*"],
       "@nx-ddd/notion": ["packages/@nx-ddd/notion/src/lib"],
       "@nx-ddd/notion/*": ["packages/@nx-ddd/notion/src/lib/*"],
       "@nx-ddd/spreadsheet/*": ["packages/@nx-ddd/spreadsheet/src/lib/*"],
+      "@nx-ddd/x": ["packages/@nx-ddd/x/src/index.ts"],
+      "@nx-ddd/x/*": ["packages/@nx-ddd/x/src/lib/*"],
       "@platform/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@schematics-x/core": ["packages/@schematics-x/core/src/lib/index.ts"],
       "@schematics-x/core/*": ["packages/@schematics-x/core/src/lib/*"],
@@ -67,14 +101,14 @@
         "packages/@schematics-x/server/src/lib/index.ts"
       ],
       "@schematics-x/server/*": ["packages/@schematics-x/server/src/lib/*"],
-      "@x-x-machina/common": ["packages/@x-x-machina/common/src/lib/index.ts"],
-      "@x-x-machina/common/*": ["packages/@x-x-machina/common/src/lib/*"],
-      "@x-lt/forward": ["apps/forward/src/app/index.ts"],
-      "@x-lt/forward/*": ["apps/forward/src/app/*"],
-      "@x-lt/common": ["packages/@x-lt/common/src/lib/index.ts"],
-      "@x-lt/common/*": ["packages/@x-lt/common/src/lib/*"],
-      "@x-lt/components": ["packages/@x-lt/components/src/lib/index.ts"],
-      "@x-lt/components/*": ["packages/@x-lt/components/src/lib/*"]
+      "@task334/api": ["projects/@task334/api/src/app/index.ts"],
+      "@task334/api/*": ["projects/@task334/api/src/app/*"],
+      "@task334/app": ["projects/@task334/app/src/app/index.ts"],
+      "@task334/app/*": ["projects/@task334/app/src/app/*"],
+      "@task334/bot": ["projects/@task334/bot/src/app/index.ts"],
+      "@task334/bot/*": ["projects/@task334/bot/src/app/*"],
+      "@task334/common": ["projects/@task334/common/src/lib/index.ts"],
+      "@task334/common/*": ["projects/@task334/common/src/lib/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

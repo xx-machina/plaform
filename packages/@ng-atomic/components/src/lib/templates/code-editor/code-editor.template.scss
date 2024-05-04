@@ -1,0 +1,14 @@
+@use 'scoped-var/strict' as * with ($host: 'code-editor');
+// @use 'atomic/template' as *;
+:host {
+	// @include template($host);
+	display: block;
+	width: 100%;
+	height: 100%;
+
+	extras-editor {
+		height: 100%;
+		max-height: 100%;
+		font-size: 14px
+	}
+}

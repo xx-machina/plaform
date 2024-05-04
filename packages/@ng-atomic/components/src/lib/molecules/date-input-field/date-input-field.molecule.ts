@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
+import { ErrorPipe } from '@ng-atomic/common/pipes/error';
 import { MatDayjsDateModule } from '@ng-atomic/common/utils';
 import dayjs, { Dayjs } from 'dayjs';
 import { filter } from 'rxjs/operators';
@@ -16,8 +17,18 @@ import { filter } from 'rxjs/operators';
     MatInputModule,
     MatDatepickerModule,
     MatDayjsDateModule,
+    ErrorPipe,
   ],
-  templateUrl: './date-input-field.molecule.html',
+  template: `
+  <mat-form-field appearance="outline">
+    <mat-label>{{ label }}</mat-label>
+    <input matInput [formControl]="_control" [placeholder]="placeholder" [matDatepicker]="picker">
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+    <mat-error>{{ control.errors | error }}</mat-error>
+  </mat-form-field>
+  `,
   styleUrls: ['./date-input-field.molecule.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {class: 'molecule field'},

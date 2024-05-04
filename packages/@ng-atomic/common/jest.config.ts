@@ -21,5 +21,5 @@ export default {
     ],
   },
   transformIgnorePatterns: ['node_modules/(?!.*.mjs$)'],
-  preset: '../../jest.preset.js',
+  preset: '../../../jest.preset.js',
 };
