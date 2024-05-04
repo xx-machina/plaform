@@ -1,19 +1,11 @@
 import dayjs from 'dayjs';
 import { Observable, ReplaySubject } from 'rxjs';
-import { distinctUntilChanged, map, scan, shareReplay, switchMap, take } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { FirestoreAdapter } from '../adapters';
 import { Converter } from '../converter';
 import { FirestoreDAO } from '../dao';
 import { FirestorePathBuilder } from '../path-builder';
 import { FirestoreCollection,  FirestoreCollectionGroup, ToFirestoreData } from '../interfaces';
-
-export const action = <T extends {id: string}>(
-  map: Map<string, T>, 
-  type: 'removed' | string, 
-  entity: T
-): Map<string, T> => type === 'removed' 
-  ? (map.delete(entity.id), map) 
-  : map.set(entity.id, entity);
 
 type CollectionRef<D> = FirestoreCollection<D> | FirestoreCollectionGroup<D>;
   
@@ -74,11 +66,16 @@ export class FirestoreQuery<
   protected _listChanges(
     collection: FirestoreCollection<FirestoreData> | FirestoreCollectionGroup<FirestoreData>
   ): Observable<Entity[]> {
+    const _map = new Map<string, any>();
     return collection.stateChanges().pipe(
-      scan((map, actions) => actions.reduce((_map, {type, payload: {doc}}) => {
-        return action<Entity>(_map, type, this.converter.fromFirestore(doc))
-      }, map), new Map<string, Entity>()),
-      map(map => [...map.values()]),
+      tap(actions => actions.forEach(({type, payload: {doc}}) => {
+        if (new Set(['added', 'modified']).has(type)) {
+          _map.set(doc.id, this.converter.fromFirestore(doc));
+        } else if (type === 'removed') {
+          _map.delete(doc.id);
+        }
+      })),
+      map(() => [..._map.values()]),
     );
   }
 }

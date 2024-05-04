@@ -104,7 +104,10 @@ export class FirestoreRepository<
   }
 
   protected _create(doc: FirestoreDocument<FirestoreData>, entity: Entity): Promise<Entity> {
-    return this._set(doc, entity, false).then(doc => this.converter.fromFirestore(doc)); 
+    return doc.set({
+      ...this.converter.toFirestore(entity),
+      ...this.buildServerTimestampObject(['createdAt', 'updatedAt']),
+    } as any).then(() => doc.get()).then(doc => this.converter.fromFirestore(doc)); ;
   }
 
   protected _update(doc: FirestoreDocument<FirestoreData>, entity: Partial<Entity>): Promise<void> {
