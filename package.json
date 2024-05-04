@@ -1,6 +1,6 @@
 {
   "name": "x-x-machina",
-  "version": "4.5.3",
+  "version": "0.0.0-PLACEHOLDER",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -29,16 +29,7 @@
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
     "help": "nx help",
-    "prepare": "npx simple-git-hooks",
-    "link:all": "npm run link:common && npm run link:core && npm run link:domain && npm run link:infrastructure",
-    "link:common": "cd dist/libs/common && npm link",
-    "link:core": "cd dist/libs/core && npm link",
-    "link:firestore": "cd dist/libs/firestore && npm link",
-    "link:firestore-angular-adapter": "cd dist/libs/firestore-angular-adapter && npm link",
-    "link:firestore-nest-adapter": "cd dist/libs/firestore-nest-adapter && npm link",
-    "link:indexed-db": "cd dist/libs/indexed-db && npm link",
-    "link:notion": "cd dist/libs/notion && npm link",
-    "link:spreadsheet": "cd dist/libs/spreadsheet && npm link"
+    "prepare": "npx simple-git-hooks"
   },
   "dependencies": {
     "@aginix/nestjs-firebase-admin": "^2.0.0",
@@ -170,12 +161,6 @@
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
       "@semantic-release/changelog",
-      [
-        "@semantic-release/npm",
-        {
-          "npmPublish": false
-        }
-      ],
       "@semantic-release/github",
       [
         "@semantic-release/git",
