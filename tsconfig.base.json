@@ -37,7 +37,9 @@
       "@nx-ddd/executors": ["packages/@nx-ddd/executors/src/index.ts"],
       "@nx-ddd/executors/*": ["packages/@nx-ddd/executors/src/*"],
       "@nx-ddd/firestore": ["packages/@nx-ddd/firestore/src/lib/index.ts"],
-      "@nx-ddd/firestore-adapter": ["packages/@nx-ddd/firestore-adapter/src/index.ts"],
+      "@nx-ddd/firestore-adapter": [
+        "packages/@nx-ddd/firestore-adapter/src/index.ts"
+      ],
       "@nx-ddd/firestore-admin-adapter": [
         "packages/@nx-ddd/firestore-admin-adapter/src/index.ts"
       ],

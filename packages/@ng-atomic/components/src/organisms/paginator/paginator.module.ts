@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { AutoLayoutModule } from '@ng-atomic/components/frames/auto-layout';
 import { ChipsInputFieldModule } from '@ng-atomic/components/molecules/chips-input-field';
 

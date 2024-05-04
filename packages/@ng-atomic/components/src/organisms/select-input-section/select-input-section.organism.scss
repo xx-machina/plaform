@@ -1,4 +1,4 @@
-@use '~scoped-var' as * with ($host: 'select-input-section');
+@use 'scoped-var' as * with ($host: 'select-input-section');
 
 :host {
   @include property(--horizontal-padding, 16px);

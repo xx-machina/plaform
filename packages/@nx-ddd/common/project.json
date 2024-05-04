@@ -1,5 +1,5 @@
 {
-  "name": "common",
+  "name": "@nx-ddd/common",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/@nx-ddd/common/src",
   "projectType": "library",
@@ -13,7 +13,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/@nx-ddd/common"],
+      "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/common"],
       "options": {
         "jestConfig": "packages/@nx-ddd/common/jest.config.ts",
         "passWithNoTests": true
@@ -48,5 +48,5 @@
     }
   },
   "implicitDependencies": [],
-  "tags": []
+  "tags": ["package"]
 }

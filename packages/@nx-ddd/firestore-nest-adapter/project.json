@@ -1,5 +1,5 @@
 {
-  "name": "firestore-nest-adapter",
+  "name": "@nx-ddd/firestore-nest-adapter",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/@nx-ddd/firestore-nest-adapter/src",
   "projectType": "library",
@@ -25,7 +25,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/@nx-ddd/firestore-nest-adapter"],
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/@nx-ddd/firestore-nest-adapter"
+      ],
       "options": {
         "jestConfig": "packages/@nx-ddd/firestore-nest-adapter/jest.config.ts",
         "passWithNoTests": true
@@ -46,5 +48,5 @@
       }
     }
   },
-  "tags": []
+  "tags": ["package"]
 }

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Input, Output, EventEmitter, Component, ViewEncapsulation, Optional, Inject, inject, ViewChild } from '@angular/core';
-import { MatColumnDef, MatTextColumn } from '@angular/material/table';
+import { MatLegacyColumnDef as MatColumnDef, MatLegacyTextColumn as MatTextColumn } from '@angular/material/legacy-table';
 
 @Component({
   selector: 'molecules-smart-column',

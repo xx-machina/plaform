@@ -1,4 +1,5 @@
 {
+  "name": "@ng-atomic/common",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "packages/@ng-atomic/common/src",
@@ -28,7 +29,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/ng-atomic/common"],
+      "outputs": ["{workspaceRoot}/coverage/ng-atomic/common"],
       "options": {
         "jestConfig": "packages/@ng-atomic/common/jest.config.ts",
         "passWithNoTests": true
@@ -49,5 +50,5 @@
       }
     }
   },
-  "tags": []
+  "tags": ["package"]
 }

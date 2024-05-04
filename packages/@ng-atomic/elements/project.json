@@ -1,4 +1,5 @@
 {
+  "name": "@ng-atomic/elements",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/@ng-atomic/elements/src",
   "targets": {
@@ -9,7 +10,10 @@
         "outputPath": "dist/packages/@ng-atomic/elements",
         "main": "packages/@ng-atomic/elements/src/index.ts",
         "tsConfig": "packages/@ng-atomic/elements/tsconfig.lib.json",
-        "assets": ["packages/@ng-atomic/elements/*.md", "packages/@ng-atomic/elements/executors.json"]
+        "assets": [
+          "packages/@ng-atomic/elements/*.md",
+          "packages/@ng-atomic/elements/executors.json"
+        ]
       }
     },
     "lint": {
@@ -21,7 +25,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/ng-atomic/elements"],
+      "outputs": ["{workspaceRoot}/coverage/ng-atomic/elements"],
       "options": {
         "jestConfig": "packages/@ng-atomic/elements/jest.config.ts",
         "passWithNoTests": true
@@ -42,5 +46,5 @@
       }
     }
   },
-  "tags": []
+  "tags": ["package"]
 }

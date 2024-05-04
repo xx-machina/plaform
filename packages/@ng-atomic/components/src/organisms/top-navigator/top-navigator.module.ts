@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { SmartMenuButtonModule } from '@ng-atomic/components/atoms/smart-menu-button';
 import { TopNavigatorOrganism } from './top-navigator.organism';
 

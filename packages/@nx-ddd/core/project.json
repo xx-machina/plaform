@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "@nx-ddd/core",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/@nx-ddd/core/src",
   "projectType": "library",
@@ -26,7 +26,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/@nx-ddd/core"],
+      "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/core"],
       "options": {
         "jestConfig": "packages/@nx-ddd/core/jest.config.ts",
         "passWithNoTests": true
@@ -47,5 +47,5 @@
       }
     }
   },
-  "tags": []
+  "tags": ["package"]
 }

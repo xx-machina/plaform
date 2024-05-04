@@ -1,5 +1,5 @@
 {
-  "name": "firestore-angular-adapter",
+  "name": "@nx-ddd/firestore-angular-adapter",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "packages/@nx-ddd/firestore-angular-adapter/src",
@@ -7,7 +7,9 @@
   "targets": {
     "build": {
       "executor": "@nrwl/angular:package",
-      "outputs": ["dist/packages/@nx-ddd/firestore-angular-adapter"],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/@nx-ddd/firestore-angular-adapter"
+      ],
       "options": {
         "project": "packages/@nx-ddd/firestore-angular-adapter/ng-package.json"
       },
@@ -23,7 +25,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/@nx-ddd/firestore-angular-adapter"],
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/@nx-ddd/firestore-angular-adapter"
+      ],
       "options": {
         "jestConfig": "packages/@nx-ddd/firestore-angular-adapter/jest.config.ts",
         "passWithNoTests": true
@@ -53,5 +57,5 @@
       }
     }
   },
-  "tags": []
+  "tags": ["package"]
 }

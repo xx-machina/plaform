@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Meta, Story } from '@storybook/angular';
 import { action } from '@storybook/addon-actions';
 import { SmartColumnMolecule, SmartColumnModule } from '.';
-import { MatTableModule } from '@angular/material/table';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 
 export default {
   title: 'Molecules/SmartColumn',

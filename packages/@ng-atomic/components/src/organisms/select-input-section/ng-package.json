@@ -4,7 +4,7 @@
   "lib": {
     "entryFile": "index.ts",
     "styleIncludePaths": [
-      "../../../../node_modules",
+      "../../../../../node_modules",
       "../../styles"
     ]
   }

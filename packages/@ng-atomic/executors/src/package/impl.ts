@@ -44,7 +44,7 @@ async function initializeNgPackagr(
     const tsConfigPath = createTmpTsConfig(
       options.tsConfig,
       context.root,
-      context.workspace.projects[context.projectName!].root,
+      context.workspace!.projects[context.projectName!].root,
       projectDependencies
     );
     packager.withTsConfig(tsConfigPath);

@@ -1,6 +1,6 @@
 {
   "name": "@nx-ddd/notion",
-  "version": "0.0.1",
+  "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
   "types": "./index.d.ts"
 }

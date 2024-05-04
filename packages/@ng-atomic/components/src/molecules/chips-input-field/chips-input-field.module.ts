@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ChipsInputModule } from '@ng-atomic/components/atoms/chips-input';
 
 import { ChipsInputFieldMolecule } from './chips-input-field.molecule';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
