@@ -16,7 +16,7 @@ import {
   MatTreeFlatDataSource,
   MatTreeFlattener,
 } from '@angular/material/tree';
-import { DataSource } from '@angular/cdk/collections';
+import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { TreeColumnMolecule } from '@ng-atomic/components/molecules/tree-column';
 
 interface Sort {
@@ -72,7 +72,7 @@ export class SmartTableOrganism<Item extends object> {
   pageSize: number = 0;
 
   @Input()
-  selectedIdSet = new Set<string>();
+  selection = new SelectionModel<string>(true, []);
 
   @Input()
   sort: Sort = {};

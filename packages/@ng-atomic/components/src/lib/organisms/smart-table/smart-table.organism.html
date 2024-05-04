@@ -3,7 +3,7 @@
     <molecules-checkbox-column
       *ngSwitchCase="'__checkbox'"
       name="__checkbox"
-      [selectedIdSet]="selectedIdSet"
+      [selection]="selection"
       (checkboxClick)="checkboxClick.emit($event)"
     ></molecules-checkbox-column>
     <molecules-actions-column 

@@ -13,6 +13,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { GridToolbarOrganism } from '@ng-atomic/components/organisms/grid-toolbar';
 import { FiltersSectionOrganism } from '@ng-atomic/components/organisms/filters-section';
 import { DividerFrame } from '@ng-atomic/components/frames/divider';
+import { SelectionModel } from '@angular/cdk/collections';
 
 export enum ActionId {
   BACK = '[@ng-atomic/components/templates/smart-index] Back',
@@ -116,7 +117,7 @@ export class SmartIndexTemplate<T> {
   properties: (keyof T)[] =  [];
 
   @Input()
-  selectedIdSet = new Set<string>();
+  selection!: SelectionModel<string>;
 
   @Input()
   sortKey?: string;
