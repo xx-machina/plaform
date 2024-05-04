@@ -1,7 +1,4 @@
-import {
-  SchematicTestRunner,
-  UnitTestTree,
-} from '@angular-devkit/schematics/testing';
+import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 
 export const defaultWorkspaceOptions = {
   name: 'workspace',
@@ -27,34 +24,12 @@ export function getTestProjectPath(
 }
 
 export async function createWorkspace(
-  runner: SchematicTestRunner,
-  host: UnitTestTree,
-  workspaceOptions = defaultWorkspaceOptions,
-  options = defaultAppOptions
+  runner: SchematicTestRunner, host: UnitTestTree,
+  workspaceOptions = defaultWorkspaceOptions, options = defaultAppOptions
 ) {
-  host = await runner
-    .runExternalSchematicAsync(
-      '@schematics/angular',
-      'workspace',
-      workspaceOptions
-    )
-    .toPromise();
-  host = await runner
-    .runExternalSchematicAsync(
-      '@schematics/angular',
-      'application',
-      options,
-      host
-    )
-    .toPromise();
-  host = await runner
-    .runExternalSchematicAsync(
-      '@schematics/angular',
-      'application',
-      { ...options, name: 'app2' },
-      host
-    )
-    .toPromise();
+  host = await runner.runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions).toPromise();
+  host = await runner.runExternalSchematicAsync('@schematics/angular', 'application', options, host).toPromise();
+  host = await runner.runExternalSchematicAsync('@schematics/angular', 'application', {...options, name: 'app2'}, host).toPromise();
   return host;
 }
 
@@ -62,16 +37,9 @@ export async function createNxWorkspace(
   runner: SchematicTestRunner,
   host: UnitTestTree,
   workspaceOptions = defaultWorkspaceOptions,
-  options = defaultAppOptions
+  options = defaultAppOptions,
 ) {
-  host = await runner
-    .runExternalSchematicAsync(
-      '@nx/angular',
-      'workspace',
-      { ...workspaceOptions, cli: 'angular' },
-      host
-    )
-    .toPromise();
-  // host = await runner.runExternalSchematicAsync('@nx/angular', 'application', options, host).toPromise();
+  host = await runner.runExternalSchematicAsync('@nrwl/angular', 'workspace', {...workspaceOptions, cli: 'angular'}, host).toPromise();
+  // host = await runner.runExternalSchematicAsync('@nrwl/angular', 'application', options, host).toPromise();
   return host;
 }

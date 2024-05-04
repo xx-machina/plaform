@@ -1,5 +1,0 @@
-@use 'scoped-var/strict' as * with ($host: 'menu-footer');
-@use 'atomic/organism' as *;
-:host {
-	@include organism($host);
-}

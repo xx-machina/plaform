@@ -5,7 +5,7 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/@nx-ddd/firestore-nest-adapter",
@@ -17,17 +17,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/firestore-nest-adapter/**/package.json",
-          "packages/@nx-ddd/firestore-nest-adapter/**/project.json"
-        ]
+        "lintFilePatterns": ["packages/@nx-ddd/firestore-nest-adapter/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
+      "executor": "@nrwl/jest:jest",
       "outputs": [
         "{workspaceRoot}/coverage/packages/@nx-ddd/firestore-nest-adapter"
       ],
@@ -37,19 +34,19 @@
       }
     },
     "publish": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@nx-ddd/firestore-nest-adapter"
       }
     },
     "link": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm link"],
         "cwd": "dist/packages/@nx-ddd/firestore-nest-adapter"
       }
     }
   },
-  "tags": ["package", "@nx-ddd"]
+  "tags": ["package"]
 }

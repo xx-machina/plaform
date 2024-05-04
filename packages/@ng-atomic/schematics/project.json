@@ -5,17 +5,14 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "options": {
-        "lintFilePatterns": [
-          "packages/@ng-atomic/schematics/**/package.json",
-          "packages/@ng-atomic/schematics/**/project.json"
-        ]
+        "lintFilePatterns": ["packages/@ng-atomic/schematics/**/*.ts"]
       },
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nx/jest:jest",
+      "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/ng-atomic/schematics"],
       "options": {
         "jestConfig": "packages/@ng-atomic/schematics/jest.config.ts",
@@ -23,7 +20,7 @@
       }
     },
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/@ng-atomic/schematics",
@@ -34,12 +31,12 @@
           "collection.json",
           "packages/@ng-atomic/schematics/*.md",
           {
-            "input": "packages/@ng-atomic/schematics/src",
+            "input": "./ng-atomic/schematics/src",
             "glob": "**/*.!(ts)",
             "output": "./src"
           },
           {
-            "input": "packages/@ng-atomic/schematics",
+            "input": "./ng-atomic/schematics",
             "glob": "collection.json",
             "output": "."
           }
@@ -48,21 +45,19 @@
       }
     },
     "publish": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@ng-atomic/schematics"
       }
     },
     "link": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm link"],
         "cwd": "dist/packages/@ng-atomic/schematics"
       }
     }
   },
-  "tags": [
-    "@ng-atomic"
-  ]
+  "tags": ["package"]
 }

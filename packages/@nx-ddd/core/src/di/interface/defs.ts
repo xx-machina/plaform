@@ -240,7 +240,7 @@ function getTypeName(type: any): string {
   return match === null ? '' : match[1];
 }
 
-export function hasInjectorDef(type: any): boolean {
+export function hasInjectaorDef(type: any): boolean {
   return type && (type.hasOwnProperty(NG_INJ_DEF) || type.hasOwnProperty(NG_INJECTOR_DEF));
 }
 
@@ -250,7 +250,7 @@ export function hasInjectorDef(type: any): boolean {
  * @param type type which may have an injector def (`ɵinj`)
  */
 export function getInjectorDef<T>(type: any): ɵɵInjectorDef<T>|null {
-  return hasInjectorDef(type) ? (type as any)[NG_INJ_DEF] : null;
+  return hasInjectaorDef(type) ? (type as any)[NG_INJ_DEF] : null;
 }
 
 export const NG_PROV_DEF = getClosureSafeProperty({ɵprov: getClosureSafeProperty});

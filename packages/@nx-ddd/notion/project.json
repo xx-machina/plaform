@@ -5,7 +5,7 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/@nx-ddd/notion",
@@ -17,17 +17,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/notion/**/package.json",
-          "packages/@nx-ddd/notion/**/project.json"
-        ]
+        "lintFilePatterns": ["packages/@nx-ddd/notion/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
+      "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/notion"],
       "options": {
         "jestConfig": "packages/@nx-ddd/notion/jest.config.ts",
@@ -35,19 +32,19 @@
       }
     },
     "publish": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@nx-ddd/notion"
       }
     },
     "link": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm link"],
         "cwd": "dist/packages/@nx-ddd/notion"
       }
     }
   },
-  "tags": ["package", "@nx-ddd"]
+  "tags": ["package"]
 }

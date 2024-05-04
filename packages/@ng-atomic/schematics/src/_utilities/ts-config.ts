@@ -1,5 +1,5 @@
 import { Tree } from '@angular-devkit/schematics';
-import set from 'lodash.set';
+import { set } from 'lodash';
 import { overwrite } from './overwrite';
 
 export const addPathsToTsConfig = ({componentsDir}: any) => (host: Tree) => {

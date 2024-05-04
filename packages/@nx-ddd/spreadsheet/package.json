@@ -2,11 +2,5 @@
   "name": "@nx-ddd/spreadsheet",
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
-  "types": "./index.d.ts",
-  "peerDependencies": {
-    "@nx-ddd/core": "0.0.0-PLACEHOLDER",
-    "google-spreadsheet": "^3.2.0",
-    "tslib": "^2.3.0"
-  },
-  "dependencies": {}
+  "types": "./index.d.ts"
 }

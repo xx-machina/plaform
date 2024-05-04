@@ -2,14 +2,5 @@
   "name": "@nx-ddd/notion",
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
-  "types": "./index.d.ts",
-  "peerDependencies": {
-    "@notionhq/client": "^2.2.2",
-    "@nx-ddd/common": "0.0.0-PLACEHOLDER",
-    "@nx-ddd/core": "0.0.0-PLACEHOLDER",
-    "dayjs": "1.11.10",
-    "lodash": "4.17.21",
-    "tslib": "^2.3.0"
-  },
-  "dependencies": {}
+  "types": "./index.d.ts"
 }

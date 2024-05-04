@@ -6,19 +6,20 @@ import {
   createTmpTsConfig,
   DependentBuildableProjectNode,
   updateBuildableProjectPackageJsonDependencies,
-} from '@nx/workspace/src/utilities/buildable-libs-utils';
-import { NX_ENTRY_POINT_PROVIDERS } from '@nx/angular/src/executors/package/ng-packagr-adjustments/ng-package/entry-point/entry-point.di';
-import { nxProvideOptions } from '@nx/angular/src/executors/package/ng-packagr-adjustments/ng-package/options.di';
+} from '@nrwl/workspace/src/utilities/buildable-libs-utils';
+import { NX_ENTRY_POINT_PROVIDERS } from '@nrwl/angular/src/executors/package/ng-packagr-adjustments/ng-package/entry-point/entry-point.di';
+import { nxProvideOptions } from '@nrwl/angular/src/executors/package/ng-packagr-adjustments/ng-package/options.di';
 import {
   NX_PACKAGE_PROVIDERS,
   NX_PACKAGE_TRANSFORM,
-} from '@nx/angular/src/executors/package/ng-packagr-adjustments/ng-package/package.di';
+} from '@nrwl/angular/src/executors/package/ng-packagr-adjustments/ng-package/package.di';
 import type { NgPackagr } from 'ng-packagr';
 import { resolve } from 'path';
 import { from } from 'rxjs';
 import { eachValueFrom } from 'rxjs-for-await';
 import { mapTo, switchMap, tap } from 'rxjs/operators';
 import type { BuildAngularLibraryExecutorOptions } from './schema';
+
 
 async function initializeNgPackagr(
   options: BuildAngularLibraryExecutorOptions,

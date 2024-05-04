@@ -1,6 +1,6 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { COLLECTION_PATH, createWorkspace } from '../_testing';
-import get from 'lodash.get';
+import { get } from 'lodash';
 
 describe('Setup Schematics', () => {
   const runner = new SchematicTestRunner('@ng-atomic/schematics', COLLECTION_PATH);

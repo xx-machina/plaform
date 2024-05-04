@@ -1,9 +1,9 @@
-import { doc, collection, collectionGroup, FieldValue, Timestamp, setDoc, getDoc, getDocs, getFirestore, onSnapshot, deleteDoc, writeBatch, query, orderBy, limit, updateDoc, where, FieldPath } from 'firebase/firestore';
+import { doc, collection, collectionGroup, FieldValue, Timestamp, setDoc, getDoc, getDocs, getFirestore, onSnapshot, deleteDoc, writeBatch, query, orderBy, limit } from 'firebase/firestore';
 import dayjs from 'dayjs';
 import { Subject } from 'rxjs';
-import { FirestoreAdapter, QueryFn, WhereFilterOp } from '../base';
+import { FirestoreAdapter, QueryFn } from '../base';
 import { DocumentChangeAction, DocumentSnapshot, FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument } from '../../interfaces';
-
+import { updateDoc } from '@angular/fire/firestore';
 
 export class FirebaseFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
 
@@ -17,21 +17,8 @@ export class FirebaseFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
     return Timestamp;  
   }
 
-  get FieldPath(): FieldPath {
-    return new FieldPath();
-  }
-
-  protected isTimestamp(v: any): v is Timestamp {
-    return v instanceof Timestamp;
-  }
-
-  protected isFieldValue(v: any): v is FieldValue {
-    return v instanceof this.FieldValue;
-  }
-  
-  protected isDate(v: any): v is dayjs.Dayjs {
-    return dayjs.isDayjs(v);
-  }
+  protected isTimestamp = (v: any): v is Timestamp => v instanceof Timestamp;
+  protected isDate = (v: any): v is dayjs.Dayjs => dayjs.isDayjs(v);
 
   protected convertDateToTimestamp(date: dayjs.Dayjs): Timestamp {
     return Timestamp.fromDate(date.toDate());
@@ -45,7 +32,6 @@ export class FirebaseFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
     const docRef = doc(this.firestore, path);
     return {
       __ref: docRef,
-      exists: () => getDoc(docRef).then(doc => doc.exists()),
       set: (data) => setDoc(docRef, data),
       get: () => getDoc(docRef),
       update: (data) => updateDoc(docRef, data),
@@ -94,10 +80,6 @@ export class FirebaseFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
 
   query<Data>(collection: FirestoreCollection<Data>, ...queryFnArray: QueryFn<Data>[]): any {
     return query(collection.__ref, ...queryFnArray.map(queryFn => queryFn()));
-  }
-
-  where<Data>(fieldPath: string, opStr: WhereFilterOp, value: unknown): QueryFn<Data> {
-    return () => where(fieldPath, opStr, value);
   }
 
   orderBy<Data>(key: string, order: 'asc' | 'desc' = 'asc'): QueryFn<Data> {

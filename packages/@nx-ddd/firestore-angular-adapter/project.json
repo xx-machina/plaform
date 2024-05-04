@@ -6,7 +6,7 @@
   "prefix": "xx",
   "targets": {
     "build": {
-      "executor": "@nx/angular:package",
+      "executor": "@nrwl/angular:package",
       "outputs": [
         "{workspaceRoot}/dist/packages/@nx-ddd/firestore-angular-adapter"
       ],
@@ -24,7 +24,7 @@
       "defaultConfiguration": "production"
     },
     "test": {
-      "executor": "@nx/jest:jest",
+      "executor": "@nrwl/jest:jest",
       "outputs": [
         "{workspaceRoot}/coverage/packages/@nx-ddd/firestore-angular-adapter"
       ],
@@ -34,28 +34,28 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "options": {
         "lintFilePatterns": [
-          "packages/@nx-ddd/firestore-angular-adapter/**/package.json",
-          "packages/@nx-ddd/firestore-angular-adapter/**/project.json"
+          "packages/@nx-ddd/firestore-angular-adapter/**/*.ts",
+          "packages/@nx-ddd/firestore-angular-adapter/**/*.html"
         ]
       }
     },
     "publish": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@nx-ddd/firestore-angular-adapter"
       }
     },
     "link": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm link"],
         "cwd": "dist/packages/@nx-ddd/firestore-angular-adapter"
       }
     }
   },
-  "tags": ["package", "@nx-ddd"]
+  "tags": ["package"]
 }

@@ -1,5 +1,5 @@
 import { Type } from './interface/type';
-import { getInjectorDef, hasInjectorDef, InjectorTypeWithProviders } from './interface/defs';
+import { getInjectorDef, hasInjectaorDef, InjectorTypeWithProviders } from './interface/defs';
 import { ClassProvider, ConstructorProvider, ExistingProvider, FactoryProvider, ModuleWithProviders, Provider, StaticClassProvider, TypeProvider, ValueProvider } from './interface/provider';
 import { resolveForwardRef } from './forward_ref';
 import { deepForEach } from '../util/array_utils';
@@ -26,15 +26,8 @@ export function internalImportProvidersFrom(...sources: ImportProvidersSource[])
   return providersOut;
 }
 
-export function importProvidersFrom(...sources: ImportProvidersSource[]): SingleProvider[] {
-  return internalImportProvidersFrom(...sources);
-}
-
-function isNxModuleType(obj): obj is Type<unknown> {
-  return hasInjectorDef(obj);
-}
-
 function getNxModuleType(container: Type<unknown> | InjectorTypeWithProviders<unknown>): Type<unknown> {
+  const isNxModuleType = (obj): obj is Type<unknown> => hasInjectaorDef(obj);
   return isNxModuleType(container) ? container : container.nxModule;
 }
 
@@ -55,11 +48,7 @@ export function walkProviderTree(
     if (!dedup.has(nxModuleType) && dedup.add(nxModuleType)) {
       walkProviderTree(injDef.imports ?? [], parents, callback, dedup);
       callback([
-        {
-          provide: nxModuleType,
-          useFactory: getFactoryDef(nxModuleType) || (() => new nxModuleType!()),
-          deps: EMPTY_ARRAY
-        },
+        { provide: nxModuleType, useFactory: getFactoryDef(nxModuleType) || (() => new nxModuleType!()), deps: EMPTY_ARRAY },
         // { provide: INJECTOR_DEF_TYPES, useValue: nxModuleType, multi: true },
         // { provide: ENVIRONMENT_INITIALIZER, useValue: () => inject(nxModuleType!), multi: true },
         ...(injDef.providers ?? []),

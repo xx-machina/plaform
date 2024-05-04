@@ -129,12 +129,6 @@
       "type": "boolean",
       "default": true,
       "description": "When false, atomic component extension should be `.component.ts`"
-    },
-    "standalone": {
-      "description": "Creates an application based upon the standalone API, without NgModules.",
-      "type": "boolean",
-      "default": true,
-      "x-user-analytics": "ep.ng_standalone"
     }
   },
   "required": [

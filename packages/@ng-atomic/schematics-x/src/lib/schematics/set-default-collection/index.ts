@@ -1,6 +1,5 @@
 import { Rule, Tree } from "@angular-devkit/schematics";
-import set from 'lodash.set';
-
+import { set } from 'lodash';
 
 interface Schema {
   collectionName: string;

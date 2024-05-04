@@ -1,7 +1,7 @@
 import { Injectable } from "@nx-ddd/core";
 import { BaseAdapter } from "@schematics-x/core/adapters";
 import { ContextServer } from "@schematics-x/server";
-import { Context } from "@machina/common/domain/models";
+import { Context } from "@schematics-x/server/models";
 
 @Injectable({providedIn: 'root'})
 export class GraphqlQueryEstimatorService {

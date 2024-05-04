@@ -1,6 +1,4 @@
 {
   "name": "@ng-atomic/web-api",
-  "version": "0.0.0-PLACEHOLDER",
-  "peerDependencies": {},
-  "dependencies": {}
+  "version": "0.0.0-PLACEHOLDER"
 }

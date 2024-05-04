@@ -2,7 +2,7 @@ import { Client } from '@notionhq/client';
 import { Entity } from '@nx-ddd/common/domain/models';
 import { Repository } from '@nx-ddd/common/domain/repository';
 import { Inject, Injectable, InjectionToken } from '@nx-ddd/core/di';
-import { NotionConverter } from '../converter';
+import { createConverter, NotionConverter } from '../converter';
 import { NotionBaseQuery } from '../query';
 import { NotionQueryBuilder } from '../query-builder';
 
@@ -24,70 +24,38 @@ export abstract class NotionRepository<E extends Entity> extends Repository<E> {
     super();
   }
 
-  async query(
+  protected async query(
     filterQuery?: NotionBaseQuery, 
     sortQuery?: NotionBaseQuery,
-    startCursor?: string,
-    pageSize?: number,
   ) {
     try {
       const obj = this.queryBuilder.build(filterQuery, sortQuery);
-      const res = await this.client.databases.query({
-        database_id: this.databaseId,
-        ...obj,
-        start_cursor: startCursor,
-        page_size: pageSize,
+      const {results} = await this.client.databases.query({
+        database_id: this.databaseId, ...obj,
       });
-      return {
-        results: res.results.map(result => this.converter.fromNotion(result)),
-        nextCursor: res.next_cursor,
-        hasMore: res.has_more,
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async queryV2(args?: any) {
-    try {
-      const res = await this.client.databases.query({
-        database_id: this.databaseId,
-        ...(args ?? {}),
-      });
-      return {
-        results: res.results.map(result => this.converter.fromNotion(result)),
-        nextCursor: res.next_cursor,
-        hasMore: res.has_more,
-      }
+      return results.map(result => this.converter.fromRecord(result));
     } catch (error) {
       throw error;
     }
   }
 
   async list(): Promise<E[]> {
-    const orders: E[] = [];
-    let nextCursor: string;
-    while(true) {
-      const res = await this.query(undefined, undefined, nextCursor, 100);
-      orders.push(...res.results);
-      nextCursor = res.nextCursor;
-      if (!res.hasMore) break;
-    }
-    return orders;
+    return this.query();
   }
 
   async get({id}: {id: string}): Promise<E> {
     const data = await this.client.pages.retrieve({page_id: id});
-    return this.converter.fromNotion(data);
+    return this.converter.fromRecord(data);
   }
 
   async create(entity: Partial<E>) {
     try {
+
       const res = await this.client.pages.create({
         parent: this.parent,
-        properties: {...this.converter.toNotion(entity)},
+        properties: {...this.converter.toRecord(entity)},
       }); 
-      return this.converter.fromNotion(res);
+      return this.converter.fromRecord(res);
     } catch (error) {
       throw error;
     }
@@ -96,7 +64,7 @@ export abstract class NotionRepository<E extends Entity> extends Repository<E> {
   async update(entity: Partial<E>) {
     const data = {
       page_id: (entity as any).id,
-      properties: {...this.converter.toNotion(entity)},
+      properties: {...this.converter.toRecord(entity)},
     };
     await this.client.pages.update(data);
   }

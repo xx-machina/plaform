@@ -2,12 +2,12 @@ import { Injectable } from '@nx-ddd/core';
 import { Entity } from '@nx-ddd/common/domain/models';
 import camelCase from 'lodash.camelcase';
 import { FirestoreAdapter } from '../adapters/base';
-import { createConverter } from '../converter';
+import { createConverter, FirestoreConverter } from '../converter';
 import { pathBuilderFactory } from '../path-builder';
 import { FirestoreQuery } from '../query';
 import { BaseFirestoreRepository } from '../repository';
 
-export interface FirestoreRepository<
+export interface Firestore<
   EntityClass extends typeof Entity = any,
   // ConverterClass extends typeof FirestoreConverter = any,
 > {
@@ -22,7 +22,7 @@ export function FirestoreRepository({
   // Converter,
   Query,
   path,
-}: FirestoreRepository) {
+}: Firestore) {
   return function <T extends { new (...args: any[]): {} }>(target: T): any {
     // const __ConverterClass = Converter ?? FirestoreConverter;
     const __QueryClass = Query ?? FirestoreQuery;

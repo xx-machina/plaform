@@ -2,22 +2,22 @@ import { NotionConverter } from '../converter';
 import { Title, Relation, Status, Formula, RichText } from '../decorators';
 
 export class Entity {
-  @Title('タイトル')
+  @Title({name: 'タイトル'})
   title: string;
 
-  @Status('ステータス')
+  @Status({name: 'ステータス'})
   status: string;
 
-  @Relation('一次選考')
+  @Relation({name: '一次選考'})
   firstSelectionIds: string[];
 
-  @Formula('一次選考開始文(Discord)')
+  @Formula({name: '一次選考開始文(Discord)'})
   discordFirstSelectionMessage: string;
 
-  @Formula('二次選考開始文(Discord)')
+  @Formula({name: '二次選考開始文(Discord)'})
   discordSecondSelectionMessage: string;
 
-  @RichText('discordChannelId')
+  @RichText({name: 'discordChannelId'})
   discordChannelId: string;
 
   static from(obj: Partial<Entity>) {

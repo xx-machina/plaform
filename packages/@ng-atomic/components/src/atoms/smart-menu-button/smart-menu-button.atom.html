@@ -1,0 +1,21 @@
+<ng-container [ngSwitch]="items?.length ?? 0">
+  <ng-container *ngSwitchCase="0"></ng-container>
+  <ng-container *ngSwitchCase="1">
+    <button mat-icon-button (click)="action.emit(items[0])">
+      <mat-icon>{{ items[0]?.icon }}</mat-icon>
+    </button>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="items.length">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </ng-container>
+</ng-container>
+
+<mat-menu #menu="matMenu">
+  <button 
+    *ngFor="let item of items; trackBy: trackByItemId"
+    mat-menu-item 
+    (click)="action.emit(item)"
+  >{{ item.name }}</button>
+</mat-menu>

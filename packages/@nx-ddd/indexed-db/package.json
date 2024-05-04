@@ -2,11 +2,5 @@
   "name": "@nx-ddd/indexed-db",
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
-  "types": "./index.d.ts",
-  "peerDependencies": {
-    "@nx-ddd/common": "0.0.0-PLACEHOLDER",
-    "@nx-ddd/core": "0.0.0-PLACEHOLDER",
-    "tslib": "^2.3.0"
-  },
-  "dependencies": {}
+  "types": "./index.d.ts"
 }

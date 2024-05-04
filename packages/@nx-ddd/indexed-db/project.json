@@ -5,7 +5,7 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/@nx-ddd/indexed-db",
@@ -17,17 +17,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/indexed-db/**/package.json",
-          "packages/@nx-ddd/indexed-db/**/project.json"
-        ]
+        "lintFilePatterns": ["packages/@nx-ddd/indexed-db/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
+      "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/indexed-db"],
       "options": {
         "jestConfig": "packages/@nx-ddd/indexed-db/jest.config.ts",
@@ -35,19 +32,19 @@
       }
     },
     "publish": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@nx-ddd/indexed-db"
       }
     },
     "link": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["npm link"],
         "cwd": "dist/packages/@nx-ddd/indexed-db"
       }
     }
   },
-  "tags": ["package", "@nx-ddd"]
+  "tags": ["package"]
 }

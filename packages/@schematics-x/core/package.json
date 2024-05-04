@@ -1,6 +1,4 @@
 {
   "name": "@schematics-x/core",
-  "version": "0.0.0-PLACEHOLDER",
-  "peerDependencies": {},
-  "dependencies": {}
+  "version": "0.0.0-PLACEHOLDER"
 }

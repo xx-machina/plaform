@@ -1,5 +1,0 @@
-@use 'scoped-var/strict' as * with ($host: 'nested-menu');
-@use 'atomic/molecule' as *;
-:host {
-	@include molecule($host);
-}

@@ -1,6 +1,0 @@
-import { Routes } from '@angular/router';
-import { <%= classify(name) %><%= classify(type) %> } from './<%= dasherize(name) %>.<%= dasherize(type) %>';
-
-export const routes: Routes = [
-];
-

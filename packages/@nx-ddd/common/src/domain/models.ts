@@ -5,8 +5,8 @@ export type DomainLangMap<Entity> =  Partial<{[K in keyof Entity]: string}>
 
 export interface Entity<Id = string> {
   id: Id | null;
-  createdAt?: Dayjs | null;
-  updatedAt?: Dayjs | null;
+  createdAt: Dayjs | null;
+  updatedAt: Dayjs | null;
 }
 
 export type OmitGetter<T> = {
@@ -14,9 +14,9 @@ export type OmitGetter<T> = {
 };
 
 export class Entity { 
-  // static from<E extends Entity = any>(obj: Partial<OmitGetter<E>>): E {
-  //   return Object.assign(new this(), obj) as E;
-  // }
+  static from<E extends Entity = any>(obj: Partial<OmitGetter<E>>): E {
+    return Object.assign(new this(), obj) as E;
+  }
 
   static fromObj<T extends Entity = Entity>(obj: object): T {
     return Object.assign(new this(), {

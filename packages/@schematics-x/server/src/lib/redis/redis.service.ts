@@ -1,7 +1,7 @@
 import { Inject, Injectable, InjectionToken } from "@nx-ddd/core";
 import { createClient, commandOptions, SchemaFieldTypes, VectorAlgorithms } from 'redis';
-import { bufferFloat32, bufferFloat64, float32Buffer, float64Buffer } from "@machina/common/utils";
-import { Context } from '@machina/common/domain/models';
+import { bufferFloat32, bufferFloat64, float32Buffer, float64Buffer } from "../utils";
+import { Context } from '@schematics-x/server/models';
 
 export enum VectorSize {
   // TEST = 3,
@@ -53,12 +53,6 @@ export class RedisService {
     await this.client.hSet(`noderedis:contextes:${context.id}`, {
       ...context, embedding: this.toBuffer(context.embedding)
     });
-  }
-  
-  async list() {
-    const keys = await this.client.keys('noderedis:contextes:*')
-      .then(keys => keys.map(key => key.replace('noderedis:contextes:', '')));
-    return await Promise.all(keys.map(key => this.getContext(key)));
   }
 
   async getContext(id: string): Promise<Context> {

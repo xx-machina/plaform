@@ -1,4 +1,4 @@
-import omit from 'lodash.omit';
+import { omit } from 'lodash';
 
 export function reduceTree<T extends ExpandTreeNode>(tree: T, expandedOnly = true): T[] {
   if (expandedOnly && !tree.isExpanded) return [tree];

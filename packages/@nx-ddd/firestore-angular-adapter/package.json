@@ -1,14 +1,7 @@
 {
   "name": "@nx-ddd/firestore-angular-adapter",
   "version": "0.0.0-PLACEHOLDER",
-  "peerDependencies": {
-    "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0",
-    "@angular/fire": "^7.5.0",
-    "@nx-ddd/core": "0.0.0-PLACEHOLDER",
-    "@nx-ddd/firestore": "0.0.0-PLACEHOLDER",
-    "dayjs": "1.11.10",
-    "rxjs": "^7.0.0"
-  },
-  "dependencies": {}
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
 }

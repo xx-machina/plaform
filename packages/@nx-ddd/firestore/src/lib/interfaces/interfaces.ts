@@ -45,7 +45,6 @@ export type ToFirestoreData<Entity, Date> = {
 
 export interface DocumentReference<DocumentData, OriginalReference = any> {
   __ref?: OriginalReference,
-  exists(): Promise<boolean>;
   set(data: DocumentData, options?: any): Promise<void | any>;
   get(): Promise<DocumentSnapshot<DocumentData>>;
   update(data: DocumentData): Promise<void | any>;
@@ -56,19 +55,13 @@ export interface DocumentReference<DocumentData, OriginalReference = any> {
 export type FirestoreDocument<DocumentData> = DocumentReference<DocumentData>;
 
 export interface FirestoreCollection<DocumentData, RawFirestoreCollection = any> {
-  __ref?: RawFirestoreCollection;
+  __ref?: RawFirestoreCollection,
   stateChanges?: () => Observable<DocumentChangeAction<DocumentData>[]>;
   get(options?: GetOptions): Promise<QuerySnapshot<DocumentData>>;
 }
 
 export interface FirestoreCollectionGroup<DocumentData> {
-  __ref?: any;
-  stateChanges?: () => Observable<DocumentChangeAction<DocumentData>[]>;
-  get(options?: GetOptions): Promise<QuerySnapshot<DocumentData>>;
-}
-
-export interface FirestoreQuery<DocumentData> {
-  __ref?: any;
+  __ref?: any,
   stateChanges?: () => Observable<DocumentChangeAction<DocumentData>[]>;
   get(options?: GetOptions): Promise<QuerySnapshot<DocumentData>>;
 }
