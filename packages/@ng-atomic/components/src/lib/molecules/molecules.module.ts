@@ -1,16 +1,18 @@
 import { NgModule } from "@angular/core";
-import { provideComponent } from "@ng-atomic/common/core";
-import { NavigationListItemMoleculeStore } from "./navigation-list-item";
+import { provideComponent } from "@ng-atomic/core";
+import { NavigationListItemMoleculeStore } from "@ng-atomic/components/molecules/navigation-list-item";
 
-@NgModule({
-
-})
+@NgModule({})
 export class NgAtomicMoleculesModule {
   static forRoot() {
     return {
       ngModule: NgAtomicMoleculesModule,
       providers: [
-        provideComponent(NavigationListItemMoleculeStore, () => import('./navigation-list-item').then(m => m.NavigationListItemMolecule)),
+        provideComponent(
+          NavigationListItemMoleculeStore,
+          () => import('@ng-atomic/components/molecules/navigation-list-item')
+            .then(m => m.NavigationListItemMolecule)
+        ),
       ],
     };
   }

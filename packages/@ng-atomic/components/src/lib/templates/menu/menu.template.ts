@@ -19,6 +19,7 @@ export class MenuTemplateStore extends InjectableComponent {
     CommonModule,
     MenuHeaderOrganismStore,
     NavigationListOrganismStore,
+    // NavigationListOrganism,
     MenuFooterOrganismStore
   ],
   selector: 'templates-menu',

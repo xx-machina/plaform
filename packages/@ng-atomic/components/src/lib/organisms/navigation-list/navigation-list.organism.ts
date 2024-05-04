@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, Input, Directive, InjectionToken, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Directive, InjectionToken, inject, Type } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/core';
 import { Action } from '@ng-atomic/core';
-import { NavigationListItemMolecule, NavigationListItemMoleculeStore } from '@ng-atomic/components/molecules/navigation-list-item';
+import { NavigationListItemMolecule } from '@ng-atomic/components/molecules/navigation-list-item';
 
+export const Abstract = function (target) {
+  (target as any)['TOKEN'] = new InjectionToken<Type<any>>(`[@ng-atomic/components] ${target.name}`);
+}
+
+@Abstract
 @Directive({ standalone: true, selector: 'organisms-navigation-list' })
 export class NavigationListOrganismStore extends InjectableComponent {
-  static readonly TOKEN = new InjectionToken('[@ng-atomic/components] NavigationListOrganismStore');
-
   @Input() actions: Action<string>[] = [];
 }
 

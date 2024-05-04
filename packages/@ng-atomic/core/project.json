@@ -45,6 +45,13 @@
         ]
       }
     },
+    "link": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npm link"],
+        "cwd": "dist/packages/@ng-atomic/core"
+      }
+    },
     "publish": {
       "executor": "nx:run-commands",
       "options": {

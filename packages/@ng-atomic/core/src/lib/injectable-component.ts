@@ -1,5 +1,6 @@
-import { ComponentRef, DestroyRef, Directive, ElementRef, EmbeddedViewRef, EventEmitter, Injector, Input, Output, Type, ViewContainerRef, inject } from "@angular/core";
+import { ComponentMirror, ComponentRef, DestroyRef, Directive, ElementRef, EmbeddedViewRef, EventEmitter, Injector, Input, Output, SimpleChange, SimpleChanges, Type, ViewContainerRef, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { reflectComponentType } from "@angular/core";
 import { Action } from "./action";
 import { NgAtomicComponentStore } from "./component-store";
 
@@ -21,16 +22,33 @@ export function provideComponent<ABS = any, IMPL = any>(
   return { provide: (abstract as any)['TOKEN'], useValue: loadComponentType };
 }
 
-export function getInputs<T>(type: Type<T>, meta: 'ɵcmp' | 'ɵdir' = 'ɵcmp'): [string, string][] {
-  return Object.entries((type as any)[meta]['inputs']);
+export enum HostType {
+  Dir = 'ɵdir',
+  Cmp = 'ɵcmp',
 }
 
-export function getInputsByComponentRef<T = any>(cmp: ComponentRef<T>): [string, string][] {
-  return getInputs((cmp.instance as any).constructor as Type<T>);
+type IO = {propName: string, templateName: string};
+
+export function getMeta<T>(type: Type<T>) {
+  return (type as any)[HostType.Cmp] || (type as any)[HostType.Dir];
 }
 
-export function getOutputsByInstance<T = any>(cmp: ComponentRef<T>): [string, string][] {
-  return Object.entries((cmp.instance as any).constructor['ɵcmp']['outputs']);
+export function getInputs<T>(type: Type<T>): IO[] {
+  return Object.entries<string>(getMeta(type)['inputs'])
+    .map(([propName, templateName]) => ({propName, templateName}));
+}
+
+export function getOutputs<T>(type: Type<T>): IO[] {
+  return Object.entries<string>(getMeta(type)['outputs'])
+    .map(([propName, templateName]) => ({propName, templateName}));
+}
+
+export function getInputsByComponentRef<T extends {} = any>(cmp: ComponentRef<T>): IO[] {
+  return getInputs(cmp.instance.constructor as Type<T>);
+}
+
+export function getOutputsByInstance<T extends {} = any>(cmp: ComponentRef<T>): IO[] {
+  return getOutputs(cmp.instance.constructor as Type<T>);
 }
 
 @Directive({ standalone: true })
@@ -39,9 +57,11 @@ export abstract class InjectableComponent<T extends NgAtomicComponentStore = any
   readonly #injector = inject(Injector);
   readonly #destroy$ = inject(DestroyRef);
   readonly #el = inject(ElementRef);
+  #component: ComponentRef<T> | null = null;
+  #componentMirror: ComponentMirror<T> | null = null;
 
-  #setAttribute(component: ComponentRef<T>) {
-    const hostElement = (component.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+  #setAttribute() {
+    const hostElement = (this.#component!.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
     const attributes: NamedNodeMap = this.#el.nativeElement.attributes;
     for (let i = 0; i < attributes.length; i++) {
       const attr = attributes.item(i)!;
@@ -51,29 +71,64 @@ export abstract class InjectableComponent<T extends NgAtomicComponentStore = any
     }
   }
 
-  #bindInputs(component: ComponentRef<T>) {
-    Object.entries<string>((this.constructor as any)['ɵdir']['inputs']).forEach(([key, value]: [string, string]) => {
-      if (key === 'injectable') return;
-      component.setInput(key, (this as any)[value]);
-    });
+  #bindInputs() {
+    // for (const input of this.#componentMirror!.inputs) {
+    //   if (input.propName === 'injectable') return;
+    //   this.#component!.setInput(input.propName, (this as any)[input.propName]);
+    // }
+
+    for (const input of getInputs(this.constructor as Type<T>)) {
+      if (input.propName === 'injectable') return;
+      this.#component!.setInput(input.propName, (this as any)[input.propName]);
+    }
   }
 
-  #bindOutputs(component: ComponentRef<T>) {
-    getOutputsByInstance(component).forEach(([alias, attr]: [string, string]) => {
-      (component.instance as any)[attr].pipe(
+  #bindOutputs() {
+    // for (const output of this.#componentMirror!.outputs) {
+    //   (this.#component!.instance as any)[output.templateName].pipe(
+    //     takeUntilDestroyed(this.#destroy$)
+    //   ).subscribe((value: any) => (this as any)[output.templateName].emit(value));
+    // }
+
+    for (const output of getOutputs(this.constructor as Type<T>)) {
+      (this.#component!.instance as any)[output.templateName]?.pipe(
         takeUntilDestroyed(this.#destroy$)
-      ).subscribe((value: any) => (this as any)[attr].emit(value));
-    });
+      ).subscribe((value: any) => {
+        console.debug('output=>>', output.templateName, value);
+        (this as any)[output.templateName].emit(value);
+      });
+    }
   }
 
   ngOnInit() {
     if (this.injectable) {
       this.#injector.get<TypeFactoryAsync<T>>((this.constructor as any)['TOKEN'])().then(type => {
-        const ref = this.#outlet.createComponent(type);
-        this.#bindInputs(ref);
-        this.#bindOutputs(ref);
-        this.#setAttribute(ref);
+        this.#component = this.#outlet.createComponent(type);
+        this.#componentMirror = reflectComponentType(type);
+        this.#bindInputs();
+        this.#bindOutputs();
+        this.#setAttribute();
       });
+    }
+  }
+
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    if (this.injectable && this.#componentMirror) {
+      // for (const input of this.#componentMirror.inputs) {
+      //   if (input.propName === 'injectable') return;
+      //   const change = simpleChanges[input.propName] as SimpleChange;
+      //   if (change) {
+      //     this.#component!.setInput(input.propName, change.currentValue);
+      //   }
+      // }
+
+      for (const input of getInputs(this.constructor as Type<T>)) {
+        if (input.propName === 'injectable') return;
+        const change = simpleChanges[input.propName] as SimpleChange;
+        if (change) {
+          this.#component!.setInput(input.propName, change.currentValue);
+        }
+      }
     }
   }
 

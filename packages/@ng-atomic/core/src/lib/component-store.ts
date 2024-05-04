@@ -12,7 +12,8 @@ export class NgAtomicComponentStore {
 
 @Directive({ standalone: true })
 export class NgAtomicComponent extends InjectableComponent {
-  protected _effectMap = new EffectMap();
+  // @ts-ignore
+  protected _effectMap: EffectMap;
   protected root = inject(NgAtomicRootActionStore);
   #destroy$ = inject(DestroyRef);
 

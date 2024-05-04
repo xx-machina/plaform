@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
-import { provideComponent } from "@ng-atomic/common/core";
-import { IconButtonMenuTemplateStore } from "./icon-button-menu";
-import { MenuTemplateStore } from "./menu";
+import { provideComponent } from "@ng-atomic/core";
+import { IconButtonMenuTemplateStore } from "@ng-atomic/components/templates/icon-button-menu";
+import { MenuTemplateStore } from "@ng-atomic/components/templates/menu";
 
 @NgModule({})
 export class NgAtomicTemplatesModule {
@@ -9,8 +9,8 @@ export class NgAtomicTemplatesModule {
     return {
       ngModule: NgAtomicTemplatesModule,
       providers: [
-        provideComponent(IconButtonMenuTemplateStore, () => import('./icon-button-menu').then(m => m.IconButtonMenuTemplate)),
-        provideComponent(MenuTemplateStore, () => import('./menu').then(m => m.MenuTemplate)),
+        provideComponent(IconButtonMenuTemplateStore, () => import('@ng-atomic/components/templates/icon-button-menu').then(m => m.IconButtonMenuTemplate)),
+        provideComponent(MenuTemplateStore, () => import('@ng-atomic/components/templates/menu').then(m => m.MenuTemplate)),
       ],
     }
   }
