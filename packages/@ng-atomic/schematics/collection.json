@@ -1,5 +1,5 @@
 {
-  "extends": ["schematics-x"],
+  "extends": [],
   "schematics": {
     "style-header": {
       "aliases": ["sh"],

@@ -1,6 +1,6 @@
 import { Inject, Injectable, InjectionToken } from "@nx-ddd/core";
 import { Configuration, OpenAIApi } from "openai";
-import { BaseAdapter } from "../base";
+import { BaseAdapter, Role } from "../base";
 
 export interface OpenAiConfig {
   token: string;
@@ -35,5 +35,16 @@ export class OpenAiAdapter extends BaseAdapter {
       max_tokens,
     });
     return res.data.choices?.[0].text;
+  }
+
+  async chatComplete(messages: { role: Role, content: string }[]): Promise<string> {
+    const res = await this.openAi.createChatCompletion({
+      model: 'gpt-35-turbo',
+      messages,
+      temperature: 0,
+      stop: '\n',
+      max_tokens: 1024,
+    });
+    return res.data.choices?.[0].message.content;
   }
 }

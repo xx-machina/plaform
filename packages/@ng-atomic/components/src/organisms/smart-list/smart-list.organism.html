@@ -6,6 +6,7 @@
         <span mat-line>{{ item | dataAccessor:'__title' }}</span>
         <span mat-line>{{ item | dataAccessor:'__desc' }}</span>
       </mat-list-item>
+      <mat-divider *ngIf="statuses.length === 1"></mat-divider>
     </ng-container>
     <mat-divider></mat-divider>
   </ng-container>

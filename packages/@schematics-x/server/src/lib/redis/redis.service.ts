@@ -54,6 +54,12 @@ export class RedisService {
       ...context, embedding: this.toBuffer(context.embedding)
     });
   }
+  
+  async list() {
+    const keys = await this.client.keys('noderedis:contextes:*')
+      .then(keys => keys.map(key => key.replace('noderedis:contextes:', '')));
+    return await Promise.all(keys.map(key => this.getContext(key)));
+  }
 
   async getContext(id: string): Promise<Context> {
     const context = await this.client.hGetAll(`noderedis:contextes:${id}`);

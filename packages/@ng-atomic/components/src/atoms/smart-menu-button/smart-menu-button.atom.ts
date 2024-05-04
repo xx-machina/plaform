@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { Action, ActionItem } from '@ng-atomic/common/models';
+import { Action } from '@ng-atomic/common/models';
 
 @Component({
   selector: 'atoms-smart-menu-button',
@@ -9,10 +9,10 @@ import { Action, ActionItem } from '@ng-atomic/common/models';
 })
 export class SmartMenuButtonAtom {
   @Input()
-  items: ActionItem[] = [];
+  items: Action[] = [];
 
   @Output()
   action = new EventEmitter<Action>();
 
-  trackByItemId = (index: number, item: ActionItem): string => item.id;
+  trackByItemId = (index: number, item: Action): string => item.id;
 }
