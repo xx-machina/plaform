@@ -1,6 +1,6 @@
 {
   "name": "platform",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -10,6 +10,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",
+    "scripts": "ts-node -r tsconfig-paths/register -P tools/tsconfig.tools.json",
+    "scripts:set-package-versions": "npm run scripts scripts/set-package-versions.ts",
     "e2e": "ng e2e",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
@@ -28,11 +30,11 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help",
     "publish:all": "npm run publish:common && npm run publish:core && npm run publish:domain && npm run publish:executors && npm run publish:infrastructure",
-    "publish:common": "cd dist/libs/common && npm version $PACKAGE_VERSION && npm publish --access=public",
-    "publish:core": "cd dist/libs/core && npm version $PACKAGE_VERSION && npm publish --access=public",
-    "publish:domain": "cd dist/libs/domain && npm version $PACKAGE_VERSION && npm publish --access public",
-    "publish:executors": "cd dist/libs/executors && npm version $PACKAGE_VERSION && npm publish --access=public",
-    "publish:infrastructure": "cd dist/libs/infrastructure && npm version $PACKAGE_VERSION && npm publish --access public",
+    "publish:common": "cd dist/libs/common && npm publish --access=public",
+    "publish:core": "cd dist/libs/core && npm publish --access=public",
+    "publish:domain": "cd dist/libs/domain && npm publish --access public",
+    "publish:executors": "cd dist/libs/executors && npm publish --access=public",
+    "publish:infrastructure": "cd dist/libs/infrastructure && npm publish --access public",
     "prepare": "npx simple-git-hooks",
     "link:all": "npm run link:common && npm run link:core && npm run link:domain && npm run link:executors && npm run link:infrastructure",
     "link:common": "cd dist/libs/common && npm link",
@@ -47,7 +49,7 @@
     "@angular/common": "13.3.11",
     "@angular/compiler": "13.3.11",
     "@angular/core": "13.3.11",
-    "@angular/fire": "7.0.0",
+    "@angular/fire": "^7.2.1",
     "@angular/forms": "13.3.11",
     "@angular/platform-browser": "13.3.11",
     "@angular/platform-browser-dynamic": "13.3.11",
@@ -118,6 +120,10 @@
     "ts-jest": "27.0.5",
     "ts-node": "~9.1.1",
     "typescript": "4.6.4"
+  },
+  "resolutions": {
+    "@nestjs/common": "^8.0.0",
+    "@nestjs/core": "^8.0.0"
   },
   "commitlint": {
     "extends": [
