@@ -41,7 +41,7 @@
       }
     },
     "publish": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@nx-ddd/x"

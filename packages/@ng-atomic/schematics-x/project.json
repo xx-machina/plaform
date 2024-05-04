@@ -45,14 +45,14 @@
       }
     },
     "publish": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["npm publish --access=public"],
         "cwd": "dist/packages/@ng-atomic/schematics-x"
       }
     },
     "link": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["npm link"],
         "cwd": "dist/packages/@ng-atomic/schematics-x"
