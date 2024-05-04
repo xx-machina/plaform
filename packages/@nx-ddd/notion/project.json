@@ -1,0 +1,50 @@
+{
+  "name": "notion",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@nx-ddd/notion/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@nx-ddd/notion",
+        "tsConfig": "packages/@nx-ddd/notion/tsconfig.lib.json",
+        "packageJson": "packages/@nx-ddd/notion/package.json",
+        "rootDir": "packages/@nx-ddd/notion/src/lib",
+        "main": "packages/@nx-ddd/notion/src/lib/index.ts",
+        "assets": ["packages/@nx-ddd/notion/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/@nx-ddd/notion/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/@nx-ddd/notion"],
+      "options": {
+        "jestConfig": "packages/@nx-ddd/notion/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/@nx-ddd/notion"
+      }
+    },
+    "link": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm link"],
+        "cwd": "dist/packages/@nx-ddd/notion"
+      }
+    }
+  },
+  "tags": []
+}

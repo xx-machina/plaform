@@ -1,0 +1,74 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@ng-atomic/web-api/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["packages/@ng-atomic/web-api/**/*.ts"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/ng-atomic/web-api"],
+      "options": {
+        "jestConfig": "packages/@ng-atomic/web-api/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "pack": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@ng-atomic/web-api",
+        "tsConfig": "packages/@ng-atomic/web-api/tsconfig.lib.json",
+        "packageJson": "packages/@ng-atomic/web-api/package.json",
+        "main": "packages/@ng-atomic/web-api/src/main.ts",
+        "assets": ["packages/@ng-atomic/web-api/*.md"]
+      }
+    },
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@ng-atomic/web-api",
+        "main": "packages/@ng-atomic/web-api/src/main.ts",
+        "tsConfig": "packages/@ng-atomic/web-api/tsconfig.app.json",
+        "assets": [],
+        "target": "node",
+        "compiler": "tsc"
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": []
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "web-api:build"
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/@ng-atomic/web-api"
+      }
+    },
+    "link": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm link"],
+        "cwd": "dist/packages/@ng-atomic/web-api"
+      }
+    }
+  },
+  "tags": []
+}

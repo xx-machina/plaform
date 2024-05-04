@@ -1,0 +1,50 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@ng-atomic/executors/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@ng-atomic/executors",
+        "main": "packages/@ng-atomic/executors/src/index.ts",
+        "tsConfig": "packages/@ng-atomic/executors/tsconfig.lib.json",
+        "assets": [
+          "packages/@ng-atomic/executors/*.md",
+          "packages/@ng-atomic/executors/executors.json",
+          "packages/@ng-atomic/executors/src/**/*.json"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/@ng-atomic/executors/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/ng-atomic/executors"],
+      "options": {
+        "jestConfig": "packages/@ng-atomic/executors/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/@ng-atomic/executors"
+      }
+    },
+    "link": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm link"],
+        "cwd": "dist/packages/@ng-atomic/executors"
+      }
+    }
+  },
+  "tags": []
+}

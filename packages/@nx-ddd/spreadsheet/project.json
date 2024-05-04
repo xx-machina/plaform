@@ -1,0 +1,50 @@
+{
+  "name": "spreadsheet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@nx-ddd/spreadsheet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@nx-ddd/spreadsheet",
+        "tsConfig": "packages/@nx-ddd/spreadsheet/tsconfig.lib.json",
+        "packageJson": "packages/@nx-ddd/spreadsheet/package.json",
+        "rootDir": "packages/@nx-ddd/spreadsheet/src/lib",
+        "main": "packages/@nx-ddd/spreadsheet/src/lib/index.ts",
+        "assets": ["packages/@nx-ddd/spreadsheet/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/@nx-ddd/spreadsheet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/@nx-ddd/spreadsheet"],
+      "options": {
+        "jestConfig": "packages/@nx-ddd/spreadsheet/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/@nx-ddd/spreadsheet"
+      }
+    },
+    "link": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm link"],
+        "cwd": "dist/packages/@nx-ddd/spreadsheet"
+      }
+    }
+  },
+  "tags": []
+}

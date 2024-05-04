@@ -1,0 +1,6 @@
+@use 'scoped-var/strict' as * with ($host: 'example');
+@use 'atomic/atom' as *;
+
+:host {
+  @include atom($host);
+}

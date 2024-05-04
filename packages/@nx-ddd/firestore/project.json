@@ -1,0 +1,50 @@
+{
+  "name": "firestore",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@nx-ddd/firestore/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@nx-ddd/firestore",
+        "tsConfig": "packages/@nx-ddd/firestore/tsconfig.lib.json",
+        "packageJson": "packages/@nx-ddd/firestore/package.json",
+        "rootDir": "packages/@nx-ddd/firestore/src/lib",
+        "main": "packages/@nx-ddd/firestore/src/lib/index.ts",
+        "assets": ["packages/@nx-ddd/firestore/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/@nx-ddd/firestore/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/@nx-ddd/firestore"],
+      "options": {
+        "jestConfig": "packages/@nx-ddd/firestore/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/@nx-ddd/firestore"
+      }
+    },
+    "link": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm link"],
+        "cwd": "dist/packages/@nx-ddd/firestore"
+      }
+    }
+  },
+  "tags": []
+}

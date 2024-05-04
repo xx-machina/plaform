@@ -13,7 +13,6 @@
   "affected": {
     "defaultBase": "master"
   },
-  "npmScope": "@nx-ddd",
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/nx-cloud",

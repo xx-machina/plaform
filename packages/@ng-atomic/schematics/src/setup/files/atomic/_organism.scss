@@ -1,0 +1,6 @@
+@use 'scoped-var' as *;
+@use 'atomic/component' as *;
+
+@mixin organism($host) {
+	@include component($host);
+}
