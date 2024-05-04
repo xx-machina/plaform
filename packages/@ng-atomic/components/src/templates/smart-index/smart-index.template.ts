@@ -1,35 +1,37 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { CommonModule } from '@angular/common';
-import { AutoLayoutModule } from '@ng-atomic/components/frames/auto-layout';
-import { ScrollModule } from '@ng-atomic/components/frames/scroll';
-import { HeaderModule } from '@ng-atomic/components/molecules/header';
-import { SmartTableModule } from '@ng-atomic/components/organisms/smart-table';
-import { SmartListModule } from '@ng-atomic/components/organisms/smart-list';
-import { NavigatorModule } from '@ng-atomic/components/organisms/navigator';
-import { PaginatorModule } from '@ng-atomic/components/organisms/paginator';
+import { AutoLayoutFrame } from '@ng-atomic/components/frames/auto-layout';
+import { ScrollFrame } from '@ng-atomic/components/frames/scroll';
+import { HeaderMolecule } from '@ng-atomic/components/molecules/header';
+import { SmartTableOrganism } from '@ng-atomic/components/organisms/smart-table';
+import { SmartListOrganism, ActionId as ListActionId } from '@ng-atomic/components/organisms/smart-list';
+import { NavigatorOrganism } from '@ng-atomic/components/organisms/navigator';
+import { PaginatorOrganism } from '@ng-atomic/components/organisms/paginator';
 import { Action } from '@ng-atomic/common/models';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
+import { GridToolbarOrganism } from '@ng-atomic/components/organisms/grid-toolbar';
+import { FiltersSectionOrganism } from '@ng-atomic/components/organisms/filters-section';
 
 export enum ActionId {
   BACK = '[@ng-atomic/components/templates/smart-index] Back',
   TABLE_HEADER_CLICK = '[@ng-atomic/components/templates/smart-index] Table Header Click',
+  ITEM_CLICK = '[@ng-atomic/components/templates/smart-index] Item Click',
 }
 
 @Component({
   standalone: true,
   imports: [
     CommonModule,
-    // Frames
-    AutoLayoutModule,
-    ScrollModule,
-    // Organisms
-    PaginatorModule,
-    SmartTableModule,
-    SmartListModule,
-    NavigatorModule,
-    // Molecules
-    HeaderModule,
+    AutoLayoutFrame,
+    ScrollFrame,
+    GridToolbarOrganism,
+    PaginatorOrganism,
+    SmartTableOrganism,
+    SmartListOrganism,
+    NavigatorOrganism,
+    FiltersSectionOrganism,
+    HeaderMolecule,
   ],
   selector: 'templates-smart-index',
   templateUrl: './smart-index.template.html',
@@ -39,6 +41,16 @@ export enum ActionId {
 })
 export class SmartIndexTemplate<T> {
   protected ActionId = ActionId;
+
+  @Input()
+  tableChildrenKey: string = '';
+
+  @Input()
+  form = new FormGroup({
+    pageIndex: new FormControl(0),
+    pageSize: new FormControl(0),
+    length: new FormControl(0),
+  });
 
   @Input()
   queryControl = new FormControl<string>('');
@@ -103,6 +115,8 @@ export class SmartIndexTemplate<T> {
 
   onAction(action: Action): void {
     switch(action.id) {
+      case ListActionId.CLICK_ITEM:
+        return this.action.emit({...action, id: ActionId.ITEM_CLICK});
       default: return this.action.emit(action);
     }
   }

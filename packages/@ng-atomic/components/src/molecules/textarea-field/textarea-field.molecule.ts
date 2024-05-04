@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 import { Action } from '@ng-atomic/common/models';
 
 export enum ActionId {
@@ -8,6 +10,12 @@ export enum ActionId {
 
 @Component({
   selector: 'molecules-textarea-field',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatInputModule,
+  ],
   templateUrl: './textarea-field.molecule.html',
   styleUrls: ['./textarea-field.molecule.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

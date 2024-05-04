@@ -1,8 +1,14 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
+import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 
 @Component({
   selector: 'frames-drawer',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatSidenavModule,
+  ],
   templateUrl: './drawer.frame.html',
   styleUrls: ['./drawer.frame.scss'],
   // changeDetection: ChangeDetectionStrategy.OnPush,

@@ -7,14 +7,17 @@
   >
     <molecules-header [title]="title" [description]="description"></molecules-header>
   </organisms-navigator>
-  <frames-auto-layout vertical contents>
-    <ng-container *ngIf="device === 'sp'">
+  <frames-auto-layout vertical contents [ngSwitch]="device">
+    <ng-container *ngSwitchCase="'sp'">
       <organisms-smart-list
         [items]="items"
-        (action)="action.emit($event)"
+        (action)="onAction($event)"
       ></organisms-smart-list>
     </ng-container>
-    <ng-container *ngIf="device !== 'sp'">
+    <ng-container *ngSwitchDefault>
+      <!-- <organisms-grid-toolbar
+        [columns]="properties"
+      ></organisms-grid-toolbar> -->
       <organisms-smart-table
         [items]="items"
         [itemActions]="itemActions"
@@ -22,13 +25,15 @@
         [selectedIdSet]="selectedIdSet"
         [sortKey]="sortKey"
         [sortOrder]="sortOrder"
-        (action)="action.emit($event)"
+        [childrenKey]="tableChildrenKey"
+        (action)="onAction($event)"
         (checkboxClick)="checkboxClick.emit($event)"
-        (headerClick)="action.emit({id: ActionId.TABLE_HEADER_CLICK, payload: $event})"
+        (headerClick)="onAction({id: ActionId.TABLE_HEADER_CLICK, payload: $event})"
       ></organisms-smart-table>
       <organisms-paginator
         *ngIf="page"
         [control]="queryControl"
+        [form]="form"
         [page]="page"
         [pageSizeOptions]="pageSizeOptions"
         [placeholder]="queryPlaceholder"

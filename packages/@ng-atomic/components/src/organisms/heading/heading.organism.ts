@@ -1,7 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'organisms-heading',
+  standalone: true,
+  imports: [
+    CommonModule,
+  ],
   templateUrl: './heading.organism.html',
   styleUrls: ['./heading.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

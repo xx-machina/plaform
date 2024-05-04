@@ -31,9 +31,9 @@ export interface TwitterToken {
 export interface TwitterOauth2Config {
   client_id: string;
   client_secret: string;
-  callback: '';
+  callback: string;
   scopes: [];
-  token: TwitterToken;
+  // token: TwitterToken;
 }
 
 export interface TwitterOauthConfig {

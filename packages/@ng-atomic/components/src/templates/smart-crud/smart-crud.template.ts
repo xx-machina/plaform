@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ScrollModule } from '@ng-atomic/components/frames/scroll';
-import { AutoLayoutModule } from '@ng-atomic/components/frames/auto-layout';
-import { HeaderModule } from '@ng-atomic/components/molecules/header';
-import { ActionButtonsSectionModule } from '@ng-atomic/components/organisms/action-buttons-section';
-import { NavigatorModule } from '@ng-atomic/components/organisms/navigator';
-import { TextareaSectionModule } from '@ng-atomic/components/organisms/textarea-section';
-import { TextInputSectionModule } from '@ng-atomic/components/organisms/text-input-section';
-import { DateInputSectionModule } from '@ng-atomic/components/organisms/date-input-section';
-import { SelectInputSectionModule } from '@ng-atomic/components/organisms/select-input-section';
+import { ScrollFrame } from '@ng-atomic/components/frames/scroll';
+import { AutoLayoutFrame } from '@ng-atomic/components/frames/auto-layout';
+import { HeaderMolecule } from '@ng-atomic/components/molecules/header';
+import { ActionButtonsSectionOrganism } from '@ng-atomic/components/organisms/action-buttons-section';
+import { NavigatorOrganism } from '@ng-atomic/components/organisms/navigator';
+import { TextareaSectionOrganism } from '@ng-atomic/components/organisms/textarea-section';
+import { TextInputSectionOrganism } from '@ng-atomic/components/organisms/text-input-section';
+import { DateInputSectionOrganism } from '@ng-atomic/components/organisms/date-input-section';
+import { SelectInputSectionOrganism } from '@ng-atomic/components/organisms/select-input-section';
 import { SmartFieldModule } from '@ng-atomic/common/pipes/smart-field';
 import { DomainModule } from '@ng-atomic/common/pipes/domain';
 import { AbstractControl } from '@angular/forms';
@@ -28,21 +28,17 @@ export enum ActionId {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    // Pipes
     DomainModule,
     SmartFieldModule,
-    // Frames
-    AutoLayoutModule,
-    ScrollModule,
-    // Organisms
-    ActionButtonsSectionModule,
-    NavigatorModule,
-    DateInputSectionModule,
-    TextInputSectionModule,
-    TextareaSectionModule,
-    SelectInputSectionModule,
-    // Molecules
-    HeaderModule,
+    AutoLayoutFrame,
+    ScrollFrame,
+    ActionButtonsSectionOrganism,
+    NavigatorOrganism,
+    DateInputSectionOrganism,
+    TextInputSectionOrganism,
+    TextareaSectionOrganism,
+    SelectInputSectionOrganism,
+    HeaderMolecule,
   ],
   selector: 'templates-smart-crud',
   templateUrl: './smart-crud.template.html',

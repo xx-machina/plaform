@@ -1,10 +1,22 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatDayjsDateModule } from '@ng-atomic/common/utils';
 import dayjs, { Dayjs } from 'dayjs';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'molecules-date-input-field',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatDayjsDateModule,
+  ],
   templateUrl: './date-input-field.molecule.html',
   styleUrls: ['./date-input-field.molecule.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

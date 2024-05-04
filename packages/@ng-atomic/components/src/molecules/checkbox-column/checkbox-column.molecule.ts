@@ -1,8 +1,20 @@
 import { CdkCellDef, CdkColumnDef, CdkHeaderCellDef, CdkTable } from '@angular/cdk/table';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Optional, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'molecules-checkbox-column',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatCheckboxModule,
+  ],
+  providers: [
+    {provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } as MatCheckboxDefaultOptions}
+  ],
   templateUrl: './checkbox-column.molecule.html',
   styleUrls: ['./checkbox-column.molecule.scss'],
   encapsulation: ViewEncapsulation.None,

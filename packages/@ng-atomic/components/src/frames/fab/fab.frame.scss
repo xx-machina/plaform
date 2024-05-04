@@ -1,0 +1,19 @@
+@use 'scoped-var/strict' as * with ($host: 'fab');
+// @use 'atomic/frame' as *;
+
+:host {
+	// @include frame($host);
+}
+
+:host {
+	display: block;
+	width: 100%;
+	height: 100%;
+	position: relative;
+
+	button {
+		position: absolute;
+		bottom: 16px;
+		right: 16px;
+	}
+}

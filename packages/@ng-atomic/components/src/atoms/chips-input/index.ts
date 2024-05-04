@@ -1,2 +1,1 @@
-export { ChipsInputAtom } from './chips-input.atom';
-export { ChipsInputModule } from './chips-input.module';
+export * from './chips-input.atom';

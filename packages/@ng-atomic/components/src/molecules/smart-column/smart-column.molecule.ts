@@ -1,8 +1,26 @@
-import { ChangeDetectionStrategy, Input, Output, EventEmitter, Component, ViewEncapsulation, Optional, Inject, inject, ViewChild } from '@angular/core';
-import { MatLegacyColumnDef as MatColumnDef, MatLegacyTextColumn as MatTextColumn } from '@angular/material/legacy-table';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Input, Output, EventEmitter, Component, ViewEncapsulation } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule, MatTextColumn } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { DataAccessorPipe } from '@ng-atomic/common/pipes/data-accessor';
+import { SmartExpModule } from '@ng-atomic/common/pipes/smart-exp';
 
 @Component({
   selector: 'molecules-smart-column',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ClipboardModule,
+    SmartExpModule,
+    DataAccessorPipe,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatTooltipModule,
+  ],
   templateUrl: './smart-column.molecule.html',
   styleUrls: ['./smart-column.molecule.scss'],
   encapsulation: ViewEncapsulation.None,

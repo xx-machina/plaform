@@ -1,15 +1,44 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
-import { FormControl } from '@angular/forms';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ChipsManager } from '@ng-atomic/common/services/chips-manager';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
 
 @Component({
   selector: 'atoms-chips-input',
-  templateUrl: './chips-input.atom.html',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatChipsModule,
+    MatIconModule,
+    MatInputModule,
+  ],
+  template: `
+    <mat-chip-grid #chipGrid aria-label="Enter fruits">
+      <mat-chip-row *ngFor="let chip of chipsManager.chips"
+        (removed)="remove(chip)"
+        [editable]="false"
+      >
+        {{ chip }}
+        <button matChipRemove><mat-icon>cancel</mat-icon></button>
+      </mat-chip-row>
+      <input
+        matInput
+        [placeholder]="placeholder"
+        [matChipInputFor]="chipGrid"
+        [matChipInputSeparatorKeyCodes]="separators"
+        [matChipInputAddOnBlur]="true"
+        (matChipInputTokenEnd)="onChiInputTokenEnd($event)"
+      >
+    </mat-chip-grid>
+  `,
   styleUrls: ['./chips-input.atom.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ChipsManager],

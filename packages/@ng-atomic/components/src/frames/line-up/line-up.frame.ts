@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Injectable, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { LINE_UP_ANIMATIONS } from './line-up.animations';
@@ -39,10 +38,16 @@ export class LineUpFrameService {
   standalone: true,
   imports: [
     CommonModule,
-    MatProgressSpinnerModule
   ],
   selector: 'frames-line-up',
-  templateUrl: './line-up.frame.html',
+  template: `
+    <div class="main" [@modeChangeForMain]="mode" #main>
+      <ng-content select="[main]"></ng-content>
+    </div>
+    <div class="next" [@modeChangeForNext]="mode" #next>
+      <ng-content select="[next]"></ng-content>
+    </div>
+  `,
   styleUrls: ['./line-up.frame.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
   animations: LINE_UP_ANIMATIONS,

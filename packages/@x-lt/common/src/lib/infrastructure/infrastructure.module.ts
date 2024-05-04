@@ -14,6 +14,11 @@ export interface InfrastructureConfig {
     accessToken: string,
   },
   stripe: StripeConfig,
+  firebase: {
+    serviceAccount: any;
+    projectId?: string,
+    storageBucket?: string,
+  },
 }
 
 @NxModule({})

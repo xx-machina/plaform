@@ -1,2 +1,1 @@
-export { HeaderMolecule } from './header.molecule';
-export { HeaderModule } from './header.module';
+export * from './header.molecule';

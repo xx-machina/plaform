@@ -1,2 +1,1 @@
-export { SmartMenuFrame } from './smart-menu.frame';
-export { SmartMenuModule } from './smart-menu.module';
+export * from './smart-menu.frame';

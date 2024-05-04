@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="items" matSort matSortDisableClear matSortDirection="desc">
+<table mat-table [dataSource]="dataSource" matSort matSortDisableClear matSortDirection="desc">
   <ng-container *ngFor="let name of columns; trackBy: trackByColumnName" [ngSwitch]="name">
     <molecules-checkbox-column
       *ngSwitchCase="'__checkbox'"
@@ -12,15 +12,25 @@
       [itemActions]="itemActions"
       (action)="action.emit($event)"
     ></molecules-actions-column>
-    <molecules-smart-column
-      *ngSwitchDefault
-      [name]="name"
-      [headerText]="name | D"
-      [sort]="sort?.key === name ? sort?.order : 'none'"
-      (headerClick)="headerClick.emit(name)"
-    ></molecules-smart-column>
+    <ng-container *ngSwitchDefault>
+      <molecules-tree-column
+        *ngIf="name.startsWith('__tree_')"
+        [name]="name"
+        [headerText]="name | D"
+        [sort]="sort?.key === name ? sort?.order : 'none'"
+        [treeControl]="treeControl"
+        (headerClick)="headerClick.emit(name)"
+      ></molecules-tree-column>
+      <molecules-smart-column
+        *ngIf="!name.startsWith('__tree_')"
+        [name]="name"
+        [headerText]="name | D"
+        [sort]="sort?.key === name ? sort?.order : 'none'"
+        (headerClick)="headerClick.emit(name)"
+      ></molecules-smart-column>
+    </ng-container>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
   <tr mat-row *matRowDef="let item; columns: columns;"></tr>
+  <div class="mat-row" *matNoDataRow>No Data</div>
 </table>
-<div *ngIf="!items?.length" class="no-data-message">データがありません。</div>

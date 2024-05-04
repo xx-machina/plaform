@@ -1,0 +1,39 @@
+@use 'scoped-var/strict' as * with ($host: 'loading');
+// @use 'atomic/frame' as *;
+:host {
+	// @include frame($host);
+}
+
+:host {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+
+	.loading {
+		position: absolute;
+		z-index: 10000;
+		
+		display: flex;
+		width: 100%;
+		height: 100%;
+
+		justify-content: center;
+		align-items: center;
+
+		background-color: rgba(0, 0, 0, 0.4);
+
+		mat-spinner {
+		}
+	}
+
+	.contents {
+		position: absolute;
+		top: 0;
+		left: 0;
+
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+}

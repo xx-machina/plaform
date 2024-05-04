@@ -1,8 +1,14 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { DrawerFrame } from '@ng-atomic/components/frames/drawer';
 
 @Component({
   selector: 'frames-smart-menu',
+  standalone: true,
+  imports: [
+    CommonModule,
+    DrawerFrame,
+  ],
   templateUrl: './smart-menu.frame.html',
   styleUrls: ['./smart-menu.frame.scss'],
   // changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,2 +1,1 @@
-export { NavigatorOrganism } from './navigator.organism';
-export { NavigatorModule } from './navigator.module';
+export * from './navigator.organism';

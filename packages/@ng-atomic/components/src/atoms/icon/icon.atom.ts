@@ -1,10 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, Input,  HostBinding } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { catchError, map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
 
 
 @Component({
   selector: 'atoms-icon',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+  ],
   templateUrl: './icon.atom.html',
   styleUrls: ['./icon.atom.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

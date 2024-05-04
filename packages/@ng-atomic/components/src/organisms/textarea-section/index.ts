@@ -1,2 +1,1 @@
-export { TextareaSectionOrganism } from './textarea-section.organism';
-export { TextareaSectionModule } from './textarea-section.module';
+export * from './textarea-section.organism';

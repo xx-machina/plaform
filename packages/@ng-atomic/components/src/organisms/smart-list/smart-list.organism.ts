@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Optional, Output } from '@angular/core';
 import { Action } from '@ng-atomic/common/models';
 import { DataAccessor, DATA_ACCESSOR, defaultDataAccessor } from '@ng-atomic/common/pipes/data-accessor';
+import { CommonModule } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRippleModule } from '@angular/material/core';
+import { DataAccessorPipe } from '@ng-atomic/common/pipes/data-accessor';
 
 export enum ActionId {
   CLICK_ITEM = '[@ng-atomic/components/organisms/smart-list] Click Item',
@@ -8,7 +13,29 @@ export enum ActionId {
 
 @Component({
   selector: 'organisms-smart-list',
-  templateUrl: './smart-list.organism.html',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatListModule,
+    MatIconModule,
+    MatRippleModule,
+    DataAccessorPipe,
+  ],
+  template: `
+    <mat-list>
+      <ng-container *ngFor="let status of statuses">
+        <div mat-subheader> {{ status }}</div>
+        <ng-container *ngFor="let item of statusMap[status]">
+          <mat-list-item lines="2" matRipple (click)="onItemClick(item)">
+            <span matListItemTitle>{{ item | dataAccessor:'title' }}</span>
+            <span matListItemLine>{{ item | dataAccessor:'description' }}</span>
+          </mat-list-item>
+          <mat-divider *ngIf="statuses.length === 1"></mat-divider>
+        </ng-container>
+        <mat-divider *ngIf="statuses.length > 1"></mat-divider>
+      </ng-container>
+    </mat-list>
+  `,
   styleUrls: ['./smart-list.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -19,8 +46,6 @@ export class SmartListOrganism<T> {
   ) {
     this.dataAccessor ??= defaultDataAccessor;
   }
-
-  statusAccessor = (data) => data['status'];
 
   @Input()
   items: T[] = [];

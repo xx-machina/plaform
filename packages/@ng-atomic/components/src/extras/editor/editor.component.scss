@@ -1,0 +1,5 @@
+@use 'scoped-var/strict' as * with ($host: 'editor');
+@use 'atomic/component' as *;
+:host {
+	@include component($host);
+}

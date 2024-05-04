@@ -1,6 +1,6 @@
 <!-- ATTENTION(nontangent): <input matInput is not worked [type]="type"> -->
 
-<mat-form-field appearance="outline">
+<mat-form-field [appearance]="appearance">
   <mat-label>{{ label }}</mat-label>
     <input matInput [name]="name" type="string" [formControl]="control" [placeholder]="placeholder">
   <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->

@@ -1,7 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { FormControl } from '@angular/forms';
-import { Option } from '@ng-atomic/components/molecules/select-input-field';
+import { Option, SelectInputFieldMolecule } from '@ng-atomic/components/molecules/select-input-field';
+import { TextInputFieldMolecule } from '@ng-atomic/components/molecules/text-input-field';
 
 const generateOptions = (n: number, start: number): Option<number>[] => {
   return [...Array(n)].map((_, i) => i + start).map(i => ({name: `${i}`, value: i}));
@@ -9,6 +11,12 @@ const generateOptions = (n: number, start: number): Option<number>[] => {
 
 @Component({
   selector: 'organisms-cvc-and-exp-input-section',
+  standalone: true,
+  imports: [
+    CommonModule,
+    SelectInputFieldMolecule,
+    TextInputFieldMolecule,
+  ],
   templateUrl: './cvc-and-exp-input-section.organism.html',
   styleUrls: ['./cvc-and-exp-input-section.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

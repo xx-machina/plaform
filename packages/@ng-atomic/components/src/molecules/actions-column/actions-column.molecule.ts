@@ -1,9 +1,24 @@
 import { CdkCellDef, CdkColumnDef, CdkHeaderCellDef, CdkTable, TextColumnOptions, TEXT_COLUMN_OPTIONS } from '@angular/cdk/table';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Optional, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTableModule } from '@angular/material/table';
 import { Action } from '@ng-atomic/common/models';
+import { SmartMenuButtonAtom } from '@ng-atomic/components/atoms/smart-menu-button';
 
 @Component({
   selector: 'molecules-actions-column',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    SmartMenuButtonAtom,
+  ],
   templateUrl: './actions-column.molecule.html',
   styleUrls: ['./actions-column.molecule.scss'],
   encapsulation: ViewEncapsulation.None,
