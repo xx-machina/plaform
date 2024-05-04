@@ -1,4 +1,5 @@
-import { toObject, generateId } from '@nx-ddd/common/utilities';
+import { toObject } from '@nx-ddd/common/utilities/to-object';
+import { generateId } from '@nx-ddd/common/utilities/generate-id';
 import dayjs from 'dayjs';
 import { FirestoreAdapter } from '../adapters';
 import { Converter } from '../converter';
@@ -20,12 +21,16 @@ export class FirestoreRepository<
 
   protected pathBuilder: FirestorePathBuilder<Entity>;
 
-  constructor(adapter: FirestoreAdapter, converter?: Converter<Entity>) {
+  constructor(
+    adapter: FirestoreAdapter, 
+    converter?: Converter<Entity>
+  ) {
     super(adapter, converter);
   }
 
   list(paramMap?: Partial<Entity>, query: any = q => q) {
-    return this._list(query(this.collection(paramMap)));
+    const collection = paramMap ? this.collection(paramMap) : this.collectionGroup();
+    return this._list(query(collection));
   }
 
   get(paramMap: Partial<Entity> & HasId) {
@@ -34,7 +39,7 @@ export class FirestoreRepository<
 
   save(entity: Entity): Promise<[Entity, boolean]> {
     // TODO(nontangent): なんでここの型定義でasがいるのか考える。
-    return this._save(this.doc({id: entity || this.genId()} as any), entity);
+    return this._save(this.doc({id: entity?.id || this.genId()} as any), entity);
   }
 
   create(entity: Partial<Entity> & HasId): Promise<Entity> {
@@ -51,10 +56,24 @@ export class FirestoreRepository<
     return this.doc(paramMap as any).delete();
   }
 
-  bulkWrite(entities: Entity[]): Promise<void> {
+  bulkWrite(entities: Entity[], timestamps: string[] = []): Promise<void> {
     return entities.reduce((batch, entity) => {
       const doc = this.doc(entity).__ref;
-      return batch.set(doc, this.converter.toFirestore(entity));
+      return batch.set(doc, {
+        ...this.converter.toFirestore(entity),
+        ...this.buildServerTimestampObject(timestamps),
+      });
+    }, this.adapter.batch()).commit();
+  }
+
+  bulkCreate(entities: Entity[]): Promise<void> {
+    // TODO(nontangent): add maximum 500 record validation
+    return entities.reduce((batch, entity) => {
+      const doc = this.doc(entity).__ref;
+      return batch.create(doc, {
+        ...this.converter.toFirestore(entity),
+        ...this.buildServerTimestampObject(['createdAt', 'updatedAt']),
+      });
     }, this.adapter.batch()).commit();
   }
 
