@@ -83,6 +83,8 @@
         "packages/@schematics-x/server/src/lib/index.ts"
       ],
       "@schematics-x/server/*": ["packages/@schematics-x/server/src/lib/*"],
+      "schematics-x": ["packages/@schematics-x/schematics-x/src/lib/index.ts"],
+      "schematics-x/*": ["packages/@schematics-x/schematics-x/src/lib/*"],
       "machina/components": ["packages/machina/components/src/index.ts"]
     }
   },

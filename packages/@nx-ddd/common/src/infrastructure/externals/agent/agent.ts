@@ -3,6 +3,7 @@ import { targetConstructorToSchema } from "class-validator-jsonschema";
 import { ChatCompletionMessageParam, FunctionParameters,  } from "openai/resources";
 import { FunctionTool } from "openai/resources/beta/assistants";
 import { ChatCompletionCreateParamsBase } from "openai/resources/chat/completions";
+import { injectOpenAiService } from '../openai';
 
 const AI_TOOLS = '[ai-tools]' as const;
 const AI_SYSTEM = '[ai-system]' as const;
@@ -161,4 +162,9 @@ export class AnyFunction {
   private parseInput(input: any) {
     return typeof input === 'string' ? input : JSON.stringify(input);
   }
+}
+
+export function injectAnyFunction() {
+  const openai = injectOpenAiService();
+  return new AnyFunction(openai);
 }

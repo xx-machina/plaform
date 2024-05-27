@@ -1,0 +1,84 @@
+{
+  "name": "schematics-x",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@schematics-x/schematics-x/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/schematics-x",
+        "main": "packages/@schematics-x/schematics-x/src/index.ts",
+        "additionalEntryPoints": [
+          "packages/@schematics-x/schematics-x/src/lib/schematics/**/index.ts"
+        ],
+        "tsConfig": "packages/@schematics-x/schematics-x/tsconfig.lib.json",
+        "assets": [
+          "packages/@schematics-x/schematics-x/*.md",
+          "packages/@schematics-x/schematics-x/collection.json",
+          "packages/@schematics-x/schematics-x/package.json",
+          {
+            "input": "packages/@schematics-x/schematics-x/src/lib/schematics",
+            "glob": "**/*.json",
+            "output": "./lib/schematics"
+          },
+          {
+            "input": "./ng-atomic/schematics-x/src",
+            "glob": "**/*.!(ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./ng-atomic/schematics-x",
+            "glob": "collection.json",
+            "output": "."
+          }
+        ],
+        "generatePackageJson": true,
+        "bundle": true,
+        "sourceMap": true,
+        "thirdParty": true,
+        "platform": "node",
+        "format": ["cjs"],
+        "external": [
+          "fsevents",
+          "jsonc-parser",
+          "@swc/wasm",
+          "@swc/core",
+          "nx"
+        ],
+        "esbuildOptions": {
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/ng-atomic/schematics-x"],
+      "options": {
+        "jestConfig": "packages/@schematics-x/schematics-x/jest.config.ts"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npm publish --access=public"],
+        "cwd": "dist/packages/schematics-x"
+      }
+    },
+    "link": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npm link"],
+        "cwd": "dist/packages/schematics-x"
+      }
+    }
+  },
+  "tags": ["@schematics-x"]
+}

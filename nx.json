@@ -18,8 +18,12 @@
       }
     }
   },
-  "defaultProject": "./dist/packages/@ng-atomic/schematics",
+  "defaultProject": "./dist/packages/schematics-x",
   "generators": {
+    "./dist/packages/schematics-x": {
+      "auto": {},
+      "instruct": {}
+    },
     "@nx/angular:application": {
       "style": "scss",
       "linter": "eslint",

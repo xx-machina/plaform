@@ -1,0 +1,24 @@
+{
+  "name": "schematics-x",
+  "description": "A Schematics based on GPT-3.",
+  "version": "0.0.0-PLACEHOLDER",
+  "author": "Nozomu Miyamoto",
+  "license": "MIT",
+  "bin": {
+    "schematics-x": "./lib/bin/schematics-x.js",
+    "sx": "./lib/bin/schematics-x.js"
+  },
+  "schematics": "./collection.json",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nontangent/ng-atomic.git"
+  },
+  "homepage": "https://github.com/nontangent/ng-atomic/tree/main/ng-atomic/schematics-x",
+  "ng-add": {
+    "save": "devDependencies"
+  },
+  "main": "./lib/bin/schematics-x.js",
+  "types": "./lib/bin/schematics-x.d.ts",
+  "peerDependencies": {},
+  "dependencies": {}
+}
