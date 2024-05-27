@@ -31,8 +31,8 @@ export function Effect(id: string, {
   accessor = (action: Action) => action.payload,
 }: Partial<EffectProps> = {}) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    target['effectMap'] ??= new EffectMap();
-    target['effectMap'].set(id, {key: propertyKey, props: {dispatch, scope, accessor}});
+    target['_effectMap'] ??= new EffectMap();
+    target['_effectMap'].set(id, {key: propertyKey, props: {dispatch, scope, accessor}});
   };
 }
 

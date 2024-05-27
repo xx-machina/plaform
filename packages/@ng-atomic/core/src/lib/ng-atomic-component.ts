@@ -15,7 +15,6 @@ import { DebugDirective } from './debug';
 export class NgAtomicComponent<T = any> extends InjectableComponent<T> {
   protected effectEntries = injectEffectEntries();
   protected reducer = injectEffectReducer();
-  protected effectMap: EffectMap;
   protected root = inject(NgAtomicRootActionStore);
   #destroyRef = inject(DestroyRef);
   #el = inject(ElementRef);
@@ -45,7 +44,8 @@ export class NgAtomicComponent<T = any> extends InjectableComponent<T> {
   }
 
   protected effect(action: Action, scope = 'default') {
-    const effect = (this.effectMap ?? new EffectMap()).get(action.id, scope);
+    // MEMO(@nontangent): _effectMapをpropertyに持つとEffectが機能しなくなる
+    const effect = (this['_effectMap'] ?? new EffectMap()).get(action.id, scope);
     if (effect?.key && effect?.props?.scope === scope) {
       this[effect.key](effect.props.accessor(action));
     }
