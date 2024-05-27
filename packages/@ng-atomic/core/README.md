@@ -1,59 +1,69 @@
 # @ng-atomic/core
-`@ng-atomic/core`は
-
-## Concept
-- Injectable Component
-- Action and Effect
+`@ng-atomic/core` is a library that enables dependency injection for components.
 
 ## Install
 ```sh
 $ npm i @ng-atomic/core
 ```
 
-## Example
-
+## Usage
 ```ts
-@Directive({standalone: true, selector: 'example'})
+import { Component, Directive, inject, input } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { Effect, TokenizedType, provideComponent, InjectableComponent } from '@ng-atomic/core';
+import { NgAtomicComponent } from '@ng-atomic/core';
+import 'zone.js';
+
+export enum ActionId {
+  CREATE = 'Create',
+}
+
+@TokenizedType()
+@Directive({ standalone: true, selector: 'example' })
 export class ExampleComponentStore extends InjectableComponent {
-  @Input() name: string;
+  static readonly ActionId = ActionId;
+  readonly name = input<string>('');
 }
 
 @Component({
   standalone: true,
-  selector: 'example',
-  hostDirectives: [ExampleComponentStore],
-  template: `<button (click)="onButtonClick()">{{ store.name }}</button>`
+  selector: `example`,
+  template: `
+  <div>{{ store.name() }}</div>
+  <button (click)="onClick()">ADD</button>
+  `,
+  hostDirectives: [
+    {
+      directive: ExampleComponentStore,
+      inputs: ['name'],
+    },
+  ],
 })
 export class ExampleComponent extends NgAtomicComponent {
-  protected store = inject(ExampleComponentStore);
+  protected readonly store = inject(ExampleComponentStore);
 
-  protected onButtonClick() {
-    this.dispatch({
-      id: ActionId.BUTTON_CLICK,
-      payload: 'Hello World!',
-    });
+  protected onClick() {
+    this.dispatch({ id: ActionId.CREATE, payload: 'ADD' });
   }
 }
 
 @Component({
+  selector: 'app-root',
   standalone: true,
-  selector: 'example',
-  imports: [
-    // Import Injectable Component
-    ExampleComponentStore
-  ],
-  template: `<example [name]="'example'" (action)="dispatch($event)" injectable/>`,
-  provider: [
-    // Provide Component Implementation
-    provideComponent(ExampleComponentStore, () => ExampleComponent),
-  ],
+  imports: [ExampleComponentStore],
+  template: `
+    <example [name]="'test'" (action)="dispatch($event)" injectable/>
+  `,
+  providers: [provideComponent(ExampleComponentStore, () => ExampleComponent)],
 })
-export class AppComponent extends NgAtomicComponent {
-  @Effect(ExampleComponent.ActionId.BUTTON_CLICK)
-  protected onButtonClick(message: string) {
-    alert(message);
+export class App extends NgAtomicComponent {
+  @Effect(ExampleComponentStore.ActionId.CREATE)
+  protected create() {
+    alert('created!!');
   }
 }
+
+bootstrapApplication(App);
 ```
 
 # LISENCE

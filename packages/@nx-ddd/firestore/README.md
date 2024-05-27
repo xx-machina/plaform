@@ -1,6 +1,11 @@
 # @NxDDD/Firestroe
 `@nx-ddd/firestore` is a library that wraps Firestore in the Repository pattern. It uses the Adapter pattern to enable the same codebase to work with both FirebaseAdmin and Firebase.
 
+## Install
+```sh
+$ npm i @nx-ddd/firestore
+```
+
 ## Usage 
 
 ### Common

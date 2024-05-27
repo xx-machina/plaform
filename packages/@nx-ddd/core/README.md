@@ -1,6 +1,11 @@
 # NxDDD Core
 `@nx-ddd/core` is a wrapper library that allows the use of Angular's hierarchical injector in backend or CLI environments.
 
+## Install
+```sh
+$ npm i @nx-ddd/core
+```
+
 ## Usage
 
 ```ts
