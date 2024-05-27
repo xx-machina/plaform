@@ -1,6 +1,6 @@
 {
   "name": "schematics-x",
-  "description": "A Schematics based on GPT-3.",
+  "description": "A Schematics based on OpenAI GPT-4o.",
   "version": "0.0.0-PLACEHOLDER",
   "author": "Nozomu Miyamoto",
   "license": "MIT",
@@ -9,11 +9,11 @@
     "sx": "./lib/bin/schematics-x.js"
   },
   "schematics": "./collection.json",
+  "homepage": "https://github.com/xx-machina/plaform/tree/main/packages/@schematics-x/schematics-x",
   "repository": {
     "type": "git",
-    "url": "git@github.com:nontangent/ng-atomic.git"
+    "url": "https://github.com/xx-machina/plaform.git"
   },
-  "homepage": "https://github.com/nontangent/ng-atomic/tree/main/ng-atomic/schematics-x",
   "ng-add": {
     "save": "devDependencies"
   },

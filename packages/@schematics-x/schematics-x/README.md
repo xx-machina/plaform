@@ -10,10 +10,10 @@ A generic code generator using [Schematics](https://www.npmjs.com/package/@angul
 Get Open AI API Access Token via https://beta.openai.com/account/api-keys
 
 ```sh
-$ export OPEN_AI_TOKEN=<--OPEN_AI_ACCESS_TOKEN-->
+$ export OPENAI_API_KEY=<--OPENAI_API_KEY-->
 ```
 
-## Try Schematics X
+<!-- ## Try Schematics X
 
 ```sh
 $ npx schematics-x auto index.html
@@ -23,7 +23,7 @@ $ npx schematics-x auto index.html
 
 ```sh
 $ npm i -g schematics-x
-```
+``` -->
 
 ## Setup for Angular or Nx Workspace
 
@@ -32,7 +32,11 @@ ng add schematics-x
 ```
 
 ## Usage
+```sh
+ng g x pages/user.page.ts
+```
 
+<!-- 
 ```sh
 # Generate file estimated by similar files(`pages/user/user.component.ts`)
 $ sx file pages/profile/profile.module.ts
@@ -51,7 +55,7 @@ $ sx instruct -t pages/profile/profile.service.ts
 # Ex2: Remove all method from profile.service
 $ sx instruct -t pages/profile/profile.service.ts
 ? *What do you instruct GPT-3?* Remove all method from above code:
-```
+``` -->
 
 
 ## Demo
