@@ -23,7 +23,7 @@ export class NgAtomicComponent<T = any> extends InjectableComponent<T> {
   constructor() {
     super();
     this.root.actions$.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(action => {
-      this.#effect(action, 'root');
+      this.effect(action, 'root');
     });
   }
 
@@ -34,7 +34,7 @@ export class NgAtomicComponent<T = any> extends InjectableComponent<T> {
     const props = await this.reducer(_action);
     if (props?.dispatch === false) return;
 
-    const effect = this.#effect(_action, scope);
+    const effect = this.effect(_action, scope);
     this.root.log(_action, scope);
 
     if (scope === 'root' && (!effect?.props || effect?.props?.dispatch)) {
@@ -44,7 +44,7 @@ export class NgAtomicComponent<T = any> extends InjectableComponent<T> {
     }
   }
 
-  #effect(action: Action, scope = 'default') {
+  protected effect(action: Action, scope = 'default') {
     const effect = (this._effectMap ?? new EffectMap()).get(action.id, scope);
     if (effect?.key && effect?.props?.scope === scope) {
       this[effect.key](effect.props.accessor(action));
