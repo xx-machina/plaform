@@ -1,66 +1,41 @@
 # Schematics X
 
-A generic code generator using [Schematics](https://www.npmjs.com/package/@angular-devkit/schematics) and GPT-3.
+A generic code generator using [Schematics](https://www.npmjs.com/package/@angular-devkit/schematics) and GPT-4o.
 
 ![demo_gif](https://github.com/nontangent/ng-atomic/blob/main/ng-atomic/schematics-x/demo.gif?raw=true)
 
 
-## Preparation
-
-Get Open AI API Access Token via https://beta.openai.com/account/api-keys
-
-```sh
-$ export OPENAI_API_KEY=<--OPENAI_API_KEY-->
-```
-
-<!-- ## Try Schematics X
+## Setup
+Get Open AI API Access Token via https://platform.openai.com/api-keys
 
 ```sh
-$ npx schematics-x auto index.html
-```
-
-## Setup for Global(React, Vue, other Languages)
-
-```sh
-$ npm i -g schematics-x
-``` -->
-
-## Setup for Angular or Nx Workspace
-
-```sh
-ng add schematics-x
+$ ng add schematics-x
+$ export OPENAI_API_KEY=<OPENAI_API_KEY>
 ```
 
 ## Usage
 ```sh
-ng g x pages/user.page.ts
+$ ng g x pages/community
+ESTIMATING /src/app/pages/community/community.page.css FROM [
+  '/src/app/pages/profile/profile.page.css',
+  '/src/app/pages/user/user.page.css'
+] BY "Generate a directory `pages/community`."
+ESTIMATING /src/app/pages/community/community.page.spec.ts FROM [
+  '/src/app/pages/profile/profile.page.spec.ts',
+  '/src/app/pages/user/user.page.spec.ts'
+] BY "Generate a directory `pages/community`."
+ESTIMATING /src/app/pages/community/community.page.ts FROM [
+  '/src/app/pages/profile/profile.page.ts',
+  '/src/app/pages/user/user.page.ts'
+] BY "Generate a directory `pages/community`."
+CREATE src/app/pages/community/community.page.css (0 bytes)
+CREATE src/app/pages/community/community.page.spec.ts (581 bytes)
+CREATE src/app/pages/community/community.page.ts (279 bytes)
 ```
-
-<!-- 
-```sh
-# Generate file estimated by similar files(`pages/user/user.component.ts`)
-$ sx file pages/profile/profile.module.ts
-
-# Generate directory estimated by similar directory(`pages/profile`)
-$ sx directory pages/user
-
-# Generate file or directory by auto(detect name extension)
-$ sx auto pages/group
-
-# Generate by custom instructions and input files or directory
-# Ex1: Add CRUD method to profile.service
-$ sx instruct -t pages/profile/profile.service.ts
-? *What do you instruct GPT-3?* Add create, get, update and delete method to above code:
-
-# Ex2: Remove all method from profile.service
-$ sx instruct -t pages/profile/profile.service.ts
-? *What do you instruct GPT-3?* Remove all method from above code:
-``` -->
-
 
 ## Demo
 
-[StackBlitz](https://stackblitz.com/edit/schematics-x-demo?file=README.md)
+[StackBlitz](https://stackblitz.com/~/github.com/nontangent/schematics-x-demo)
 
 ## LICENSE
 
