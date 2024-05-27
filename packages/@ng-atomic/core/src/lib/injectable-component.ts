@@ -1,4 +1,12 @@
-import { ComponentMirror, ComponentRef, DestroyRef, Directive, ɵoutput, ElementRef, EmbeddedViewRef, InjectionToken, Injector, SimpleChange, SimpleChanges, Type, ViewContainerRef, inject, input, PLATFORM_ID } from "@angular/core";
+import {
+  ComponentMirror, ComponentRef, DestroyRef,
+  Directive,
+  // ɵoutput,
+  ElementRef, EmbeddedViewRef,
+  InjectionToken, Injector, SimpleChange, SimpleChanges,
+  Type, ViewContainerRef, inject, input, PLATFORM_ID,
+  Output, EventEmitter
+} from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { reflectComponentType } from "@angular/core";
 import { Action } from "./action";
@@ -79,7 +87,8 @@ export class InjectableComponent<T = any> {
   #componentMirror: ComponentMirror<T> | null = null;
 
   readonly injectable = input(false, {transform: (value: any) => value === '' ? true : value, alias: 'injectable'});
-  readonly __action = ɵoutput<Action>({alias: 'action'});
+  // readonly __action = ɵoutput<Action>({alias: 'action'});
+  @Output('action') readonly __action = new EventEmitter<Action>();
 
   dispatch(action: Action) {
     this.__action.emit(action);

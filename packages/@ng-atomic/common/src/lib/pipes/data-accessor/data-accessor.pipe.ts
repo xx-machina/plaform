@@ -1,5 +1,5 @@
 import { InjectionToken, Pipe, inject, PipeTransform } from "@angular/core";
-import get from 'lodash.get';
+import { get } from 'lodash-es';
 
 export type DataAccessor<T> = (obj: T, key: string) => string;
 export const DATA_ACCESSOR = new InjectionToken<DataAccessor<any>>('DATA_ACCESSOR');
