@@ -1,7 +1,7 @@
 import { Path } from '@angular-devkit/core';
 import { NxScopedHost as _NxScopedHost } from 'nx/src/adapter/ngcli-adapter';
 import { map, Observable } from 'rxjs';
-import omit from 'lodash.omit';
+import { omit } from 'lodash-es';
 
 export class NxScopedHost extends _NxScopedHost {
   read(path: Path): Observable<ArrayBuffer> {

@@ -34,17 +34,16 @@
             "output": "."
           }
         ],
-        "generatePackageJson": true,
+        "generatePackageJson": false,
         "bundle": true,
         "sourceMap": true,
         "thirdParty": true,
         "platform": "node",
         "format": ["cjs"],
         "external": [
-          "fsevents",
+          "@angular-devkit/core",
           "jsonc-parser",
-          "@swc/wasm",
-          "@swc/core",
+          "fsevents",
           "nx"
         ],
         "esbuildOptions": {

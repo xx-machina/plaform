@@ -20,5 +20,11 @@
   "main": "./lib/bin/schematics-x.js",
   "types": "./lib/bin/schematics-x.d.ts",
   "peerDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "@angular-devkit/core": "17.2.2",
+    "@angular-devkit/schematics": "17.2.2",
+    "jsonc-parser": "^3.0.0",
+    "fsevents": "^2.3.2",
+    "nx": "17.2.8"
+  }
 }

@@ -6,7 +6,6 @@ import figures from 'figures';
 import chalk from 'chalk';
 import { SelectableTreeNode as TreeNode } from "../models/tree";
 import { Logger } from "../../../cli/logger";
-import { omit } from "lodash";
 
 export interface ColorContext {
   selected: string;

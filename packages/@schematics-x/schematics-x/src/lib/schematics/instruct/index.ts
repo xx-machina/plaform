@@ -1,10 +1,10 @@
 import { Rule, Tree } from '@angular-devkit/schematics';
 import { bootstrap } from '@nx-ddd/core';
+import { provideOpenaiService } from '@nx-ddd/common/infrastructure/externals/openai';
 import { join } from 'path';
 import { SchematicsX } from '../../core/schematics-x';
 import { BaseSchema } from '../base-schema';
 import { tryToCreateDefaultPath, updateTree } from '../utils';
-import { provideOpenaiService } from '@nx-ddd/common/infrastructure/externals/openai';
 
 export interface InstructSchema extends BaseSchema {
   instructions: string;
