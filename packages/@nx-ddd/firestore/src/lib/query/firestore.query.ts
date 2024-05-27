@@ -5,10 +5,8 @@ import { FirestoreAdapter } from '../adapters/base';
 import { IFirestoreConverter } from '../converter';
 import { FirestoreDAO } from '../dao';
 import { FirestorePathBuilder } from '../path-builder';
-import { DocumentSnapshot, FirestoreCollection,  FirestoreCollectionGroup, ToFirestoreData } from '../interfaces';
+import { DocumentSnapshot, CollectionReference,  CollectionGroup, ToFirestoreData, CollectionLike } from '../interfaces';
 
-type FirestoreCollectionType<D> = FirestoreCollection<D> | FirestoreCollectionGroup<D>;
-  
 export class FirestoreQuery<
   Entity extends {id: string} = any, 
   FirestoreData = ToFirestoreData<Entity, dayjs.Dayjs>,
@@ -22,7 +20,7 @@ export class FirestoreQuery<
     this.switchCollectionRef();
   }
 
-  protected readonly collection$ = new ReplaySubject<FirestoreCollectionType<FirestoreData>>(1);
+  protected readonly collection$ = new ReplaySubject<CollectionLike<FirestoreData>>(1);
   protected readonly list$ = this.collection$.pipe(
     switchMap((collection) => this.listChangesByCollectionRef(collection).pipe(
       catchError(error => throwError(() => error)),
@@ -97,7 +95,7 @@ export class FirestoreQuery<
   }
 
   protected listChangesByCollectionRef(
-    collection: FirestoreCollection<FirestoreData> | FirestoreCollectionGroup<FirestoreData>
+    collection: CollectionReference<FirestoreData> | CollectionGroup<FirestoreData>
   ): Observable<Entity[]> {
     const entitiesMap = new Map<string, any>();
     return collection.stateChanges().pipe(
@@ -117,7 +115,7 @@ export class FirestoreQuery<
     this.switchCollection(collection);
   }
 
-  switchCollection(collection: FirestoreCollection<FirestoreData>) {
+  switchCollection(collection: CollectionLike<any>) {
     this.collection$.next(collection);
   }
 }

@@ -19,7 +19,7 @@ export interface Index {
   sort: Sort;
 }
 
-export type ColumnType = 'text' | 'actions' | 'checkbox';
+export type ColumnType = 'text' | 'actions' | 'checkbox' | 'tree';
 
 
 export interface BaseColumn {
@@ -44,4 +44,8 @@ export interface CheckboxColumn extends BaseColumn {
   type: 'checkbox';
 }
 
-export type Column = ActionsColumn | TextColumn | CheckboxColumn;
+export interface TreeColumnMolecule extends BaseColumn {
+  type: 'tree';
+}
+
+export type Column = ActionsColumn | TextColumn | CheckboxColumn | TreeColumnMolecule;

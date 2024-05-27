@@ -24,9 +24,7 @@ import { injectModelName } from '@ng-atomic/common/pipes/domain';
 import { DataAccessorPipe } from '@ng-atomic/common/pipes/data-accessor';
 import { FormGroup } from '@angular/forms';
 import { computedRawValue } from '@ng-atomic/common/utils';
-import { computedAsync } from 'ngxtension/computed-async';
-import { map, startWith, switchMap, tap } from 'rxjs';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ChipsInputSectionOrganism } from '@ng-atomic/components/organisms/chips-input-section';
 
 export enum ActionId {
@@ -104,7 +102,7 @@ export class IndexTemplateStore<T extends {id: string}> extends InjectableCompon
         { id: ActionId.TOGGLE_TYPE, icon: 'table', payload: 'table' },
       ] as Action[],
       gridToolbarActions: [] as Action[],
-      tableChildrenKey: '',
+      tableChildrenKey: null as string,
       itemActions: (item) => [{id: ActionId.DETAIL, icon: 'open_in_new', payload: item}],
       items: [],
       title: `${modelName()}一覧`,

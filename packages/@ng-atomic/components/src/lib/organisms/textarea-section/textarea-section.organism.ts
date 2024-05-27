@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Directive, input, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Action, InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
@@ -22,7 +21,6 @@ export class TextareaSectionOrganismStore extends InjectableComponent {
   selector: 'organisms-textarea-section',
   standalone: true,
   imports: [
-    CommonModule,
     TextareaFieldMolecule,
     SmartMenuButtonAtom,
   ],

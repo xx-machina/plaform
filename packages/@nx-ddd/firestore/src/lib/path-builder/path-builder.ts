@@ -1,12 +1,27 @@
 type CollectionParamMap<Entity extends {id: string}> = Partial<Entity>;
 type DocParamMap<Entity extends {id: string}> = CollectionParamMap<Entity> & Pick<Entity, 'id'>;
 
-export class FirestorePathBuilder<Entity extends { id: string }> {
+export type ExtractParams<T extends string> = 
+  T extends `${infer _Start}:${infer Param}/${infer Rest}`
+    ? { [K in Param | keyof ExtractParams<Rest>]: string }
+    : T extends `${infer _Start}:${infer Param}`
+    ? { [K in Param]: string }
+    : {};
+
+type Params = ExtractParams<'users/:userId/images/:id'>;
+
+export type ColParam<T extends {readonly collectionPath: string}> = Omit<ExtractParams<T['collectionPath']>, 'id'>;
+export type DocParam<T extends {readonly collectionPath: string}> = ColParam<T> & {id: string}; 
+
+export class FirestorePathBuilder<
+  Entity extends { id: string },
+  Path extends string = string,
+> {
   doc(param: DocParamMap<Entity>) {
     return resolvePaths(param, this.paths);
   }
 
-  collection(param: CollectionParamMap<Entity> = {}) {
+  collection(param: Omit<ExtractParams<Path>, 'id'> | {} = {}) {
     return resolvePaths(param, this.paths.slice(0, -1));
   }
 
@@ -17,14 +32,17 @@ export class FirestorePathBuilder<Entity extends { id: string }> {
   constructor(private paths: string[]) { }
 }
 
-export const pathBuilderFactory = <E extends { id: string }>(
-  path: string
-): FirestorePathBuilder<E> => {
-  const paths = parsePath(path);
+export function pathBuilderFactory<
+  E extends { id: string },
+  Path extends string = string
+>(
+  path: Path
+): FirestorePathBuilder<E, Path> {
+  const paths = parsePath<Path>(path);
   return new FirestorePathBuilder(paths);
 };
 
-export const parsePath = (path: string): string[] => {
+export function parsePath<Path extends string = string>(path: Path): string[] {
   const paths = path.split('/').filter(p => p.length);
   if (!paths[paths.length-1].startsWith(':')) paths.push(':id');
   return paths;

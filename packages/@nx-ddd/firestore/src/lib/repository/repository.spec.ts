@@ -1,15 +1,13 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TransformToDayjs } from '@nx-ddd/common/domain/models';
 import { IsDayjs } from 'class-validator-extended';
 import dayjs, { isDayjs } from 'dayjs';
-import { BaseFirestoreRepository } from './repository';
+import { FirestoreRepository } from './repository';
 import { injectConverter } from '../converter';
 import { Firestore } from '../decorators';
 import { clearFirestoreData, initializeTest } from '../testing';
 import { provideFirestoreAdapter } from '../adapters/admin';
-import { pathBuilderFactory } from '../path-builder';
-import { FirestoreAdapter } from '../adapters/base';
 import { omit } from 'lodash-es';
 
 initializeTest('x-x-machina');
@@ -22,11 +20,9 @@ export class User {
 }
 
 @Injectable({providedIn: 'root'})
-export class UserRepository extends BaseFirestoreRepository<User> {
-  protected collectionPath = `users/:id`;
+export class UserRepository extends FirestoreRepository<User> {
+  readonly collectionPath = `users/:id`;
   protected converter = injectConverter(User);
-  protected pathBuilder = pathBuilderFactory(this.collectionPath);
-  protected adapter = inject(FirestoreAdapter);
 }
 
 describe('UserRepository', () => {

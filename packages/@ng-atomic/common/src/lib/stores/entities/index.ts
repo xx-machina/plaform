@@ -1,4 +1,5 @@
 export * from './di';
+export * from './entity-store-adapter';
 export * from './entity-store-manager';
 export * from './entity-store';
 export * from './proxy-id.service';

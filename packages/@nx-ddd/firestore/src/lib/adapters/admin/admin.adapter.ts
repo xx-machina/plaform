@@ -1,8 +1,83 @@
-import { Injectable, NgModule } from '@angular/core';
+import { Injectable } from '@angular/core';
 import dayjs from 'dayjs';
 import admin from 'firebase-admin';
-import { DocumentReference, FirestoreCollection, FirestoreCollectionGroup } from '../../interfaces'
-import { FirestoreAdapter, QueryFn, WhereFilterOp, provideFirestoreAdapter as _provideFirestoreAdapter } from '../base';
+import { Subject } from 'rxjs';
+import { DocumentData, Transaction } from 'firebase-admin/firestore';
+import {
+  DocumentChangeAction,
+  DocumentReference,
+  CollectionReference as _CollectionReference,
+  CollectionGroup as _CollectionGroup,
+  Query as _Query } from '../../interfaces'
+import { FirestoreAdapter, QueryFn as _QueryFn, WhereFilterOp, provideFirestoreAdapter as _provideFirestoreAdapter } from '../base';
+
+type CollectionReference<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData,
+> = _CollectionReference<AppModelType, DbModelType, admin.firestore.CollectionReference<AppModelType, DbModelType>>;
+
+type CollectionGroup<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData
+> = _CollectionGroup<AppModelType, DbModelType, admin.firestore.CollectionGroup<AppModelType, DbModelType>>;
+
+type Query<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData
+> = _Query<AppModelType, DbModelType, admin.firestore.Query<AppModelType, DbModelType>>;
+
+type QueryFn<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData
+> = _QueryFn<AppModelType, DbModelType, admin.firestore.Query>
+
+type Origin<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData,
+> = admin.firestore.CollectionReference<AppModelType, DbModelType>
+  | admin.firestore.CollectionGroup<AppModelType, DbModelType>
+  | admin.firestore.Query<AppModelType, DbModelType>;
+
+type CollectionLike<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData,
+> = CollectionReference<AppModelType, DbModelType> 
+  | CollectionGroup<AppModelType, DbModelType>
+  | Query<AppModelType, DbModelType>;
+
+// Utility type to map Origin to CollectionLike
+type InferCollectionLike<O extends Origin> = 
+  O extends admin.firestore.CollectionReference<infer A, infer B> ? CollectionReference<A, B> :
+  O extends admin.firestore.CollectionGroup<infer A, infer B> ? CollectionGroup<A, B> :
+  O extends admin.firestore.Query<infer A, infer B> ? Query<A, B> :
+  never;
+
+export function wrapCollectionLike<O extends Origin>(origin: O): InferCollectionLike<O> {
+  return {
+    __ref: origin,
+    stateChanges: () => {
+      const subject = new Subject<DocumentChangeAction<any>[]>();
+      origin.onSnapshot(snapshot => {
+        const actions = snapshot.docChanges().map(change => ({
+          type: change.type, payload: {doc: change.doc},
+        }));
+        subject.next(actions);
+      });
+      return subject.asObservable();
+    },
+    get: () => origin.get(),
+    count: () => origin.get().then(snapshot => snapshot.size),
+  } as never as InferCollectionLike<O>;
+}
+
+export function unwrapCollectionLike<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData
+>(
+  collection: CollectionLike<AppModelType, DbModelType>
+): Origin<AppModelType, DbModelType> {
+  return collection.__ref;
+}
 
 @Injectable()
 export class AdminFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
@@ -55,45 +130,63 @@ export class AdminFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
     };
   }
 
-  collection(path: string): FirestoreCollection<any, admin.firestore.CollectionReference> {
-    return this.firestore.collection(path);
+  collection<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(path: string): CollectionReference<AppModelType, DbModelType> {
+    const collectionRef = this.firestore.collection(path);
+    return wrapCollectionLike(collectionRef) as CollectionReference<AppModelType, DbModelType>;
   }
 
-  collectionGroup(collectionId: string): FirestoreCollectionGroup<any> {
-    return this.firestore.collectionGroup(collectionId);
+  collectionGroup<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(collectionId: string): CollectionGroup<AppModelType, DbModelType> {
+    const collectionRef = this.firestore.collectionGroup(collectionId);
+    return wrapCollectionLike(collectionRef) as CollectionGroup<AppModelType, DbModelType>;
   }
   
-  runTransaction(fn: any) {
-    return this.firestore.runTransaction(fn);
+  runTransaction<T>(updateFunction: (transaction: Transaction) => Promise<T>) {
+    return this.firestore.runTransaction(updateFunction);
   }
 
-  query<Data>(collection: FirestoreCollection<Data>, ...queryFnArray: QueryFn<Data>[]): any {
-    return queryFnArray.reduce((collectionOrQuery, queryFn) => queryFn(collectionOrQuery), collection);
+  query<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(
+    collection: CollectionLike<AppModelType, DbModelType>,
+    ...queryFnArray: QueryFn<AppModelType, DbModelType>[]
+  ): Query<AppModelType, DbModelType> {
+    const ref = unwrapCollectionLike<AppModelType, DbModelType>(collection);
+    const query = queryFnArray.reduce((_ref, queryFn) => queryFn(_ref), ref);
+    return wrapCollectionLike(query) as Query<AppModelType, DbModelType>;
   }
 
-  where<Data>(key: string, evaluation: WhereFilterOp, value: unknown): QueryFn<Data> {
-    return (collection: admin.firestore.CollectionReference<Data> | admin.firestore.Query<Data>) => collection.where(key, evaluation, value);  
+  where<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(key: string, evaluation: WhereFilterOp, value: unknown): QueryFn<AppModelType, DbModelType> {
+    return (collection: Origin<AppModelType, DbModelType>) => collection.where(key, evaluation, value);  
   }
 
-  orderBy<Data>(key: string, order: 'asc' | 'desc' = 'asc'): QueryFn<Data> {
-    return (collection: admin.firestore.CollectionReference<Data> | admin.firestore.Query<Data>) => collection.orderBy(key, order);
+  orderBy<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(key: string, order: 'asc' | 'desc' = 'asc'): QueryFn<AppModelType, DbModelType> {
+    return (collection: Origin<AppModelType, DbModelType>) => collection.orderBy(key, order);
   }
 
-  limit<Data>(n: number): QueryFn<Data> {
-    return (collection: admin.firestore.CollectionReference<Data> | admin.firestore.Query<Data>) => collection.limit(n);
+  limit<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(n: number): QueryFn<AppModelType, DbModelType> {
+    return (collection: Origin<AppModelType, DbModelType>) => collection.limit(n);
   }
 
   batch() {
     return this.firestore.batch();
   }
 }
-
-@NgModule({
-  providers: [
-    { provide: FirestoreAdapter, useClass: AdminFirestoreAdapter },
-  ],
-})
-export class AdminFirestoreModule { }
 
 export function provideFirestoreAdapter() {
   return _provideFirestoreAdapter(AdminFirestoreAdapter);

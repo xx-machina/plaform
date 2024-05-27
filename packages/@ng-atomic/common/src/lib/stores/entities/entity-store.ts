@@ -1,64 +1,36 @@
 import { toSignal } from '@angular/core/rxjs-interop';
-import { InjectionToken, Injector, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { Type } from '@nx-ddd/common/domain/models';
 import { ComponentStore } from '@ngrx/component-store';
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { Observable, ReplaySubject, Subject, isObservable, of } from 'rxjs';
-import { bufferTime, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { bufferTime, distinctUntilChanged, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { merge } from 'lodash-es';
 import { Entity, Task, TaskComposerService } from './task-composer';
 import { ProxyIdService } from './proxy-id.service';
+import { EntityStoreAdapter, injectEntityStoreAdapter } from './entity-store-adapter';
 
-export class EntityStoreAdapter<E extends Entity> {
-  list?(): Observable<E[]> {
-    throw new Error('not implemented');
-  }
-
-  create?(entity: E): Promise<E> {
-    throw new Error('not implemented');
-  }
-
-  update?(entity: Partial<E> & {id: string}): Promise<void> {
-    throw new Error('not implemented');
-  }
-
-  delete?(entity: Partial<E>  & {id: string}): Promise<void> {
-    throw new Error('not implemented');
-  }
-}
-
-export const ENTITY_STORE_ADAPTER = new InjectionToken<{
-  entity: Type<Entity>,
-  adapter: EntityStoreAdapter<Entity>
-}[]>('ENTITY_STORE_ADAPTER');
-
-export function provideEntityStoreAdapter<E extends Entity>(
-  entity: Type<E>,
-  adapterFactory: (injector: Injector) => EntityStoreAdapter<E>,
-) {
-  return {
-    provide: ENTITY_STORE_ADAPTER,
-    multi: true,
-    useFactory: (injector: Injector) => {
-      return { entity, adapter: adapterFactory(injector) };
-    },
-    deps: [Injector]
-  };
-}
-
-export function injectEntityStoreAdapter<E extends Entity>(entity: Type<E>): EntityStoreAdapter<E> {
-  const adapters = inject(ENTITY_STORE_ADAPTER, {optional: true}) ?? [];
-  return adapters.find(adapter => adapter.entity === entity)?.adapter as EntityStoreAdapter<E>;
-}
+export const distinctUntilChangedArray = <T>() => {
+  return distinctUntilChanged<T>((pre, cur) => JSON.stringify(pre) === JSON.stringify(cur));
+};
 
 export class BaseEntityStore<E extends Entity> extends ComponentStore<EntityState<E>> {
   protected adapter: EntityStoreAdapter<E>;
 
   protected readonly refresh$ = new ReplaySubject<void>(1);
   protected readonly selectors = this.entityAdapter.getSelectors();
-  readonly entities$ = this.select(this.selectors.selectAll);
-  readonly entities = toSignal(this.entities$);
-  readonly size$ = this.select(this.selectors.selectTotal);
+  readonly all$ = this.select(this.selectors.selectAll);
+  readonly all = toSignal(this.all$);
+  readonly total$ = this.select(this.selectors.selectTotal);
+  readonly total = toSignal(this.total$);
+
+  /** @deprecated use BaseEntityStore.all$ instead. */
+  readonly entities$ = this.all$
+  /** @deprecated use BaseEntityStore.all instead. */
+  readonly entities = this.all;
+  /** @deprecated use BaseEntityStore.total$ instead. */
+  readonly size$ = this.total$;
+
   readonly addOne = this.updater((state, entity: E) => this.entityAdapter.addOne(entity, state));
   readonly addMany = this.updater((state, entities: E[]) => this.entityAdapter.addMany(entities, state));
   readonly updateOne = this.updater((state, update: {id: string, changes: Partial<E>}) => this.entityAdapter.updateOne(update, state));
@@ -81,7 +53,7 @@ export class BaseEntityStore<E extends Entity> extends ComponentStore<EntityStat
     this.refresh();
   }
 
-  getEntities = this.effect((refresh$: Observable<void>) => refresh$.pipe(
+  protected getEntities = this.effect((refresh$: Observable<void>) => refresh$.pipe(
     switchMap(() => this.adapter?.list() ?? of([])),
     tap((entities: E[]) => this.setAll(entities)),
   ));

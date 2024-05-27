@@ -2,10 +2,11 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { Signal, computed, inject } from '@angular/core';
 import { Type } from '@nx-ddd/common/domain/models';
 import { Resolver, getResolver, injectResolver$ } from '@ng-atomic/common/utils';
-import { Observable, combineLatest, isObservable, of, filter, map, shareReplay, switchMap, tap } from 'rxjs';
+import { Observable, combineLatest, isObservable, of, filter, map, shareReplay, switchMap, tap, distinctUntilChanged } from 'rxjs';
 import { Entity } from './task-composer';
 import { EntityStore } from './entity-store';
 import { injectEntityStore } from './entity-store-manager';
+import { computedAsync } from 'ngxtension/computed-async';
 
 export function injectOne$<T extends Entity>(
   Entity: Type<T>,
@@ -55,7 +56,7 @@ export function injectAll$<T extends Entity>(
   if (resolverType) {
     return combineLatest({
       resolver: injectResolver$(resolverType, params),
-      entities: injectEntityStore(Entity).entities$,
+      entities: injectEntityStore(Entity).all$,
     }).pipe(
       map(({ resolver, entities }) => resolver.resolveMany(entities)),
       shareReplay(1),
@@ -75,22 +76,30 @@ export const callSignalMap = <T extends Record<string, Signal<any>>>(map: T): Si
   }, {} as T));
 }
 
+// export function injectAll<T extends Entity>(
+//   Entity: Type<T>,
+//   params: Record<string, Signal<any>> = {},
+//   resolverType?: new (params: Record<string, any>) => Resolver<T>
+// ) {
+//   const store = injectEntityStore(Entity);
+//   if (resolverType) {
+//     return computed(() => {
+//       const resolver = getResolver(resolverType, callSignalMap(params)());
+//       const items = resolver.resolveMany(store.all());
+//       return items;
+//     });
+//   }
+//   return computed(() => store.all());
+// }
+
 export function injectAll<T extends Entity>(
   Entity: Type<T>,
   params: Record<string, Signal<any>> = {},
   resolverType?: new (params: Record<string, any>) => Resolver<T>
 ) {
-  const store = injectEntityStore(Entity);
-  if (resolverType) {
-    return computed(() => {
-      const resolver = getResolver(resolverType, callSignalMap(params)());
-      const items = resolver.resolveMany(store.entities());
-      return items;
-    });
-  }
-  return computed(() => store.entities(), {
-    // equal: (a, b) => JSON.stringify(a) === JSON.stringify(b),
-  });
+  const $params = signalMapToObs(params);
+  const all$ = injectAll$(Entity, $params, resolverType);
+  return computedAsync(() => all$, {initialValue: []});
 }
 
 export type ValueOrObservable<T> = T | Observable<T>;

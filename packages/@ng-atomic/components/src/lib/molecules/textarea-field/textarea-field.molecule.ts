@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Directive, input, inject, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, input, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { NgAtomicComponent } from '@ng-atomic/core';
@@ -18,12 +18,6 @@ export class TextareaFieldMoleculeStore {
   readonly floatLabel = input<'auto' | 'always' | 'never'>('auto');
   readonly control = input(new FormControl(''));
   readonly rows = input(10);
-
-  constructor() {
-    effect(() => {
-      console.debug('control:', this.control());
-    })
-  }
 }
 
 @Component({
@@ -45,10 +39,12 @@ export class TextareaFieldMoleculeStore {
       (keyup)="onKeyup($event)"
       [rows]="store.rows()"
     ></textarea>
-    <!-- @if (!store.control().errors && store.hint()) {
+    @if (store.control().errors) {
+      <mat-error>{{ store.control().errors | error }}</mat-error>
+    }
+    @if (store.hint()) {
       <mat-hint>{{ store.hint() }}</mat-hint>
-    } -->
-    <mat-error>{{ store.control().errors | error }}</mat-error>
+    }
   </mat-form-field>`,
   styleUrls: ['./textarea-field.molecule.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

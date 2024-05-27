@@ -1,4 +1,7 @@
+import type { QueryDocumentSnapshot } from 'firebase-admin/firestore';
 import { Observable } from 'rxjs';
+
+export type DocumentData = {[field: string]: any};
 
 export interface GetOptions {
   readonly source?: 'default' | 'server' | 'cache';
@@ -9,14 +12,23 @@ export interface DocumentChangeAction<T> {
   payload: {doc: DocumentSnapshot<T>};
 }
 
-export interface DocumentSnapshot<T> {
+export interface DocumentSnapshot<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData
+> {
   id: string;
   ref: { path: string; };
-  data: () => T;
+  data: () => AppModelType | undefined;
+  get: (fieldPath: string) => any;
+  // exists?(): this is QueryDocumentSnapshot<AppModelType, DbModelType>;
+  exists?: (() => boolean) | boolean;
 }
 
-export interface QuerySnapshot<T> {
-  docs: DocumentSnapshot<T>[];
+export interface QuerySnapshot<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData
+> {
+  docs: Array<QueryDocumentSnapshot<AppModelType, DbModelType>>
 };
 
 export interface Timestamp {
@@ -43,32 +55,51 @@ export type ToFirestoreData<Entity, Date> = {
   [K in keyof Entity]: Entity[K] extends Date ? Timestamp | FieldValue : Entity[K];
 };
 
-export interface DocumentReference<DocumentData, OriginalReference = any> {
-  __ref?: OriginalReference,
+export interface DocumentReference<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData,
+  Origin = any
+> {
+  __ref?: Origin,
   exists(): Promise<boolean>;
-  set(data: DocumentData, options?: any): Promise<void | any>;
-  get(): Promise<DocumentSnapshot<DocumentData>>;
-  update(data: DocumentData): Promise<void | any>;
+  set(data: AppModelType, options?: any): Promise<void | any>;
+  get(): Promise<DocumentSnapshot<AppModelType, DbModelType>>;
+  update(data: AppModelType): Promise<void | any>;
   delete(): Promise<void | any>;
-  stateChanges?: () => Observable<DocumentSnapshot<DocumentData>>;
+  stateChanges?: () => Observable<DocumentSnapshot<AppModelType, DbModelType>>;
 }
 
-export type FirestoreDocument<DocumentData> = DocumentReference<DocumentData>;
+export interface CollectionReference<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData,
+  Origin = any
+> extends Query<AppModelType, DbModelType, Origin> { }
 
-export interface FirestoreCollection<DocumentData, RawFirestoreCollection = any> {
-  __ref?: RawFirestoreCollection;
+export interface CollectionGroup<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData,
+  Origin = any
+> extends Query<AppModelType, DbModelType, Origin> { }
+
+export interface Query<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData,
+  Origin = any
+> {
+  __ref?: Origin;
   stateChanges?: () => Observable<DocumentChangeAction<DocumentData>[]>;
-  get(options?: GetOptions): Promise<QuerySnapshot<DocumentData>>;
+  get(options?: GetOptions): Promise<QuerySnapshot<AppModelType, DbModelType>>;
+  onSnapshot?(
+    onNext: (snapshot: QuerySnapshot<AppModelType, DbModelType>) => void,
+    onError?: (error: Error) => void
+  ): () => void;
+  count(): Promise<number>;
 }
 
-export interface FirestoreCollectionGroup<DocumentData> {
-  __ref?: any;
-  stateChanges?: () => Observable<DocumentChangeAction<DocumentData>[]>;
-  get(options?: GetOptions): Promise<QuerySnapshot<DocumentData>>;
-}
-
-export interface FirestoreQuery<DocumentData> {
-  __ref?: any;
-  stateChanges?: () => Observable<DocumentChangeAction<DocumentData>[]>;
-  get(options?: GetOptions): Promise<QuerySnapshot<DocumentData>>;
-}
+export type CollectionLike<
+  AppModelType = DocumentData,
+  DbModelType extends DocumentData = DocumentData,
+  Origin = any
+> = CollectionReference<AppModelType, DbModelType, Origin>
+  | CollectionGroup<AppModelType, DbModelType, Origin>
+  | Query<AppModelType, DbModelType, Origin>;

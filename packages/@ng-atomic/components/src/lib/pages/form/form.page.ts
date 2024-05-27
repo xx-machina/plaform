@@ -7,7 +7,7 @@ import { injectOne } from '@ng-atomic/common/stores/entities';
 import { LoadingService } from '@ng-atomic/common/services/loading';
 import { injectModel, injectModelName } from '@ng-atomic/common/pipes/domain';
 import { SnackBarService } from '@ng-atomic/common/services/snack-bar';
-import { makeConfig } from '@ng-atomic/common/services/ui';
+import { injectIsRootPage, injectNavStartActions, makeConfig } from '@ng-atomic/common/services/ui';
 import { injectRouteParam, injectRouteParams } from '@ng-atomic/common/utils';
 import { FormFieldMap } from '@ng-atomic/common/pipes/smart-field';
 import { camelCase } from 'lodash-es';
@@ -44,6 +44,8 @@ export class FormPageStore extends InjectableComponent {
     const modelName = injectModelName();
     const entityId = injectRouteParam(injectEntityIdName());
     const entity = injectModel() ? injectOne(injectModel(), {id: entityId}) : signal(null);
+    const isRootPage = injectIsRootPage();
+    const navStartActions = injectNavStartActions(isRootPage);
     const fb = inject(FormBuilder);
     const mode = computed(() => entityId() === 'new' ? 'create' : 'update');
     return () => ({
@@ -55,6 +57,7 @@ export class FormPageStore extends InjectableComponent {
       entityId: entityId(),
       entity: entity(),
       mode: mode(),
+      navStartActions: navStartActions(),
       navEndActions: [],
       title: mode() === 'create' ? `${modelName()}の作成` : `${modelName()}の更新`,
       actions: mode() === 'create'
@@ -73,6 +76,7 @@ export class FormPageStore extends InjectableComponent {
   readonly actions = input(_computed(() => this.config().actions));
   readonly fieldMap = input(_computed(() => this.config().fieldMap));
   readonly mode = input(_computed(() => this.config().mode));
+  readonly navStartActions = input(_computed(() => this.config().navStartActions));
   readonly navEndActions = input(_computed(() => this.config().navEndActions));
   readonly params = injectRouteParams();
   // readonly Model = injectModel();
@@ -110,6 +114,7 @@ export class FormPageStore extends InjectableComponent {
     <frames-router-outlet>
       <templates-form
         [actions]="store.activatedActions()"
+        [navStartActions]="store.navStartActions()"
         [navEndActions]="store.navEndActions()"
         [title]="store.title()"
         [form]="store.form()"

@@ -5,14 +5,16 @@ export type ErrorMessageResolver = (errors: ValidationErrors) => string;
 export const ERROR_MESSAGE_RESOLVER = new InjectionToken<ErrorMessageResolver>('[@ng-atomic/common] Error message resolver');
 
 export const defaultErrorMessageResolver: ErrorMessageResolver = (errors: ValidationErrors): string => {
+  console.debug('errors:', errors);
+
   if (!errors) return '';
   const value = Object.entries(errors)[0][0];
   switch (value) {
     case 'required':
       return '必須項目です';
-    case 'minlength':
+    case 'minLength':
       return `最低${errors[value].requiredLength}文字以上で入力してください`;
-    case 'maxlength':
+    case 'maxLength':
       return `最大${errors[value].requiredLength}文字以下で入力してください`;
     case 'email':
       return 'メールアドレスの形式で入力してください';
@@ -36,6 +38,8 @@ export class ErrorPipe implements PipeTransform {
   protected resolver = inject(ERROR_MESSAGE_RESOLVER, {optional: true}) ?? defaultErrorMessageResolver;
 
   transform(errors: ValidationErrors): string {
-    return this.resolver(errors);
+    const error = this.resolver(errors);
+    console.debug('error:', error?.length);
+    return error;
   }
 }

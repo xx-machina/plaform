@@ -3,12 +3,21 @@ import { getFirestoreAnnotations } from '../../decorators/decorators';
 import { walkObj } from '@nx-ddd/core/util/walk-obj';
 import { get } from 'lodash-es';
 import type {
-  FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument,
-  ToFirestoreData, Timestamp, FirestoreQuery, FieldValue
+  CollectionReference,
+  CollectionGroup,
+  DocumentReference,
+  ToFirestoreData,
+  Timestamp,
+  Query,
+  FieldValue,
+  DocumentData
 } from '../../interfaces';
 
-export type QueryFn<Data> = (collection?: any) => any;
+export type QueryFn<AppModelType, DbModelType, R> = (
+  collection?: any
+) => R;
 export type WhereFilterOp = '<' | '<=' | '==' | '!=' | '>=' | '>' | 'array-contains' | 'in' | 'array-contains-any' | 'not-in';
+
 
 @Injectable()
 export abstract class FirestoreAdapter<Date = any> {
@@ -22,16 +31,46 @@ export abstract class FirestoreAdapter<Date = any> {
   abstract get FieldValue(): any
   abstract get FieldPath(): any
 
-  abstract doc<Data>(path: string): FirestoreDocument<Data>;
-  abstract collection<Data>(path: string): FirestoreCollection<Data>;
-  abstract collectionGroup<Data>(collectionId: string): FirestoreCollectionGroup<Data>;
+  abstract doc<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(path: string): DocumentReference<AppModelType>;
+
+  abstract collection<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(path: string): CollectionReference<AppModelType, DbModelType>;
+
+  abstract collectionGroup<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(collectionId: string): CollectionGroup<AppModelType, DbModelType>;
+
+  abstract query<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(
+    collection: CollectionReference<AppModelType, DbModelType>,
+    ...queryFnArray: QueryFn<AppModelType, DbModelType, any>[]
+  ): Query<AppModelType, DbModelType>;
+
+  abstract where<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(key: string, evaluation: WhereFilterOp, value: unknown): QueryFn<AppModelType, DbModelType, any>;
+
+  abstract orderBy<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(key: string, order: 'asc' | 'desc'): QueryFn<AppModelType, DbModelType, any>;
+
+  abstract limit<
+    AppModelType = DocumentData,
+    DbModelType extends DocumentData = DocumentData,
+  >(n: number): QueryFn<AppModelType, DbModelType, any>;
+
   abstract runTransaction(fn: any): any;
   abstract batch(): any;
-
-  abstract query<Data>(collection: FirestoreCollection<Data>, ...queryFnArray: QueryFn<Data>[]): FirestoreQuery<Data>;
-  abstract where<Data>(key: string, evaluation: WhereFilterOp, value: unknown): QueryFn<Data>;
-  abstract orderBy<Data>(key: string, order: 'asc' | 'desc'): QueryFn<Data>;
-  abstract limit<Data>(n: number): QueryFn<Data>;
 
   //** @deprecated */
   toFirestoreData<Entity>(entity: Entity): ToFirestoreData<Entity, Date> {

@@ -13,9 +13,7 @@ export function scoped<T extends object, TKey extends keyof T>(source: Signal<T>
   effect(() => {
     scopedSignal.set(get(source(), path, source()) as T[TKey]);
   }, {allowSignalWrites: true});
-  return computed(() => scopedSignal(), {
-    // equal: (a, b) => JSON.stringify(a) === JSON.stringify(b),
-  });
+  return computed(() => scopedSignal());
 }
 
 export function injectBreakpoint() {
@@ -114,6 +112,15 @@ export function call<T>(signalOrValue: Signal<T> | T): T {
   return isSignal(signalOrValue) ? signalOrValue() : signalOrValue;
 }
 
+function setReducerPath(reducer: Function, path: string[]) {
+  Object.defineProperty(reducer, 'path', { value: path, configurable: true });
+  return reducer;
+}
+
+function getReducerPath(reducer: Function) {
+  return reducer['path'];
+}
+
 export function provideUiConfig<T extends object | string>(
   reducerFactory: ReducerFactory<T>,
   path: string[] = [],
@@ -130,6 +137,7 @@ export function provideUiConfig<T extends object | string>(
         }
       };
       Object.defineProperty(_reducerFactory, 'name', { value: name, configurable: true });
+      setReducerPath(_reducerFactory, path);
       return _reducerFactory;
     },
     deps: [Injector],
@@ -137,24 +145,26 @@ export function provideUiConfig<T extends object | string>(
   };
 }
 
-export function injectRootConfig<T extends object>(): Signal<T> {
+export function injectRootConfig<T extends object>(paths: string[] = []): Signal<T> {
   const uiContext = injectUiContext();
-  const reducerFactories = injectReducers();
+  const factories = injectReducerFactoiries(paths);
   const hostInjector = inject(Injector);
-  const reducers = reducerFactories.map(reducerFactory => {
-    return runInInjectionContext(hostInjector, () => reducerFactory(hostInjector));
+  const reducers = factories.map(factory => {
+    return runInInjectionContext(hostInjector, () => factory(hostInjector));
   });
   if (!reducers) return undefined;
-  return computed(() => {
+  const rootConfig = computed(() => {
     const context = uiContext();
     return reducers.reduce((acc, reducer) => {
       return runInInjectionContext(hostInjector, () => reducer(acc, context));
     }, {} as T);
   });
+  return rootConfig;
 }
 
+// TODO(@nontangent): itemsなどの取得が全てのコンポーネントで行われるので計算を最適化する。
 export function injectUiConfig<T extends object>(paths: string[] = []): Signal<T> {
-  const rootConfig = injectRootConfig();
+  const rootConfig = injectRootConfig<T>(paths);
   return scoped(rootConfig, paths as any);
 }
 
@@ -170,8 +180,14 @@ export function makeConfig<T extends object>(defaultUseFactory: ReducerFactory<T
   }
 }
 
-export function injectReducers(): ((hostInjector: Injector) => UiConfigReducer<any>)[] {
+function injectReducers(): ((hostInjector: Injector) => UiConfigReducer<any>)[] {
   return injectDeepMulti<(hostInjector: Injector) => UiConfigReducer<any>>(UI_CONFIG_REDUCER);
+}
+
+function injectReducerFactoiries(path: string[] = []): ((hostInjector: Injector) => UiConfigReducer<any>)[] {
+  return injectReducers().filter(factory => {
+    return getReducerPath(factory).every((p, i) => path[i] === p);
+  });
 }
 
 export function injectDeepMulti<T>(token: ProviderToken<T>, injector: Injector = inject(Injector)): T[] {

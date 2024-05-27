@@ -55,13 +55,11 @@ export class TreeColumnMoleculeStore {
     <td mat-cell *matCellDef="let data"> 
       <p class="nowrap"
         [cdkCopyToClipboard]="data | dataAccessor: key | smartExp: key"
-        (click)="copied(); tooltip.show()"
-        #tooltip="matTooltip" [matTooltip]="text" matTooltipPosition="below"
       >
         <button 
           mat-icon-button 
           [style.visibility]="!data.isExpandable ? 'hidden' : ''"
-          [style.marginLeft.px]="data.level * 32"
+          [style.marginLeft.px]="data.level * 0"
           (click)="store.treeControl().toggle(data)"
         >
           <mat-icon>

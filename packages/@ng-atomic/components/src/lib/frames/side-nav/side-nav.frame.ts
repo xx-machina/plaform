@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Directive, HostBinding, WritableSignal, inject, input, signal } from '@angular/core';
-import { Breakpoint, makeConfig } from '@ng-atomic/common/services/ui';
+import { Breakpoint } from '@ng-atomic/common/services/breakpoint';
+import { makeConfig } from '@ng-atomic/common/services/ui';
 import { DrawerFrame } from '@ng-atomic/components/frames/drawer';
 import { LineUpFrame } from '@ng-atomic/components/frames/line-up';
 import { MenuTemplateStore } from '@ng-atomic/components/templates/menu';

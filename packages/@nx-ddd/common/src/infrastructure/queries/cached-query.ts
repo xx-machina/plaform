@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import dayjs from 'dayjs';
 import { RepositorySynchronizer } from '../synchronizer';
-import { debounceTime, map, Observable, switchMap, tap, throttleTime } from 'rxjs';
+import { debounceTime, from, map, Observable, switchMap, tap, throttleTime } from 'rxjs';
 
 export function getLastUpdatedAt<T extends {updatedAt: dayjs.Dayjs}>(items: T[]) {
   return items.reduce((acc, facility) => {
@@ -11,7 +11,7 @@ export function getLastUpdatedAt<T extends {updatedAt: dayjs.Dayjs}>(items: T[])
 }
 
 interface SrcRepository<T extends {updatedAt: dayjs.Dayjs}> {
-  count: () => Observable<number>;
+  count: () => Promise<number>;
   query: {
     listChangesAfter: (updatedAt: dayjs.Dayjs, {limit}: {limit?: number}) => Observable<T[]>;
   };
@@ -39,7 +39,7 @@ export class CachedQuery<T extends {updatedAt: dayjs.Dayjs}> {
     lastUpdatedAtChanges: () => this.indexedDb.listChanges().pipe(map(getLastUpdatedAt)),
     saveMany: (items: T[]) => this.indexedDb.saveMany(items),
     listChangesAfter: (updatedAt) => this.repository.query.listChangesAfter(updatedAt, {limit: this.options.chunkSize}),
-    srcCount: () => this.repository.count(),
+    srcCount: () => from(this.repository.count()),
     destCount: () => this.indexedDb.count(),
   });
 

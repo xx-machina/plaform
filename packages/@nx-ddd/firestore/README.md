@@ -1,4 +1,4 @@
-# @NxDDD/Firestroe
+# @NxDDD/Firestore
 `@nx-ddd/firestore` is a library that wraps Firestore in the Repository pattern. It uses the Adapter pattern to enable the same codebase to work with both FirebaseAdmin and Firebase.
 
 ## Install
@@ -12,15 +12,12 @@ $ npm i @nx-ddd/firestore
 
 ```ts
 // libs/common/infrastructure/repositories/user.repository
-import 'reflect-metadata';
-import '@angular/compiler';
 import { inject, Injectable } from '@angular/core';
 import { TransformToDayjs } from '@nx-ddd/common/domain/models';
+import { bootstrap } from '@nx-ddd/core';
+import { FirestoreRepository, Firestore, injectConverter } from '@nx-ddd/firestore';
 import { IsDayjs } from 'class-validator-extended';
 import dayjs from 'dayjs';
-import { BaseFirestoreRepository, Firestore, injectConverter, pathBuilderFactory } from '@nx-ddd/firestore';
-import { FirestoreAdapter } from '@nx-ddd/firestore/adapters/base';
-import { bootstrap } from '@nx-ddd/core/v2';
 
 export class User {
   @Firestore.ID() id: string;
@@ -30,11 +27,9 @@ export class User {
 }
 
 @Injectable({providedIn: 'root'})
-export class UserRepository extends BaseFirestoreRepository<User> {
-  protected collectionPath = `users/:id`;
+export class UserRepository extends FirestoreRepository<User> {
+  readonly collectionPath = `users/:id`;
   protected converter = injectConverter(User);
-  protected pathBuilder = pathBuilderFactory(this.collectionPath);
-  protected adapter = inject(FirestoreAdapter);
 }
 ```
 
@@ -43,8 +38,17 @@ Use `UserRepository` in NodeJS.
 
 ```ts
 // apps/api/src/app/main.ts
+import 'reflect-metadata';
+import '@angular/compiler';
 import { provideFirestoreAdapter } from '@nx-ddd/firestore/adapters/admin';
 import { UserRepository } from 'libs/common/infrastructure/repositories/user.repository';
+import dayjs from 'dayjs';
+
+import admin from 'firebase-admin';
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+});
 
 bootstrap([
   provideFirestoreAdapter(),
@@ -67,8 +71,14 @@ Use `UserRepository` in browser.
 
 ```ts
 // apps/app/src/app/main.ts
+import 'reflect-metadata';
+import '@angular/compiler';
 import { provideFirestoreAdapter } from '@nx-ddd/firestore/adapters/firebase';
 import { UserRepository } from 'libs/common/infrastructure/repositories/user.repository';
+import { initializeApp } from "firebase/app";
+import dayjs from 'dayjs';
+
+const app = initializeApp({...});
 
 bootstrap([
   provideFirestoreAdapter(),

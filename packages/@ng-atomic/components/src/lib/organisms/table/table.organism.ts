@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Directive, Pipe, PipeTransform, computed, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, computed, effect, inject, input } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
@@ -11,64 +11,17 @@ import { SmartColumnMolecule } from '@ng-atomic/components/molecules/smart-colum
 import { Actions, Effect, InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TreeColumnMolecule } from '@ng-atomic/components/molecules/tree-column';
-import { get } from 'lodash-es';
-import { flattenExcludeDayjs } from '@nx-ddd/core/util/walk-obj';
 import { IndexTemplateFormBuilder } from './index.helpers';
-import { Column, Sort } from '@ng-atomic/common/models';
+import { Column } from '@ng-atomic/common/models';
 import { computedRawValue } from '@ng-atomic/common/utils';
 import { NgClass } from '@angular/common';
-
-@Pipe({name: 'resolveColumns', standalone: true, pure: true})
-export class ResolveColumnsPipe implements PipeTransform {
-  transform(columns: string[]): {type: 'key' | 'actions' | 'checkbox', name: string, payload?: any}[] {
-    const data = columns.map((column, i) => {
-      if (typeof column === 'string') {
-        if (column === '__checkbox') return {type: 'checkbox', name: `__checkbox_${i}`};
-        if (column === '__actions') return {type: 'actions', name: `__actions_${i}`};
-        return {type: 'key', name: column};
-      }
-      return {type: 'actions', name: `__actions_${i}`, payload: column};
-    });
-    return data as any;
-  }
-}
-
-@Pipe({name: 'map', standalone: true, pure: true})
-export class MapPipe<T> implements PipeTransform {
-  transform(itemOrItems: T | T[], path: string): any | any[] {
-    if (Array.isArray(itemOrItems)) return itemOrItems.map(item => get(item, path));
-    return get(itemOrItems, path);
-  }
-}
-
-@Pipe({name: 'autoColumns', standalone: true, pure: true})
-export class AutoColumnsPipe<T> implements PipeTransform {
-  transform(items: T[]): string[] {
-    const keys = new Set<string>();
-    items.slice(0, 1).forEach(item => {
-      const obj = flattenExcludeDayjs(item);
-      Object.keys(obj).forEach(key => keys.add(key));
-    })
-    return [...keys, '__actions'];
-  }
-}
-
-@Pipe({name: 'sort', standalone: true, pure: true})
-export class SortPipe implements PipeTransform {
-  transform<T>(column: Column, sort: Sort): 'asc' | 'desc' | 'none' {
-    return sort.key === column.name ? sort.order : 'none';
-  }
-}
-
-@Pipe({name: 'columns', standalone: true, pure: true})
-export class ColumnsPipe implements PipeTransform {
-  transform<T>(columns: Column[]): Column[] {
-    return columns.filter(item => item.visible).map((column, i) => ({
-      ...column,
-      name: ['checkbox', 'actions'].includes(column.type) ? `${column.name}_${i}` : column.name,
-    }));
-  }
-}
+import { ColumnsPipe } from '@ng-atomic/common/pipes/columns';
+import { ResolveColumnsPipe } from '@ng-atomic/common/pipes/resolve-columns';
+import { MapPipe } from '@ng-atomic/common/pipes/map';
+import { AutoColumnsPipe } from '@ng-atomic/common/pipes/auto-columns';
+import { SortPipe } from '@ng-atomic/common/pipes/sort';
+import { buildTreeFlatDataSource } from './table.helpers';
+import { FlatTreeControl } from '@angular/cdk/tree';
 
 @TokenizedType()
 @Directive({
@@ -82,9 +35,16 @@ export class TableOrganismStore<T> extends InjectableComponent {
   readonly itemActions = input<Actions>([]);
   readonly selection = input(new SelectionModel<string>(true, []));
   readonly highlight = input(new SelectionModel<string>(true, [])); 
-  readonly childrenKey = input('children');
+  readonly childrenKey = input<string>(null);
   readonly items = input<T[]>([]);
-  readonly dataSource = computed(() => new MatTableDataSource<T>(this.items()));
+  readonly treeControl = input(new FlatTreeControl<any>(n => n.level, n => n.isExpandable));
+  readonly dataSource = computed(() => {
+    if (this.childrenKey()) {
+      return buildTreeFlatDataSource(this.treeControl(), this.items(), this.childrenKey());
+    }
+    return new MatTableDataSource<T>(this.items());
+  });
+  readonly isHidden = computed(() => (item: T) => this.treeControl().getLevel(item) === 0);
 
   readonly formValue = computedRawValue(() => this.form());
   readonly sort = computed(() => this.formValue()?.sort ?? {key: '', order: 'asc'}, {
@@ -167,6 +127,7 @@ enum ActionId {
           <molecules-checkbox-column
             [name]="column.name"
             [selection]="store.selection()"
+            [isHidden]="store.isHidden()"
             (action)="dispatch($event)"
           />
         }
@@ -181,6 +142,7 @@ enum ActionId {
           <molecules-tree-column
             [name]="column.name"
             [headerText]="column.headerText"
+            [treeControl]="store.treeControl()"
             [sort]="column.sort"
             (headerClick)="onHeaderClick(column.name)"
           />

@@ -22,10 +22,12 @@ enum ActionId {
   <ng-container matColumnDef>
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let item">
-      <mat-checkbox
-        (click)="onCheckboxClick(item, $event)"
-        [checked]="selection().isSelected(item | selectId)"
-      />
+      @if (isHidden()(item)) {
+        <mat-checkbox
+          (click)="onCheckboxClick(item, $event)"
+          [checked]="selection().isSelected(item | selectId)"
+        />
+      }
     </td>
   </ng-container>`,
   styleUrls: ['./checkbox-column.molecule.scss'],
@@ -40,6 +42,7 @@ export class CheckboxColumnMolecule<T> extends NgAtomicComponent {
   private _table = inject(CdkTable<T>, {optional: true});
   readonly name = input.required<string>();
   readonly selection = input(new SelectionModel<string>(true, []));
+  readonly isHidden = input((item: T) => true);
   readonly columnDef = viewChild.required(CdkColumnDef);
   readonly cell = viewChild.required(CdkCellDef);
   readonly headerCell = viewChild.required(CdkHeaderCellDef);

@@ -29,7 +29,14 @@ export type TextColumnForm = FormGroup<{
   width: FormControl<number>,
 }>;
 
-export type ColumnsForm = FormArray<FormRecord<ActionsColumnForm | CheckboxColumnForm | TextColumnForm>>;
+export type TreeColumnForm = FormGroup<{
+  type: FormControl<'tree'>,
+  name: FormControl<string>,
+  visible: FormControl<boolean>,
+  width: FormControl<number>,
+}>;
+
+export type ColumnsForm = FormArray<FormRecord<ActionsColumnForm | CheckboxColumnForm | TextColumnForm | TreeColumnForm>>;
 
 export function buildColumns(columns: (string | Actions)[]): Column[] {
   return columns.map(column => {
@@ -45,6 +52,13 @@ export function buildColumns(columns: (string | Actions)[]): Column[] {
         return {
           type: 'checkbox',
           name: 'checkbox',
+          visible: true,
+          width: 80,
+        }
+      } else if (column === '__tree') {
+        return {
+          type: 'tree',
+          name: 'tree',
           visible: true,
           width: 80,
         }
@@ -101,7 +115,15 @@ export class IndexTemplateFormBuilder {
   buildColumnsForm(columns: Column[]) {
     return this.fb.array(columns.map(column => {
       switch (column.type) {
-        case 'text':
+        case 'tree': {
+          return this.fb.group({
+            type: this.fb.control({value: 'tree' as const, disabled: true}),
+            name: this.fb.control({value: column.name, disabled: true}),
+            visible: this.fb.control(column.visible),
+            width: this.fb.control(80),
+          }) as TreeColumnForm;
+        }
+        case 'text': 
           return this.fb.group({
             type: this.fb.control({value: 'text' as const, disabled: true}),
             name: this.fb.control({value: column.name, disabled: true}),
@@ -136,13 +158,16 @@ export function injectIndexFormBuilder() {
 
 export function injectIndexForm({
   columns = buildColumns(['__checkbox', ...injectProps()(), '__actions']),
+  sort = undefined,
   query = undefined,
 }: {
   columns?: Column[],
+  sort?: Partial<SortFormValue>,
   query?: string,
 } = {}) {
   return inject(IndexTemplateFormBuilder).build({
     columns,
+    sort,
     query,
   });
 }

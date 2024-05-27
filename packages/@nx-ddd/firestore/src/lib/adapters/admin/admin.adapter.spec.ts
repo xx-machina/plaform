@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { provideFirestoreAdapter } from './admin.adapter';
 import { TestBed } from '@angular/core/testing';
 import { FirestoreAdapter } from '../base';
+import { clearFirestoreData } from '@nx-ddd/firestore/testing';
 
 process.env['FIRESTORE_EMULATOR_HOST'] = 'localhost:8080';
 admin.initializeApp({projectId: 'x-x-machina'});
@@ -10,7 +11,8 @@ admin.initializeApp({projectId: 'x-x-machina'});
 describe('AdminFirestoreAdapter', () => {
   let adapter: FirestoreAdapter;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await clearFirestoreData('x-x-machina');
     TestBed.configureTestingModule({
       providers: [
         provideFirestoreAdapter(),

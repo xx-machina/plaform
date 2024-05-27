@@ -1,10 +1,26 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, effect, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ErrorPipe } from '@ng-atomic/common/pipes/error';
 import dayjs from 'dayjs';
+
+@Directive({selector: 'molecules-date-range-input-field', standalone: true})
+export class DateRangeInputFieldMoleculeStore {
+  readonly control = input(new FormGroup({
+    start: new FormControl(dayjs()),
+    end: new FormControl(dayjs()),
+  }));
+  readonly label = input('');
+  readonly hint = input<string>(undefined);
+
+  constructor() {
+    effect(() => {
+      console.debug('control:', this.control().value);
+    });
+  }
+}
 
 @Component({
   selector: 'molecules-date-range-input-field',
@@ -18,30 +34,32 @@ import dayjs from 'dayjs';
   ],
   template: `
     <mat-form-field appearance="outline">
-      <mat-label>{{ label }}</mat-label>
+      <mat-label>{{ store.label() }}</mat-label>
       <mat-date-range-input
-        [formGroup]="control"
+        [formGroup]="store.control()"
         [rangePicker]="picker"
-        [comparisonStart]="control.value.start"
-        [comparisonEnd]="control.value.end">
+        [comparisonStart]="store.control().value.start"
+        [comparisonEnd]="store.control().value.end">
         <input matStartDate placeholder="Start date" formControlName="start">
         <input matEndDate placeholder="End date" formControlName="end">
       </mat-date-range-input>
-      <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
-      <mat-error>{{ control.errors | error }}</mat-error>
+      @if (store.hint()) {
+        <mat-hint>{{ store.hint() }}</mat-hint>
+      }
+      <mat-error>{{ store.control().errors | error }}</mat-error>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
   `,
   styleUrls: ['./date-range-input-field.molecule.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: DateRangeInputFieldMoleculeStore,
+      inputs: ['control', 'label', 'hint']
+    }
+  ]
 })
 export class DateRangeInputFieldMolecule {
-  @Input() control = new FormGroup({
-    start: new FormControl(dayjs()),
-    end: new FormControl(dayjs()),
-  });
-  @Input() label = '';
-  @Input() placeholder = '';
-  @Input() hint?: string;
+  protected readonly store = inject(DateRangeInputFieldMoleculeStore);
 }

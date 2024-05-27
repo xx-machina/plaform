@@ -29,7 +29,7 @@ class BasicConverter<E extends {id: string}> {
 
 export function injectConverter<Entity extends {id: string}>(
   Entity: new () => Entity,
-) {
+): IFirestoreConverter<Entity> {
   const adapter = inject(FirestoreAdapter);
   return new BasicConverter(Entity, adapter);
 }
