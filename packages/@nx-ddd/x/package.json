@@ -3,11 +3,20 @@
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
   "types": "./index.d.ts",
-  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@nx-ddd/x",
+  "homepage": "https://github.com/xx-machina/plaform/tree/main/packages/@nx-ddd/x",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nontangent/machina.git"
+    "url": "https://github.com/xx-machina/plaform.git"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@angular/core": "^17.0.0",
+    "@nx-ddd/common": "0.0.0-PLACEHOLDER",
+    "@nx-ddd/core": "0.0.0-PLACEHOLDER",
+    "@nx-ddd/firestore": "0.0.0-PLACEHOLDER",
+    "class-validator": "^0.14.0",
+    "dayjs": "1.11.10",
+    "tslib": "^2.3.0",
+    "twitter-api-v2": "^1.14.2"
+  },
   "dependencies": {}
 }

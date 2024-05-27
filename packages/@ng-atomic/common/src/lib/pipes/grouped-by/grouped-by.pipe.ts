@@ -1,4 +1,4 @@
-import { Pipe, inject } from "@angular/core";
+import { Pipe, inject, PipeTransform } from "@angular/core";
 import { DATA_ACCESSOR, defaultDataAccessor } from "@ng-atomic/common/pipes/data-accessor";
 
 @Pipe({
@@ -6,7 +6,7 @@ import { DATA_ACCESSOR, defaultDataAccessor } from "@ng-atomic/common/pipes/data
   standalone: true,
   pure: true,
 })
-export class GroupedByPipe {
+export class GroupedByPipe implements PipeTransform {
   private dataAccessor = inject(DATA_ACCESSOR) ?? defaultDataAccessor;
 
   transform<T>(items: T[], groupedBy?: string): { [id: string]: T[] } {

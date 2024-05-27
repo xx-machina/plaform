@@ -1,8 +1,14 @@
 # @ng-atomic/core
+`@ng-atomic/core`は
 
 ## Concept
 - Injectable Component
 - Action and Effect
+
+## Install
+```sh
+$ npm i @ng-atomic/core
+```
 
 ## Example
 
@@ -49,3 +55,6 @@ export class AppComponent extends NgAtomicComponent {
   }
 }
 ```
+
+# LISENCE
+MIT

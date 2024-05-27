@@ -1,4 +1,4 @@
-import { Firestore } from '@nx-ddd/firestore/decorators';
+import { Firestore } from '../../decorators/decorators';
 import { TestBed } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
 import { TransformToDayjs } from '@nx-ddd/common/domain/models';

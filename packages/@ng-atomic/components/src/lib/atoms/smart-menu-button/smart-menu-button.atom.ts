@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Directive, Pipe, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, Pipe, computed, inject, input, PipeTransform } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Action, InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
 
 @Pipe({ standalone: true, name: 'stope' })
-export class StopPipe {
+export class StopPipe implements PipeTransform {
   transform($event: Event) {
     $event.stopPropagation();
     $event.preventDefault();

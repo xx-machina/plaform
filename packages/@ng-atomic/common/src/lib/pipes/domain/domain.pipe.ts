@@ -1,4 +1,4 @@
-import { InjectionToken, Injector, Pipe, Signal, inject, signal } from '@angular/core';
+import { InjectionToken, Injector, Pipe, Signal, inject, signal, PipeTransform } from '@angular/core';
 import { Entity, Type, getLangMap, getModelName, getProps } from '@nx-ddd/common/domain/models';
 import { SignalOrValue, wrapFactory } from '@ng-atomic/common/pipes/signal';
 
@@ -9,7 +9,7 @@ export const DOMAIN_PROPS = new InjectionToken<Signal<string[]>>('Domain Props')
 export const DOMAIN_MODEL_NAME = new InjectionToken<Signal<string>>('Domain Model Name');
 
 @Pipe({standalone: true, name: 'domain', pure: true})
-export class DomainPipe {
+export class DomainPipe implements PipeTransform {
   protected map = inject(DOMAIN_LANG_MAP, {optional: true}) ?? {};
 
   transform(input: string, map: DomainLangMap = this.map) {

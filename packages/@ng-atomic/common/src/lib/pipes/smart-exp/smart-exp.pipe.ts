@@ -1,4 +1,4 @@
-import { Inject, Optional, Pipe } from '@angular/core';
+import { Inject, Optional, Pipe, PipeTransform } from '@angular/core';
 import { SMART_EXP_TRANSFORMER, smartExpTransformer, SmartExpTransformer } from '@ng-atomic/common/utils';
 import dayjs from 'dayjs';
 
@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
   name: 'smartExp',
   pure: true,
 })
-export class SmartExpPipe {
+export class SmartExpPipe implements PipeTransform {
   constructor(
     @Optional() @Inject(SMART_EXP_TRANSFORMER) private transformer: SmartExpTransformer
   ) {

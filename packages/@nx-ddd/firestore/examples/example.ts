@@ -5,9 +5,9 @@ import { TransformToDayjs } from '@nx-ddd/common/domain/models';
 import { IsDayjs } from 'class-validator-extended';
 import dayjs from 'dayjs';
 import { BaseFirestoreRepository, Firestore, injectConverter, pathBuilderFactory } from '@nx-ddd/firestore';
-import { FirestoreAdapter } from '@nx-ddd/firestore/adapters/base';
+import { FirestoreAdapter } from '../src/lib/adapters/base/base.adapter';
 import { bootstrap } from '@nx-ddd/core/v2';
-import { provideFirestoreAdapter } from '@nx-ddd/firestore/adapters/admin';
+import { provideFirestoreAdapter } from '../src/lib/adapters/admin/admin.adapter';
 
 export class User {
   @Firestore.ID() id: string;

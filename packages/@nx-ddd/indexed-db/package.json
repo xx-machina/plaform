@@ -3,14 +3,14 @@
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
   "types": "./index.d.ts",
-  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@nx-ddd/indexed-db",
+  "homepage": "https://github.com/xx-machina/plaform/tree/main/packages/@nx-ddd/indexed-db",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nontangent/machina.git"
+    "url": "https://github.com/xx-machina/plaform.git"
   },
   "peerDependencies": {
+    "@angular/core": "^17.0.0",
     "@nx-ddd/common": "0.0.0-PLACEHOLDER",
-    "@nx-ddd/core": "0.0.0-PLACEHOLDER",
     "tslib": "^2.3.0"
   },
   "dependencies": {}

@@ -1,4 +1,4 @@
-import { OpenAiServiceImpl } from "@nx-ddd/common/infrastructure/externals/openai/open-ai.service.impl";
+import { OpenAiServiceImpl } from '../openai/open-ai.service.impl';
 import { targetConstructorToSchema } from "class-validator-jsonschema";
 import { ChatCompletionMessageParam, FunctionParameters,  } from "openai/resources";
 import { FunctionTool } from "openai/resources/beta/assistants";
@@ -77,7 +77,7 @@ export class AiToolsAgent {
   constructor (protected openai: OpenAiServiceImpl) { }
   
   messages: ChatCompletionMessageParam[] = [
-    { role: 'system' as 'system', content: '' },
+    { role: 'system' as const, content: '' },
   ];
 
   results: any[] = [];

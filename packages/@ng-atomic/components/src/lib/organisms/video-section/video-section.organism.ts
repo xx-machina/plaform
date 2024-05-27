@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Directive, ElementRef, Input, PLATFORM_ID, Pipe, ViewChild, inject, input, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, ElementRef, Input, PLATFORM_ID, Pipe, ViewChild, inject, input, signal, viewChild, PipeTransform } from '@angular/core';
 import { CommonModule, NgIf, NgSwitch, isPlatformBrowser } from '@angular/common';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { filter, interval } from 'rxjs';
@@ -11,14 +11,14 @@ export class VideoSectionOrganismStore {
 }
 
 @Pipe({standalone: true, name: 'videoId'})
-export class VideoIdPipe {
+export class VideoIdPipe implements PipeTransform {
   transform(src: string) {
     return new URL(src).searchParams.get('v') ?? '';
   }
 }
 
 @Pipe({standalone: true, name: 'videoType'})
-export class VideoTypePipe {
+export class VideoTypePipe implements PipeTransform {
   transform(src: string | MediaStream) {
     if (src instanceof MediaStream) return 'stream';
     if (src.includes('youtube')) return 'youtube';

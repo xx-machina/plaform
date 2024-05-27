@@ -1,4 +1,4 @@
-import { InjectionToken, Pipe, inject } from "@angular/core";
+import { InjectionToken, Pipe, inject, PipeTransform } from "@angular/core";
 import get from 'lodash.get';
 
 export type DataAccessor<T> = (obj: T, key: string) => string;
@@ -17,7 +17,7 @@ export function injectDataAccessor<T>(): DataAccessor<T> {
   pure: true,
   standalone: true,
 })
-export class DataAccessorPipe<T> {
+export class DataAccessorPipe<T> implements PipeTransform {
   protected dataAccessor = inject(DATA_ACCESSOR, {optional: true}) ?? defaultDataAccessor;
 
   transform(data: T, key: string) {

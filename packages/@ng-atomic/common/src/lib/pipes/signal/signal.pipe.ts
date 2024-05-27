@@ -1,4 +1,4 @@
-import { Pipe, Signal, isSignal, signal } from '@angular/core';
+import { Pipe, Signal, isSignal, signal, PipeTransform } from '@angular/core';
 
 export type SignalOrValue<T> = T | Signal<T>;
 
@@ -15,7 +15,7 @@ export function resolveSignal<T>(valueOrSignal: T | Signal<T>): T {
 }
 
 @Pipe({standalone: true, name: 'signal', pure: false})
-export class SignalPipe {
+export class SignalPipe implements PipeTransform {
   transform<T>(obj: T | Signal<T>): T {
     return resolveSignal(obj);
   };

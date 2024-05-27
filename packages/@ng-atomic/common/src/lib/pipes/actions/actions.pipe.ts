@@ -1,4 +1,4 @@
-import { Pipe } from "@angular/core";
+import { Pipe, PipeTransform } from "@angular/core";
 import { resolveActions } from "@ng-atomic/core";
 
 @Pipe({
@@ -6,7 +6,7 @@ import { resolveActions } from "@ng-atomic/core";
   name: 'resolveActions',
   pure: true
 })
-export class ActionsPipe {
+export class ActionsPipe implements PipeTransform {
   transform(value: any, ...args: any[]): any {
     return resolveActions(value, ...args);
   }

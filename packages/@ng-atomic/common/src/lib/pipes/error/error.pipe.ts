@@ -1,4 +1,4 @@
-import { InjectionToken, Pipe, inject } from "@angular/core";
+import { InjectionToken, Pipe, inject, PipeTransform } from "@angular/core";
 import { ValidationErrors } from "@angular/forms";
 
 export type ErrorMessageResolver = (errors: ValidationErrors) => string;
@@ -32,7 +32,7 @@ export function provideErrorMessageResolver(resolver: ErrorMessageResolver) {
   name: 'error',
   pure: true,
 })
-export class ErrorPipe {
+export class ErrorPipe implements PipeTransform {
   protected resolver = inject(ERROR_MESSAGE_RESOLVER, {optional: true}) ?? defaultErrorMessageResolver;
 
   transform(errors: ValidationErrors): string {

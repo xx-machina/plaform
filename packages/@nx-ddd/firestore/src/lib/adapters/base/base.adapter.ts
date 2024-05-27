@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getFirestoreAnnotations } from "@nx-ddd/firestore/decorators";
+import { getFirestoreAnnotations } from '../../decorators/decorators';
 import { walkObj } from '@nx-ddd/core/util/walk-obj';
 import { get } from 'lodash-es';
 import type {

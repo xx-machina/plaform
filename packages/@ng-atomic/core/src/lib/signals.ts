@@ -1,4 +1,4 @@
-import { CreateComputedOptions, Pipe, Signal, computed, isSignal } from "@angular/core";
+import { CreateComputedOptions, Pipe, Signal, computed, isSignal, PipeTransform } from "@angular/core";
 
 function call<T>(valueOrSignal: Signal<T> | T): T {
   return isSignal(valueOrSignal) ? call(valueOrSignal()) : valueOrSignal;
@@ -56,7 +56,7 @@ export function isFakeComputed(_computed: any): _computed is ReturnType<typeof c
 }
 
 @Pipe({ name: 'call', standalone: true, pure: true})
-export class CallPipe {
+export class CallPipe implements PipeTransform {
   transform<T>(value: Signal<T> | T): T {
     return call(value);
   }

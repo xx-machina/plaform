@@ -3,13 +3,13 @@
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
   "types": "./index.d.ts",
-  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@nx-ddd/spreadsheet",
+  "homepage": "https://github.com/xx-machina/plaform/tree/main/packages/@nx-ddd/spreadsheet",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nontangent/machina.git"
+    "url": "https://github.com/xx-machina/plaform.git"
   },
   "peerDependencies": {
-    "@nx-ddd/core": "0.0.0-PLACEHOLDER",
+    "@angular/core": "^17.0.0",
     "google-spreadsheet": "^3.2.0",
     "tslib": "^2.3.0"
   },

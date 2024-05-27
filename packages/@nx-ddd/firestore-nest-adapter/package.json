@@ -3,10 +3,10 @@
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
   "types": "./index.d.ts",
-  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@nx-ddd/firestore-nest-adapter",
+  "homepage": "https://github.com/xx-machina/plaform/tree/main/packages/@nx-ddd/firestore-nest-adapter",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nontangent/machina.git"
+    "url": "https://github.com/xx-machina/plaform.git"
   },
   "peerDependencies": {
     "@aginix/nestjs-firebase-admin": "^2.2.0",

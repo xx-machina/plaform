@@ -23,7 +23,7 @@ describe('pathBuilderFactory', () => {
   });
   
   describe(`pathBuilderFactory('users/:userId/transactions')`, () => {
-    let builder = pathBuilderFactory<Transaction>(`users/:userId/transactions`);
+    const builder = pathBuilderFactory<Transaction>(`users/:userId/transactions`);
     
     it(`given doc({id: '1'}), returns 'transactions/1'`, () => {
       expect(builder.doc({userId: '0', id: '1'})).toEqual(`users/0/transactions/1`);
@@ -39,7 +39,7 @@ describe('pathBuilderFactory', () => {
   });
 
   describe(`pathBuilderFactory('users/:userId/transactions/:id')`, () => {
-    let builder = pathBuilderFactory<Transaction>(`users/:userId/transactions/:id`);
+    const builder = pathBuilderFactory<Transaction>(`users/:userId/transactions/:id`);
     
     it(`given doc({id: '1'}), returns 'transactions/1'`, () => {
       expect(builder.doc({userId: '0', id: '1'})).toEqual(`users/0/transactions/1`);

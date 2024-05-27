@@ -1,4 +1,4 @@
-import { toObject } from '@nx-ddd/common/utilities';
+import { toObject } from '../utilities/to-object';
 import dayjs, { Dayjs } from 'dayjs';
 import { flatten } from 'flat';
 import { Transform } from 'class-transformer';

@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { MessageEvent, TwitterToken } from '@nx-ddd/x/domain/models';
+import { MessageEvent } from './domain/models/message-event';
+import { TwitterToken } from './domain/models/token';
 import dayjs from 'dayjs';
 import { XConfig, X_CONFIG } from './x.config';
 import { ApiResponseError, TwitterApi } from 'twitter-api-v2';

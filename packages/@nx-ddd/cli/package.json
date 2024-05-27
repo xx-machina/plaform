@@ -1,12 +1,13 @@
 {
   "name": "@nx-ddd/cli",
   "version": "0.0.1",
-  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@nx-ddd/cli",
+  "homepage": "https://github.com/xx-machina/plaform/tree/main/packages/@nx-ddd/cli",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nontangent/machina.git"
+    "url": "https://github.com/xx-machina/plaform.git"
   },
   "dependencies": {},
   "type": "commonjs",
-  "main": "./index.cjs"
+  "main": "./index.cjs",
+  "peerDependencies": {}
 }
