@@ -25,23 +25,18 @@
             "output": "."
           }
         ],
-        "srcRootForCompilationRoot": "packages/@ng-atomic/schematics-x",
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "srcRootForCompilationRoot": "packages/@ng-atomic/schematics-x"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/@ng-atomic/schematics-x/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/ng-atomic/schematics-x"],
       "options": {
-        "jestConfig": "packages/@ng-atomic/schematics-x/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@ng-atomic/schematics-x/jest.config.ts"
       }
     },
     "publish": {
@@ -59,7 +54,5 @@
       }
     }
   },
-  "tags": [
-    "@ng-atomic:private"
-  ]
+  "tags": ["@ng-atomic:private"]
 }

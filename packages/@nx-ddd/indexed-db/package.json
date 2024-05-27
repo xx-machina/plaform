@@ -3,6 +3,11 @@
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
   "types": "./index.d.ts",
+  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@nx-ddd/indexed-db",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nontangent/machina.git"
+  },
   "peerDependencies": {
     "@nx-ddd/common": "0.0.0-PLACEHOLDER",
     "@nx-ddd/core": "0.0.0-PLACEHOLDER",

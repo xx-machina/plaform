@@ -1,5 +1,17 @@
 @use 'scoped-var/strict' as * with ($host: 'menu-footer');
 @use 'atomic/organism' as *;
+
 :host {
 	@include organism($host);
+	@include property(--primary-color, #404040);
+	@include property(--secondary-color, #B0B0B0);
+}
+
+:host {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 8px;
+	box-sizing: border-box;
+	font-size: 12px;
 }

@@ -1,8 +1,23 @@
 :host {
-  display: block;
-  width: 100%;
+  display: flex;
+	width: 100%;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
 
-  mat-form-field {
-    width: 100%;
-  }
+	mat-form-field {
+		width: 100%;
+	}
+
+	atoms-smart-menu-button {
+		width: fit-content;
+		margin-bottom: 20px
+	}
+
+	mat-hint {
+		// 1行で長いテキストを省略する
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }

@@ -1,4 +1,4 @@
-import { InjectionToken } from "injection-js";
+import { InjectionToken } from "@angular/core";
 
 export interface XOauth2Config {
   clientId: string;

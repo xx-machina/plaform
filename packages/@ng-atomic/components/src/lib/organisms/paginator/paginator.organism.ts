@@ -1,46 +1,53 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
+import { ChangeDetectionStrategy, Component, Directive, effect, inject, input } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
+import { computedRawValue } from '@ng-atomic/common/utils';
+
+@TokenizedType()
+@Directive({standalone: true, selector: 'organisms-paginator'})
+export class PaginatorOrganismStore extends InjectableComponent {
+  readonly form = input(new FormGroup({
+    pageIndex: new FormControl(0),
+    pageSize: new FormControl(0),
+  }));
+  readonly pageSizeOptions = input([10, 50, 100]);
+  readonly itemLength = input(0);
+  readonly formValue = computedRawValue(() => this.form());
+}
 
 @Component({
   selector: 'organisms-paginator',
   standalone: true,
   imports: [
-    CommonModule,
     MatPaginatorModule,
   ],
   template: `
     <mat-paginator
-      [length]="(form.get(['length']).valueChanges | async) ?? form.get(['length']).value"
-      [pageSize]="(form.get(['pageSize']).valueChanges | async) ?? form.get(['pageSize']).value"
-      [pageSizeOptions]="pageSizeOptions"
+      [length]="store.itemLength()"
+      [pageSize]="store.formValue().pageSize"
+      [pageSizeOptions]="store.pageSizeOptions()"
       (page)="onPageChange($event)"
-      aria-label="Select page">
-    </mat-paginator>
+    />
   `,
   styleUrls: ['./paginator.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {class: 'organism'},
+  hostDirectives: [
+    {
+      directive: PaginatorOrganismStore,
+      inputs: ['form', 'pageSizeOptions', 'itemLength'],
+    },
+  ],
 })
-export class PaginatorOrganism {
+export class PaginatorOrganism extends NgAtomicComponent {
+  protected store = inject(PaginatorOrganismStore);
   
-  @Input()
-  form = new FormGroup({
-    pageIndex: new FormControl(0),
-    pageSize: new FormControl(0),
-    length: new FormControl(0),
-  });
-
-  @Input()
-  pageSizeOptions: number[] = [10, 50, 100];
-
   protected onPageChange(page: PageEvent) {
-    this.form.patchValue({
+    this.store.form().patchValue({
       pageIndex: page.pageIndex,
-      pageSize: page.pageSize,
-      length: page.length,
+      pageSize: page.pageSize
     });
   }
 

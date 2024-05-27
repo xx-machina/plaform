@@ -3,8 +3,9 @@ import dayjs from 'dayjs';
 import { Subject } from 'rxjs';
 import { FirestoreAdapter, QueryFn, WhereFilterOp } from '../base';
 import { DocumentChangeAction, DocumentSnapshot, FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument } from '../../interfaces';
+import { Injectable } from '@angular/core';
 
-
+@Injectable()
 export class FirebaseFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
 
   constructor(public firestore = getFirestore()) { super() }
@@ -33,11 +34,11 @@ export class FirebaseFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
     return dayjs.isDayjs(v);
   }
 
-  protected convertDateToTimestamp(date: dayjs.Dayjs): Timestamp {
+  convertDateToTimestamp(date: dayjs.Dayjs): Timestamp {
     return Timestamp.fromDate(date.toDate());
   }
 
-  protected convertTimestampToDate(timestamp: Timestamp): dayjs.Dayjs {
+  convertTimestampToDate(timestamp: Timestamp): dayjs.Dayjs {
     return dayjs(timestamp.toDate())
   }
 

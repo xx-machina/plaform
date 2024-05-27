@@ -5,21 +5,14 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/common/**/package.json",
-          "packages/@nx-ddd/common/**/project.json"
-        ]
-      },
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/common"],
       "options": {
-        "jestConfig": "packages/@nx-ddd/common/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@nx-ddd/common/jest.config.ts"
       }
     },
     "build": {
@@ -31,8 +24,7 @@
         "packageJson": "packages/@nx-ddd/common/package.json",
         "main": "packages/@nx-ddd/common/src/index.ts",
         "assets": ["packages/@nx-ddd/common/*.md"],
-        "rootDir": "packages/@nx-ddd/common/src",
-        "buildableProjectDepsInPackageJsonType": "peerDependencies"
+        "rootDir": "packages/@nx-ddd/common/src"
       }
     },
     "publish": {

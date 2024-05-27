@@ -1,10 +1,17 @@
-import { ChangeDetectionStrategy, Component, Directive, InjectionToken } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, InjectionToken, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/core';
+import { InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
 
+export const VERSION = new InjectionToken<string>('VERSION');
+
+export function provideVersion(useFactory: () => string) {
+  return { provide: VERSION, useFactory };
+}
+
+@TokenizedType()
 @Directive({standalone: true, selector: 'organisms-menu-footer'})
 export class MenuFooterOrganismStore extends InjectableComponent {
-  static TOKEN = new InjectionToken<MenuFooterOrganismStore>('[@ng-atomic/components] MenuFooterOrganismStore');
+  readonly version = inject(VERSION, {optional: true}) ?? 'v0.0.0';
 }
 
 @Component({
@@ -12,9 +19,7 @@ export class MenuFooterOrganismStore extends InjectableComponent {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <p>
-      menu-footer works!
-    </p>
+    <span>{{ store.version }}</span>
   `,
   styleUrls: ['./menu-footer.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,4 +29,6 @@ export class MenuFooterOrganismStore extends InjectableComponent {
     },
   ],
 })
-export class MenuFooterOrganism extends NgAtomicComponent { }
+export class MenuFooterOrganism extends NgAtomicComponent {
+  protected store = inject(MenuFooterOrganismStore);
+}

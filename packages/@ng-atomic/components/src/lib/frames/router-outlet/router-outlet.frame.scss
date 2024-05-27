@@ -2,4 +2,18 @@
 
 :host {
 	display: contents;
+	@include property(--primary-color, #ccc);
+	@include property(--on-primary-color, #ccc);
+	@include property(--surface-color, #ccc);
+	@include property(--background-color, #ccc);
+}
+
+:host {
+	* {
+		--primary-color: #{var(--primary-color)};
+		--on-primary-color: #{var(--on-primary-color)};
+		--surface-color: #{var(--surface-color)};
+		--background-color: #{var(--background-color)};
+
+	}
 }

@@ -6,13 +6,22 @@ import { NgAtomicTemplatesModule } from "@ng-atomic/components/templates";
 import { NgAtomicFramesModule } from "@ng-atomic/components/frames";
 import { NgAtomicPagesModule } from "@ng-atomic/components/pages";
 import { NgAtomicSheetsModule } from '@ng-atomic/components/sheets';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { RootPropertyService } from '@ng-atomic/common/services/root-property';
 
-@NgModule({})
+@NgModule({
+  imports: [
+    MatDialogModule,
+    MatSnackBarModule,
+  ]
+})
 export class NgAtomicComponentsModule {
   static forRoot() {
     return {
       ngModule: NgAtomicComponentsModule,
       providers: [
+        RootPropertyService.Config.provide(),
         importProvidersFrom(NgAtomicAtomsModule.forRoot()),
         importProvidersFrom(NgAtomicMoleculesModule.forRoot()),
         importProvidersFrom(NgAtomicOrganismsModule.forRoot()),

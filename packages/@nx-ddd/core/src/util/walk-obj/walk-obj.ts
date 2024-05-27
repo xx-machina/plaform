@@ -1,4 +1,4 @@
-import set from 'lodash/set';
+import { set } from 'lodash-es';
 import dayjs from 'dayjs';
 
 type OverwriteFunction = (paths: string[], value: any) => [boolean, any] | [boolean];
@@ -22,7 +22,7 @@ export function walkObj<T>(obj: T, options: {
   }
 }
 
-export function reconstruct<T>(obj: T, overwrite: OverwriteFunction = () => [false]) {
+export function reconstruct<T>(obj: T, overwrite: OverwriteFunction = () => [false]): object {
   const newObj = {};
   walkObj(obj, {
     callback: (paths: string[], value) => {
@@ -34,14 +34,18 @@ export function reconstruct<T>(obj: T, overwrite: OverwriteFunction = () => [fal
   return newObj;
 }
 
-export function reconstructAsISOString<T>(obj: T) {
+type ReconstructAsISOString<T> = {
+  [K in keyof T]: T[K] extends dayjs.Dayjs ? string | null : T[K];
+}
+
+export function reconstructAsISOString<T>(obj: T): ReconstructAsISOString<T> {
   return reconstruct(obj, (paths, value) => {
     if (dayjs.isDayjs(value)) {
       if (value.isValid()) return [true, value.toISOString()];
       return [true, null];
     }
     return [false];
-  });
+  }) as ReconstructAsISOString<T>;
 }
 
 type FlattenExcludeDayjs<T> = {

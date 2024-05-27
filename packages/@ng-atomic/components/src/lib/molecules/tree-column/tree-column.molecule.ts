@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, EventEmitter, Input, Output, ViewEncapsulation, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatTextColumn } from '@angular/material/table';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -8,6 +8,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FlatTreeControl } from '@angular/cdk/tree';
+
+@Directive({standalone: true, selector: 'molecules-tree-column'})
+export class TreeColumnMoleculeStore {
+  readonly sort = input<'asc' | 'desc' | 'none'>('none');
+  readonly treeControl = input(new FlatTreeControl<any>(
+    (node) => node.level,
+    (node) => node.isExpandable
+  ));
+
+}
 
 @Component({
   selector: 'molecules-tree-column',
@@ -32,10 +42,14 @@ import { FlatTreeControl } from '@angular/cdk/tree';
     >
       <p class="nowrap" style="display: flex; align-items: center; margin-left: 48px">
         <span>{{ key }}</span>
-        <ng-container [ngSwitch]="sort">
-          <mat-icon class="order" *ngSwitchCase="'asc'">south</mat-icon>
-          <mat-icon class="order" *ngSwitchCase="'desc'">north</mat-icon>
-        </ng-container>
+        @switch(store.sort()) {
+          @case ('asc') {
+            <mat-icon class="order">south</mat-icon>
+          }
+          @case ('desc') { 
+            <mat-icon class="order">north</mat-icon>
+          }
+        }
       </p>
     </th>
     <td mat-cell *matCellDef="let data"> 
@@ -48,10 +62,10 @@ import { FlatTreeControl } from '@angular/cdk/tree';
           mat-icon-button 
           [style.visibility]="!data.isExpandable ? 'hidden' : ''"
           [style.marginLeft.px]="data.level * 32"
-          (click)="treeControl.toggle(data)"
+          (click)="store.treeControl().toggle(data)"
         >
           <mat-icon>
-            {{ treeControl.isExpanded(data) ? 'expand_more' : 'chevron_right' }}
+            {{ store.treeControl().isExpanded(data) ? 'expand_more' : 'chevron_right' }}
           </mat-icon>
         </button>
         <span> {{ data | dataAccessor: key }} </span>
@@ -61,17 +75,18 @@ import { FlatTreeControl } from '@angular/cdk/tree';
   styleUrls: ['./tree-column.molecule.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: TreeColumnMoleculeStore,
+      inputs: ['sort', 'treeControl'],
+    }
+  ],
 })
 export class TreeColumnMolecule<T> extends MatTextColumn<T> {
-
-  @Input()
-  sort: 'asc' | 'desc' | 'none' = 'none';
+  protected store = inject(TreeColumnMoleculeStore);
 
   @Output()
   headerClick = new EventEmitter<void>();
-
-  // @Input()
-  // override dataAccessor = (data, name) => data[name.replace(/^__tree_/, '')] ?? '';
 
   text = 'copy';
 
@@ -83,11 +98,4 @@ export class TreeColumnMolecule<T> extends MatTextColumn<T> {
     this.text = 'copied!';
     setTimeout(() => this.text = 'copy', 1000);
   }
-
-  @Input()
-  treeControl = new FlatTreeControl<any>(
-    (node) => node.level,
-    (node) => node.isExpandable
-  );
-
 }

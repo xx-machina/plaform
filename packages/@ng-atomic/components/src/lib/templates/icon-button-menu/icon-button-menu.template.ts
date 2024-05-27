@@ -1,33 +1,28 @@
-import { ChangeDetectionStrategy, Component, Directive, InjectionToken, Input, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Action } from '@ng-atomic/core';
+import { ChangeDetectionStrategy, Component, Directive, inject, input } from '@angular/core';
+import { Action, TokenizedType } from '@ng-atomic/core';
 import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
+@TokenizedType()
 @Directive({ standalone: true, selector: 'templates-icon-button-menu' })
 export class IconButtonMenuTemplateStore extends InjectableComponent {
-  static TOKEN = new InjectionToken('IconButtonMenuTemplateStore');
-  @Input() actions: Action[] = [];
+  readonly actions = input<Action[]>([]);
 }
 
 @Component({
   selector: 'templates-icon-button-menu',
   standalone: true,
   imports: [
-    CommonModule,
     MatButtonModule,
     MatIconModule,
   ],
   template: `
-    <button
-      mat-icon-button
-      color="basic"
-      *ngFor="let action of store.actions"
-      (click)="dispatch(action)"
-    >
-      <mat-icon>{{ action.icon }}</mat-icon>
-    </button>
+    @for (action of store.actions(); track action.id) {
+      <button mat-icon-button color="basic" (click)="dispatch(action)">
+        <mat-icon>{{ action.icon }}</mat-icon>
+      </button>
+    }
   `,
   styleUrls: ['./icon-button-menu.template.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

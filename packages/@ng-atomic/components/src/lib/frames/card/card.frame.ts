@@ -9,7 +9,7 @@ import { MatCardModule } from '@angular/material/card';
     CommonModule,
     MatCardModule,
   ],
-  templateUrl: './card.frame.html',
+  template: `<mat-card><ng-content></ng-content></mat-card>`,
   styleUrls: ['./card.frame.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

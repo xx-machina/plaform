@@ -1,5 +1,15 @@
 {
   "presets": [
-    "@nx/js/babel"
+    [
+      "@babel/preset-env",
+      "@babel/preset-typescript",
+      "@nx/js/babel",
+      {
+        "useBuiltIns": "usage"
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-modules-commonjs"
   ]
 }

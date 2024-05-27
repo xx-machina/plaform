@@ -4,26 +4,31 @@
 	@include property(--height, 100%);
 	@include property(--top-height, 56px);
 	@include property(--bottom-height, 56px);
+	@include property(--contents-gap, 16px);
 }
 
 :host {
 	display: flex;
+	width: 100%;
 	flex-direction: column;
 	justify-content: space-between;
 	height: var(--height);
 	overflow: hidden;
 
 	.top {
-		height: var(--top-height);
+		height: fit-content;
 		transition: 0.5s height;
-		overflow: hidden;
 		touch-action: none;
 	}
 
 	.contents {
-		height: calc(#{var(--height)} - #{var(--top-height)} - #{var(--bottom-height)});
+		display: flex;
+		flex: auto;
+		flex-direction: column;
+		gap: var(--contents-gap);
 		transition: 0.5s height;
-		overflow: auto;
+		overflow: scroll;
+		box-sizing: border-box;
 		-webkit-overflow-scrolling: touch;
 
 		&::-webkit-scrollbar{
@@ -32,7 +37,7 @@
 	}
 
 	.bottom {
-		height: var(--bottom-height);
+		height: fit-content;
 	}
 
 }

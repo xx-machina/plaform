@@ -3,6 +3,11 @@
   "version": "0.0.0-PLACEHOLDER",
   "main": "./index.js",
   "types": "./index.d.ts",
+  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@nx-ddd/spreadsheet",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nontangent/machina.git"
+  },
   "peerDependencies": {
     "@nx-ddd/core": "0.0.0-PLACEHOLDER",
     "google-spreadsheet": "^3.2.0",

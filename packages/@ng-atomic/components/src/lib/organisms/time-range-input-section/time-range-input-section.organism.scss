@@ -1,0 +1,20 @@
+@use 'scoped-var/strict' as * with ($host: 'time-range-input-section');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+}
+
+:host {
+	display: flex;
+	width: 100%;
+	flex-direction: row;
+	padding: 0 16px;
+	box-sizing: border-box;
+	gap: 8px;
+
+	molecules-text-input-field {
+		// 幅を同じに
+		// flex: 1;
+		width: calc(50% - 4px);
+	}
+}

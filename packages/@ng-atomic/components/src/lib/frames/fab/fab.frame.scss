@@ -21,9 +21,16 @@
 		z-index: 2000;
 		bottom: var(--fab-button-bottom);
 		right: var(--fab-button-right);
+		transition: all 0.3s ease;
 
 		--mdc-fab-container-color: var(--container-color);
 		--mdc-fab-icon-color: var(--icon-color);
 		--mat-mdc-fab-color: var(--icon-color);
+	}
+}
+
+:host[hide=true] {
+	button {
+		bottom: -120px;
 	}
 }

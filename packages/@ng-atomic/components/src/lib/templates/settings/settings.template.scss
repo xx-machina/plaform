@@ -1,0 +1,31 @@
+@use 'scoped-var/strict' as * with ($host: '%COMP%');
+@use 'atomic/template' as *;
+
+:host {
+  @include property(--primary-color);
+  @include property(--on-primary-color);
+  @include property(--secondary-color);
+  @include property(--surface-color);
+  @include property(--on-surface-color);
+  @include property(--background-color);
+  @include property(--on-background-color);
+  @include property(--navigator-background-color, var(--primary-color));
+  @include property(--navigator-on-background-color, var(--on-primary-color));
+  @include template($host);
+}
+
+:host {
+  * {
+    --primary-color: #{var(--primary-color)};
+    --on-primary-color: #{var(--on-primary-color)};
+    --surface-color: #{var(--surface-color)};
+    --on-surface-color: #{var(--on-surface-color)};
+    --background-color: #{var(--background-color)};
+    --on-background-color: #{var(--on-background-color)};
+  }
+
+  organisms-navigator {
+    --background-color: #{var(--navigator-background-color)};
+    --on-background-color: #{var(--navigator-on-background-color)};
+  }
+}

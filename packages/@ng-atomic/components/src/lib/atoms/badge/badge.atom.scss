@@ -1,0 +1,19 @@
+@use 'scoped-var/strict' as * with ($host: 'badge');
+@use 'atomic/atom' as *;
+:host {
+	@include atom($host);
+}
+
+:host {
+	display: inline-flex;
+	width: 16px;
+	height: 16px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	font-size: 9px;
+	font-weight: bold;
+	line-height: 16px;
+	color: black;
+	background-color: #fdc569;
+}

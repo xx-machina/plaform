@@ -17,14 +17,8 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/firestore-nest-adapter/**/package.json",
-          "packages/@nx-ddd/firestore-nest-adapter/**/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -32,8 +26,7 @@
         "{workspaceRoot}/coverage/packages/@nx-ddd/firestore-nest-adapter"
       ],
       "options": {
-        "jestConfig": "packages/@nx-ddd/firestore-nest-adapter/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@nx-ddd/firestore-nest-adapter/jest.config.ts"
       }
     },
     "publish": {

@@ -1,7 +1,7 @@
-import { NxModule } from "@nx-ddd/core";
+import { NgModule } from "@angular/core";
 import { GoogleSheetClient } from "./client";
 
-@NxModule({
+@NgModule({
   providers: [GoogleSheetClient],
 })
 export class GoogleSheetClientModule { }

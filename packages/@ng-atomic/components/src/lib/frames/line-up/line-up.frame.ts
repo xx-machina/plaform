@@ -1,138 +1,106 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Injectable, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { interval, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, scan, shareReplay, startWith, switchMap} from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Directive, ElementRef, OnDestroy, OnInit, PLATFORM_ID, inject, input, viewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { distinctUntilChanged, filter, map, startWith, switchMap } from 'rxjs/operators';
 import { LINE_UP_ANIMATIONS } from './line-up.animations';
+import { LineUpFrameService } from './line-up.service';
 import { fromResize } from './resize-observer';
+import { combineLatest, fromEvent, of } from 'rxjs';
 
-export interface LineUpFrameEntry {
-  type: 'add' | 'remove';
-  scope: string;
-  index: number;
-  mainWidth?: number;
-}
-
-@Injectable({providedIn: 'root'})
-export class LineUpFrameService {
-  frames: LineUpFrame[] = [];
-
-  readonly entries$ = new Subject<LineUpFrameEntry>();
-  readonly sizeMap$ = this.entries$.pipe(
-    scan((acc, value) => {
-      if (value.type === 'remove') {
-        const map = acc.get(value.scope);
-        map?.delete(value.index);
-        if (map?.size === 0) acc.delete(value.scope);
-        return acc;
-      } else {
-        const map = acc.get(value.scope) ?? new Map<number, number>();
-        map.set(value.index, value.mainWidth);
-        acc.set(value.scope, map);
-        return acc;
-      }
-    }, new Map() as Map<string, Map<number, number>>),
-    filter((map) => [...map.values()].map(map => [...map.keys()]).flat().length === this.frames.length),
-    shareReplay(1),
-  );
-  readonly sizeMap = toSignal(this.sizeMap$);
-
-  mapToContentWidth(scope: string, index: number) {
-    return this.sizeMap$.pipe(
-      map((map) => map.get(scope) ?? new Map<number, number>()),
-      map((map) => {
-        const keys = [...map.keys()].filter(key => key >= index);
-        return keys.reduce((acc, key) => map.get(key) + acc, 0);
-      }),
-      distinctUntilChanged(),
-      shareReplay(1),
-    );
-  }
-
-  register(frame: LineUpFrame, mainWidth?: number) {
-    this.frames.push(frame);
-  }
-
-  update(frame: LineUpFrame, mainWidth: number) {
-    this.entries$.next({type: 'add', scope: frame.scope, index: frame.index, mainWidth});
-  }
-
-  unregister(frame: LineUpFrame) {
-    const index = this.findIndex(frame);
-    this.frames = this.frames.filter((value) => value !== frame);
-    this.entries$.next({type: 'remove', scope: frame.scope, index});
-  }
-
-  findIndex(frame: LineUpFrame): number {
-    return this.frames.findIndex((value) => value === frame);
-  }
-
-  isFirst(frame: LineUpFrame): boolean {
-    const index = this.findIndex(frame);
-    const keys = [...(this.sizeMap().get(frame.scope) ?? new Map()).keys()];
-    return Math.min(...keys) === index;
-  }
+@Directive({standalone: true, selector: 'frames-line-up'})
+export class LineUpFrameStore {
+  readonly scope = input('default');
+  readonly hasNext = input(false);
 }
 
 @Component({
   standalone: true,
-  imports: [
-    CommonModule,
-  ],
+  imports: [],
   selector: 'frames-line-up',
   template: `
-    <div class="main content" #main><ng-content select=[main]></ng-content></div>
-    <div class="next content" *ngIf="hasNext" @hasNext><ng-content select=[next]></ng-content></div>
+    <div class="main" #main><ng-content select=[main] /></div>
+    @if (store.hasNext()) {
+      <div class="next" @hasNext><ng-content select=[next] /></div>
+    }
   `,
   styleUrls: ['./line-up.frame.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
   animations: LINE_UP_ANIMATIONS,
+  hostDirectives: [
+    {
+      directive: LineUpFrameStore,
+      inputs: ['scope', 'hasNext'],
+    },
+  ],
+  host: {
+    'attr.has-next': 'store.hasNext()',
+  }
 })
 export class LineUpFrame implements OnInit, OnDestroy {
+  protected store = inject(LineUpFrameStore);
   private service = inject(LineUpFrameService);
   private el = inject(ElementRef);
+  private platformId = inject(PLATFORM_ID);
 
-  @HostBinding('attr.has-next')
-  @Input()
-  hasNext: boolean
+  readonly resizeWindow$ = of(null).pipe(
+    switchMap(() => {
+      return isPlatformBrowser(this.platformId)
+        ? fromEvent(window, 'resize').pipe(startWith(null))
+        : of(null);
+    }),
+  )
 
-  @Input()
-  scope = 'default';
-
-  @ViewChild('main', {static: false})
-  protected mainEl!: ElementRef;
-
-  // TODO(@nontangent): interval is not the best way to do this
-  readonly mainWidth$ = interval(500).pipe(
-    filter(() => !!this.mainEl),
-    map(() => this.mainEl.nativeElement.clientWidth),
-    distinctUntilChanged(),
+  readonly elWidth$ = this.resizeWindow$.pipe(
+    switchMap(() => fromResize(this.el).pipe(startWith(null))),
+    map(() => this.el.nativeElement?.clientWidth ?? 0),
+    takeUntilDestroyed(),
+  );
+  
+  readonly main = viewChild('main', {read: ElementRef});
+  readonly main$ = toObservable(this.main);
+  readonly mainWidth$ = combineLatest({
+    main: this.main$,
+    resize: this.resizeWindow$
+  }).pipe(
+    switchMap(({main}) => fromResize(main).pipe(startWith(null))),
+    map(() => this.main()),
+    map((main) => main?.nativeElement?.clientWidth ?? 0),
+    takeUntilDestroyed(),
+  );
+  readonly allWidth$ = combineLatest({
+    map: this.service.sizeMap$,
+    window: this.resizeWindow$
+  }) .pipe(
+    map(() => this.service.getFollowingWidth(this.store.scope(), this)),
     takeUntilDestroyed(),
   );
 
-  readonly width$ = this.service.sizeMap$.pipe(
-    switchMap(() => this.service.mapToContentWidth(this.scope, this.index)),
+  readonly delta$ = combineLatest({
+    el: this.elWidth$,
+    all: this.allWidth$,
+  }).pipe(
+    filter(() => this.service.isFirst(this, this.store.scope())),
+    map(({el, all}) => Math.min(el - all, 0)),
     distinctUntilChanged(),
     takeUntilDestroyed(),
   );
-
-  get index(): number {
-    return this.service.findIndex(this);
-  }
 
   ngOnInit(): void {
-    this.service.register(this, 0);
+    this.service.register(this, this.store.scope());
   }
 
   ngAfterViewInit(): void {
-    this.mainWidth$.subscribe((width) => this.service.update(this, width));
-    this.width$.pipe(filter(() => this.service.isFirst(this))).subscribe((width) => {
-      const delta = this.el.nativeElement.clientWidth - width;
-      this.el.nativeElement.style.setProperty('--translate-x', `${Math.min(delta, 0)}px`);
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.mainWidth$.subscribe((width) => this.service.update(this, width, this.store.scope()));
+      this.delta$.subscribe((delta) => this.setTranslateX(delta));
+    }
   }
 
   ngOnDestroy(): void {
-    this.service.unregister(this);
+    this.service.unregister(this, this.store.scope());
+  }
+
+  protected setTranslateX(value: number) {
+    this.el.nativeElement.style.setProperty('--translate-x', `${value}px`);
   }
 }

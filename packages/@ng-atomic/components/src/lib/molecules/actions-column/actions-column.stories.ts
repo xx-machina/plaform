@@ -1,4 +1,4 @@
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/table';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { buildActions } from '@ng-atomic/storybook';
 import { Meta, Story } from '@storybook/angular';

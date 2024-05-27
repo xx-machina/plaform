@@ -1,23 +1,41 @@
-import dayjs from 'dayjs';
-import admin from 'firebase-admin';
-import { FirestoreConverter } from './converter';
-import { AdminFirestoreAdapter } from '../adapters/admin';
-import { DocumentSnapshot } from '../interfaces';
-import { Transaction, testTransaction, timestampFactory, initializeTest } from '../testing';
+import dayjs, { Dayjs } from 'dayjs';
+import { InjectionToken } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { TransformToDayjs } from '@nx-ddd/common/domain/models';
+import { IsDayjs } from 'class-validator-extended';
+import { IsOptional } from 'class-validator';
+import { IFirestoreConverter, injectConverter } from './converter';
+import { provideFirestoreAdapter } from '../adapters/admin';
+import { timestampFactory, initializeTest } from '../testing';
+import { Firestore } from '../decorators';
 
 initializeTest();
 
-describe('FirestoreConverter', () => {
-  let converter: FirestoreConverter;
-  const adapter = new AdminFirestoreAdapter(admin.firestore());
+class User {
+  @Firestore.ID() id: string;
+  // @Firestore.String() name: string;
+  @Firestore.Timestamp() @IsOptional() @IsDayjs() @TransformToDayjs() dealAt: Dayjs;
+  @Firestore.Timestamp() @IsOptional() @IsDayjs() @TransformToDayjs() createdAt: Dayjs;
+  @Firestore.Timestamp() @IsOptional() @IsDayjs() @TransformToDayjs() updatedAt: dayjs.Dayjs;
+}
 
+const CONVERTER = new InjectionToken<IFirestoreConverter<User>>('CONVERTER');
+
+describe('FirestoreConverter', () => {
+  let converter: IFirestoreConverter<User>;
   beforeEach(() => {
-    converter = new FirestoreConverter(Transaction, adapter);
+    TestBed.configureTestingModule({
+      providers: [
+        provideFirestoreAdapter(),
+        { provide: CONVERTER, useFactory: () => injectConverter(User) },
+      ],
+    });
+    converter = TestBed.inject(CONVERTER);
   })
 
   describe('fromFirestore', () => {
     it('should be succeeded', () => {
-      const doc: DocumentSnapshot<any> = {
+      expect(converter.fromFirestore({
         id: 'test-transaction-0001',
         ref: { path: 'tests/test-transaction-0001' },
         data: () => ({
@@ -25,16 +43,25 @@ describe('FirestoreConverter', () => {
           createdAt: timestampFactory(dayjs('2022-01-01')),
           updatedAt: timestampFactory(dayjs('2022-01-01')),
         }),
-      };
-
-      expect(converter.fromRecord(doc)).toEqual(testTransaction);
+      })).toEqual({
+        id: 'test-transaction-0001',
+        dealAt: dayjs('2018-02-01'),
+        createdAt: dayjs('2022-01-01'),
+        updatedAt: dayjs('2022-01-01'),
+      });
     });
   });
 
   describe('toFirestore', () => {
     it('should be succeeded', () => {
-      const data = converter.toRecord(testTransaction);
+      const data = converter.toFirestore({
+        id: 'test-transaction-0001',
+        dealAt: dayjs('2018-02-01'),
+        createdAt: dayjs('2022-01-01'),
+        updatedAt: dayjs('2022-01-01'),
+      });
       expect(data).toEqual({
+        id: 'test-transaction-0001',
         dealAt: timestampFactory(dayjs('2018-02-01')),
         createdAt: timestampFactory(dayjs('2022-01-01')),
         updatedAt: timestampFactory(dayjs('2022-01-01')),

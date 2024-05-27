@@ -17,21 +17,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/notion/**/package.json",
-          "packages/@nx-ddd/notion/**/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/notion"],
       "options": {
-        "jestConfig": "packages/@nx-ddd/notion/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@nx-ddd/notion/jest.config.ts"
       }
     },
     "publish": {

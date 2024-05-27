@@ -6,6 +6,10 @@ export function signalize<T = any>(valueOrSignal: T | Signal<T>): Signal<T> {
   return isSignal(valueOrSignal) ? valueOrSignal : signal(valueOrSignal);
 }
 
+export function wrapFactory<T>(valueOrSignalFactory: (...args: any[]) => T | Signal<T>): () => Signal<T> {
+  return (...args: any[]) => signalize(valueOrSignalFactory(...args));
+};
+
 export function resolveSignal<T>(valueOrSignal: T | Signal<T>): T {
   return isSignal(valueOrSignal) ? valueOrSignal() : valueOrSignal;
 }

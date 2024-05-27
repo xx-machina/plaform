@@ -6,6 +6,7 @@ import { SelectInputFieldMolecule } from '@ng-atomic/components/molecules/select
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { NgAtomicComponent } from '@ng-atomic/core';
 
 @Component({
   selector: 'organisms-filters-section',
@@ -55,7 +56,7 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./filters-section.organism.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FiltersSectionOrganism {
+export class FiltersSectionOrganism extends NgAtomicComponent {
   @Input()
   modifiable = true;
 

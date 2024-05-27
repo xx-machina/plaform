@@ -1,0 +1,16 @@
+@use 'scoped-var/strict' as * with ($host: 'stripe-input-section');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+}
+
+:host {
+	width: 100%;
+	padding: 0 16px;
+	box-sizing: border-box;
+
+	ngx-stripe-elements {
+		display: block;
+		width: 100%;
+	}
+}

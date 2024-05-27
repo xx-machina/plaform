@@ -1,0 +1,16 @@
+@use 'scoped-var/strict' as * with ($host: 'toggle');
+// @use 'atomic/frame' as *;
+:host {
+	// @include frame($host);
+}
+
+:host {
+	position: relative;
+	display: contents;
+
+	mat-button-toggle-group {
+		position: absolute;
+		bottom: 8px;
+		left: 16px;
+	}
+}

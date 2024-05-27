@@ -1,1 +1,50 @@
-@import '@angular/material/theming';
+// @use '@angular/material/theming' as *;
+@use '@angular/material' as mat;
+@use './styles/palette.scss' as palettes;
+
+$my-typography: mat.define-typography-config();
+
+@include mat.core();
+// basicはデフォルト
+$app-basic: mat.define-palette(mat.$grey-palette, 100, 900, A100);
+$app-primary: mat.define-palette(palettes.$md-palette, 500);
+$app-accent: mat.define-palette(palettes.$md-palette, A100);
+$app-warn: mat.define-palette(mat.$pink-palette, 500, 900, A100);
+$app-theme: mat.define-light-theme((
+  color: (
+    primary: $app-primary,
+    accent: $app-accent,
+    warn: $app-warn,
+    basic: $app-basic
+  ),
+  typography: $my-typography
+));
+@include mat.all-component-themes($app-theme);
+
+:root {
+  --app-width: 100%;
+  --app-height: 100%;
+  --gap: 1px;
+  --template-gap: 16px;
+  --menu-width: 220px;
+  --horizontal-padding: 16px;
+  --vertical-padding: 24px;
+}
+
+body {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100dvh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0;
+
+  background-color: black;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

@@ -1,8 +1,21 @@
+import { ChangeDetectionStrategy, Component, computed, model, Directive, inject, input, effect, ElementRef, viewChild, Output, EventEmitter, Inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { EditorState } from '@codemirror/state';
-import { EditorView } from 'codemirror';
-import { ReplaySubject } from 'rxjs';
+import { keymap } from "@codemirror/view"
+import { indentWithTab } from "@codemirror/commands"
+import { history } from '@codemirror/commands';
+import { autocompletion, closeBrackets } from '@codemirror/autocomplete';
+import { bracketMatching, syntaxHighlighting } from '@codemirror/language';
+import { oneDarkHighlightStyle, oneDark } from '@codemirror/theme-one-dark';
+import { EditorSelection, EditorState, Extension } from '@codemirror/state';
+import { lineNumbers } from '@codemirror/view';
+import { basicSetup, EditorView } from "codemirror"
+import { html } from "@codemirror/lang-html";
+import prettier from "prettier/standalone";
+import parserHtml from "prettier/parser-html";
+import { NgAtomicComponent } from '@ng-atomic/core';
+import { graphql } from 'cm6-graphql';
+import { distinctUntilChanged } from 'rxjs';
+import { json } from "@codemirror/lang-json";
 
 @Component({
   selector: 'extras-editor',
@@ -10,38 +23,90 @@ import { ReplaySubject } from 'rxjs';
   imports: [
     CommonModule
   ],
-  template: `<div #editor></div>`,
+  template: ``,
   styleUrls: ['./editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditorComponent {
+export class EditorComponent extends NgAtomicComponent {
+  readonly content = input<string>('');
+  readonly _contentChange$ = new EventEmitter<string>();
+  @Output() readonly contentChange = new EventEmitter<string>();
+  readonly keyActions = input<{key: string, actionId: string}[]>();
+  readonly extensions = input<Extension[]>([
+    json(),
+  ]);
+  readonly el = inject(ElementRef);
 
-  private readonly state$ = new ReplaySubject<EditorState>(1);
+  // readonly state = computed(() => {
+  //   return EditorState.create({
+  //     doc: this.content() ?? '',
+  //     extensions: [
+  //       keymap.of([
+  //         ...(this.keyActions() ?? []).map(({key, actionId}) => ({
+  //           key,
+  //           run: () => (this.dispatch({id: actionId}), true),
+  //         })),
+  //         indentWithTab,
+  //       ]),
+  //       html(),
+  //       ...this.extensions(),
+  //       graphql(),
+  //     ],
+  //   });
+  // });
 
-  @Input()
-  set state(value: EditorState | null) {
-    if (!value) return;
-    this.state$.next(value);
+  editorView!: EditorView;
+
+  readonly cd = inject(ChangeDetectorRef);
+
+  constructor() {
+    super();
+    effect(() => {
+      const selection = this.editorView.state.selection;
+      this.editorView.dispatch(
+        this.editorView.state.update({
+          changes: {
+            from: 0,
+            to: this.editorView.state.doc.length,
+            insert: this.content() ?? '',
+          },
+          selection: selection,
+          scrollIntoView: true,
+        }),
+      );
+    });
   }
 
-  @ViewChild('editor', { static: true })
-  private _editor!: ElementRef<HTMLElement>;
-  editor!: EditorView;
-
-  async ngAfterViewInit() {
-    this.state$.subscribe((state) => {
-      if (this.editor) {
-        const transaction = this.editor.state.update({
-          ...state,
-          selection: this.editor.state.selection,
-        });
-        this.editor.dispatch(transaction);
-      } else {
-        this.editor = new EditorView({
-          state,
-          parent: this._editor.nativeElement
-        });
-      }
+  ngOnInit(): void {
+    this._contentChange$.pipe(
+      distinctUntilChanged(),
+    ).subscribe((content) => {
+      this.contentChange.emit(content);
     });
+  }
+
+  ngAfterViewInit() {
+    this.editorView?.destroy();
+    this.editorView = new EditorView({
+      state: EditorState.create({
+        doc: ``,
+        extensions: [
+          basicSetup,
+          bracketMatching(),
+          closeBrackets(),
+          history(),
+          autocompletion(),
+          lineNumbers(),
+          oneDark,
+          syntaxHighlighting(oneDarkHighlightStyle),
+          EditorView.updateListener.of((update) => {
+            if (!update.docChanged) return;
+            this._contentChange$.emit(update.state.doc.toString());
+          }),
+          ...this.extensions(),
+        ],
+      }),
+      parent: this.el.nativeElement,
+    })
   }
 }

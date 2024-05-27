@@ -1,0 +1,76 @@
+@use 'scoped-var/strict' as * with ($host: '%COMP%');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+	@include property(--primary-color);
+	@include property(--on-primary-color);
+	@include property(--surface-color);
+	@include property(--on-surface-color);
+	@include property(--background-color);
+	@include property(--on-background-color);
+}
+
+:host {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	color: var(--on-surface-color);
+
+	.message {
+		padding: 8px 16px;
+
+		.header {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			padding: 8px 0;
+			box-sizing: border-box;
+			gap: 8px;
+
+			.name {
+				font-size: 14px;
+				font-weight: bold;
+			}
+
+			.description {
+				display: flex;
+				justify-content: flex-start;
+				gap: 4px;
+				font-size: 12px;
+			}
+
+			img {
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				background-color: var(--primary-color);
+			}
+		}
+
+		.content {
+			font-size: 14px;
+			padding-bottom: 24px;
+			box-sizing: border-box;
+		}
+
+		.bottom.actions {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			gap: 8px;
+
+			button {
+				height: 32px;
+				padding: 0 8px;
+				--mdc-outlined-button-label-text-size: 12px;
+
+			}
+		}
+	}
+
+	mat-divider {
+		width: calc(100% - 16px);
+		box-sizing: border-box;
+		margin: 0 8px;
+	}
+}

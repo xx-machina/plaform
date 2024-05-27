@@ -68,10 +68,10 @@
       },
       "configurations": {
         "production": {
-          "browserTarget": "@ng-atomic/dashboard:build:production"
+          "buildTarget": "@ng-atomic/dashboard:build:production"
         },
         "development": {
-          "browserTarget": "@ng-atomic/dashboard:build:development"
+          "buildTarget": "@ng-atomic/dashboard:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -79,31 +79,18 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "@ng-atomic/dashboard:build"
+        "buildTarget": "@ng-atomic/dashboard:build"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/@ng-atomic/dashboard/**/*.ts",
-          "packages/@ng-atomic/dashboard/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/@ng-atomic/dashboard/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "packages/@ng-atomic/dashboard/jest.config.ts"
       }
     }
   },

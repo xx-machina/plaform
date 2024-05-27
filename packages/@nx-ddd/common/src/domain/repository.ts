@@ -1,4 +1,4 @@
-import { Injectable } from '@nx-ddd/core';
+import { Injectable } from '@angular/core';
 
 export type PartialWithId<T> = {[P in keyof T]?: T[P]} & {id: string};
 

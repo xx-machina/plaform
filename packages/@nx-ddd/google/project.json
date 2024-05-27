@@ -1,0 +1,35 @@
+{
+  "name": "@nx-ddd/google",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@nx-ddd/google/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@nx-ddd/google",
+        "tsConfig": "packages/@nx-ddd/google/tsconfig.lib.json",
+        "packageJson": "packages/@nx-ddd/google/package.json",
+        "main": "packages/@nx-ddd/google/src/index.ts",
+        "assets": ["packages/@nx-ddd/google/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs @nx-ddd/google {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/@nx-ddd/google/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

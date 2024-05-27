@@ -1,24 +1,29 @@
 import { Firestore } from '@nx-ddd/firestore/decorators';
-import type { FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument, Timestamp, FirestoreQuery, FieldValue } from '../../interfaces';
-import { FirestoreAdapter as BaseFirestoreAdapter, QueryFn, WhereFilterOp } from './base.adapter';
+import { TestBed } from '@angular/core/testing';
+import { Injectable } from '@angular/core';
+import { TransformToDayjs } from '@nx-ddd/common/domain/models';
+import { IsDayjs } from 'class-validator-extended';
 import admin from 'firebase-admin';
 import dayjs from 'dayjs';
+import { FirestoreAdapter as BaseFirestoreAdapter, provideFirestoreAdapter, QueryFn, WhereFilterOp } from './base.adapter';
+import type { FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument, Timestamp, FirestoreQuery, FieldValue } from '../../interfaces';
 
-export class FirestoreAdapter extends BaseFirestoreAdapter {
+@Injectable()
+export class FirestoreAdapter extends BaseFirestoreAdapter<dayjs.Dayjs> {
   protected isTimestamp(v: admin.firestore.Timestamp): v is Timestamp {
     return v instanceof admin.firestore.Timestamp;
   }
   protected isFieldValue(v: admin.firestore.FieldValue): v is FieldValue {
     return v instanceof admin.firestore.FieldValue;
   }
-  protected isDate(v: any): v is Date {
-    throw new Error('Method not implemented.');
+  protected isDate(v: any): v is dayjs.Dayjs {
+    return dayjs.isDayjs(v);
   }
-  protected convertTimestampToDate(timestamp: Timestamp): Date {
-    return timestamp.toDate();
+  convertTimestampToDate(timestamp: Timestamp): dayjs.Dayjs {
+    return dayjs(timestamp.toDate());
   }
-  protected convertDateToTimestamp(date: Date): Timestamp {
-    return admin.firestore.Timestamp.fromDate(date);
+  convertDateToTimestamp(date: dayjs.Dayjs): Timestamp {
+    return admin.firestore.Timestamp.fromDate(date.toDate());
   }
 
   get Timestamp(): any {
@@ -77,11 +82,20 @@ class User {
   @Firestore.ID() id: string;
   @Firestore.Map(() => Profile) profile: Profile;
   @Firestore.Array(() => String) tags: string[];
-  @Firestore.Timestamp() createdAt: Date;
+  @Firestore.Timestamp() @IsDayjs() @TransformToDayjs() createdAt: dayjs.Dayjs;
 }
 
 describe('BaseAdapter', () => {
-  let adapter = new FirestoreAdapter();
+  let adapter: BaseFirestoreAdapter;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideFirestoreAdapter(FirestoreAdapter)
+      ],
+    });
+    adapter = TestBed.inject(BaseFirestoreAdapter);
+  });
 
   it('should be defined', () => {
     expect(adapter).toBeDefined();
@@ -96,7 +110,7 @@ describe('BaseAdapter', () => {
           email: 'email'
         },
         tags: ['user'],
-        createdAt: dayjs('2023-11-01').toDate(),
+        createdAt: dayjs('2023-11-01'),
       }, User)).toEqual({
         id: 'id',
         profile: {
@@ -124,7 +138,7 @@ describe('BaseAdapter', () => {
           name: 'name',
         },
         tags: ['user'],
-        createdAt: dayjs('2023-11-01').toDate(),
+        createdAt: dayjs('2023-11-01'),
       })
     });
   });

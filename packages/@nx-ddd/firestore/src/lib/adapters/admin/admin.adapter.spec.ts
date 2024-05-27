@@ -1,15 +1,22 @@
 import admin from 'firebase-admin';
 import dayjs from 'dayjs';
-import { AdminFirestoreAdapter } from './admin.adapter';
+import { provideFirestoreAdapter } from './admin.adapter';
+import { TestBed } from '@angular/core/testing';
+import { FirestoreAdapter } from '../base';
 
 process.env['FIRESTORE_EMULATOR_HOST'] = 'localhost:8080';
-admin.initializeApp({projectId: 'nx-ddd'});
+admin.initializeApp({projectId: 'x-x-machina'});
 
 describe('AdminFirestoreAdapter', () => {
-  let adapter: AdminFirestoreAdapter;
+  let adapter: FirestoreAdapter;
 
   beforeEach(() => {
-    adapter = new AdminFirestoreAdapter(admin.firestore());
+    TestBed.configureTestingModule({
+      providers: [
+        provideFirestoreAdapter(),
+      ]
+    });
+    adapter = TestBed.inject(FirestoreAdapter);
   });
 
   describe('CRUD', () => {
@@ -32,6 +39,4 @@ describe('AdminFirestoreAdapter', () => {
       expect(data.createdAt).toBeInstanceOf(admin.firestore.Timestamp);
     });
   });
-
-  
 });

@@ -1,13 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Directive, effect, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { Action } from '@ng-atomic/core';
+import { Action, InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
 import { NestedMenuMolecule } from '@ng-atomic/components/molecules/nested-menu';
-import { ChipsInputFieldMolecule } from '@ng-atomic/components/molecules/chips-input-field';
+import { ChipsInputFieldMolecule, ChipsInputFieldMoleculeStore } from '@ng-atomic/components/molecules/chips-input-field';
 import { FormControl } from '@angular/forms';
-import { ChipsInputAtom } from '@ng-atomic/components/atoms/chips-input';
 
 export enum ActionId {
   COLUMNS = '[@ng-atomic/components/organisms/grid-toolbar] Columns',
@@ -15,55 +13,10 @@ export enum ActionId {
   EXPORT = '[@ng-atomic/components/organisms/grid-toolbar] Export',
 }
 
-@Component({
-  selector: 'organisms-grid-toolbar',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    NestedMenuMolecule,
-    ChipsInputFieldMolecule,
-    ChipsInputAtom,
-  ],
-  template: `
-    <div class="left">
-      <ng-container *ngFor="let _action of actions">
-        <ng-container *ngIf="_action?.children">
-          <button
-          mat-button
-          color="basic"
-          [matMenuTriggerFor]="menu.childMenu"
-          ><mat-icon>{{ _action.icon }}</mat-icon> <span>{{ _action.name }}</span></button>
-          <molecules-nested-menu
-          #menu
-          [actions]="_action.children"
-          (action)="action.emit($event)"
-          ></molecules-nested-menu>
-        </ng-container>
-        <button
-        *ngIf="!_action?.children"
-        mat-button
-        color="basic"
-        (click)="action.emit(_action)"
-        ><mat-icon>{{ _action.icon }}</mat-icon>  <span>{{ _action.name }}</span></button>
-      </ng-container>
-    </div>
-    <molecules-chips-input-field
-      [appearance]="'fill'"
-      [placeholder]="'status:active'"
-      [label]="'フィルター'"
-      [hint]="'フィルター条件を入力できます。'"
-      [control]="control"
-    ></molecules-chips-input-field>
-  `,
-  styleUrls: ['./grid-toolbar.organism.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class GridToolbarOrganism {
-  @Input()
-  actions: Action[] = [
+@TokenizedType()
+@Directive({standalone: true, selector: 'organisms-grid-toolbar'})
+export class GridToolbarOrganismStore extends InjectableComponent {
+  readonly actions = input<Action[]>([
     {
       id: ActionId.COLUMNS,
       icon: 'view_column',
@@ -104,12 +57,58 @@ export class GridToolbarOrganism {
       icon: 'download',
       name: 'Export'
     },
-  ];
+  ]);
 
-  @Input()
-  control = new FormControl<string>('');
+  readonly control = input(new FormControl<string>(''));
+}
 
-  @Output()
-  action = new EventEmitter<Action>();
-
+@Component({
+  selector: 'organisms-grid-toolbar',
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    NestedMenuMolecule,
+  ],
+  template: `
+    <div>
+      @for(action of store.actions(); track action.id) {
+        @if (action.children) {
+          <button
+            mat-button
+            color="basic"
+            [matMenuTriggerFor]="menu.childMenu"
+            [disabled]="action.disabled"
+          ><mat-icon>{{ action.icon }}</mat-icon> <span>{{ action.name }}</span></button>
+          <molecules-nested-menu
+            #menu
+            [actions]="action.children"
+            (action)="dispatch($event)"
+          />
+        }
+        @else {
+          <button
+            mat-button
+            color="basic"
+            [disabled]="action.disabled"
+            (click)="dispatch(action)"
+          >
+            <mat-icon>{{ action.icon }}</mat-icon><span>{{ action.name }}</span>
+          </button>
+        }
+      }
+    </div>
+  `,
+  styleUrls: ['./grid-toolbar.organism.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: GridToolbarOrganismStore,
+      inputs: ['actions', 'control'],
+    },
+  ],
+})
+export class GridToolbarOrganism extends NgAtomicComponent {
+  protected store = inject(GridToolbarOrganismStore);
 }

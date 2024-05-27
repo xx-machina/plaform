@@ -1,44 +1,42 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Directive, InjectionToken, Input, Type, inject } from '@angular/core';
-import { Action } from '@ng-atomic/core';
+import { ChangeDetectionStrategy, Component, Directive, inject, input } from '@angular/core';
+import { Action, TokenizedType } from '@ng-atomic/core';
 import { InjectableComponent } from '@ng-atomic/core';
 import { NgAtomicComponent } from '@ng-atomic/core';
 import { NavigationListOrganismStore } from '@ng-atomic/components/organisms/navigation-list';
 import { MenuFooterOrganismStore } from '@ng-atomic/components/organisms/menu-footer';
 import { MenuHeaderOrganismStore } from '@ng-atomic/components/organisms/menu-header';
 
+@TokenizedType()
 @Directive({ standalone: true, selector: 'templates-menu' })
 export class MenuTemplateStore extends InjectableComponent {
-  static readonly TOKEN = new InjectionToken<Type<MenuTemplateStore>>('[@ng-atomic/components] MenuTemplateStore');
-  @Input() actions: Action<string>[] = [];
+  readonly actions = input<Action[]>([]);
+  readonly title = input<string>();
 }
 
 @Component({
   standalone: true,
   imports: [
-    CommonModule,
     MenuHeaderOrganismStore,
     NavigationListOrganismStore,
-    // NavigationListOrganism,
-    MenuFooterOrganismStore
+    MenuFooterOrganismStore,
   ],
   selector: 'templates-menu',
   template: `
   <div class="top">
-    <organisms-menu-header injectable></organisms-menu-header>
+    <organisms-menu-header [title]="store.title()" injectable/>
     <organisms-navigation-list injectable
-      [actions]="store.actions"
+      [actions]="store.actions()"
       (action)="dispatch($event)"
-    ></organisms-navigation-list>
+    />
   </div>
-  <organisms-menu-footer injectable></organisms-menu-footer>
+  <organisms-menu-footer injectable/>
   `,
   styleUrls: ['./menu.template.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [
     {
       directive: MenuTemplateStore,
-      inputs: ['actions'],
+      inputs: ['actions', 'title'],
     },
   ]
 })

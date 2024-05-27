@@ -1,25 +1,25 @@
-import { Inject, Injectable } from '@nx-ddd/core';
+import { Injectable, inject } from '@angular/core';
 import { MessageEvent, TwitterToken } from '@nx-ddd/x/domain/models';
 import dayjs from 'dayjs';
 import { XConfig, X_CONFIG } from './x.config';
-import { XService } from './x.service';
-import { TwitterApi } from 'twitter-api-v2';
+import { ApiResponseError, TwitterApi } from 'twitter-api-v2';
 import { TwitterUser } from './domain/models';
+import { X_SERVICE } from './x.service';
 
 @Injectable()
-export class XServiceImpl extends XService {
-  constructor(
-    @Inject(X_CONFIG) private config: XConfig,
-  ) {
-    super();
-  }
+export class XServiceImpl {
+  private config = inject(X_CONFIG);
 
   isExpired(token: TwitterToken): boolean {
-    return dayjs().isAfter(token.expires_at.add(-5, 'minutes'));
+    console.debug('token.expires_at:', token.expires_at.toISOString());
+    console.debug('token.expires_at.add(-60, \'minutes\'):', token.expires_at.add(-60, 'minutes').toISOString());
+    console.debug('dayjs():', dayjs().toISOString());
+    return dayjs().isAfter(token.expires_at.add(-30, 'minutes'));
   }
 
   async refreshToken(token: TwitterToken): Promise<TwitterToken> {
     const client = this.consumerClientById;
+    console.debug('refreshToken:', token.refresh_token);
     const data = await client.refreshOAuth2Token(token.refresh_token);
     return {
       token_type: 'bearer',
@@ -192,6 +192,29 @@ export class XServiceImpl extends XService {
     return this.searchPosts(client, query, sinceId);
   }
 
+  private convertTweet(tweet: any, includes: any) {
+    const author = includes.users.find(user => user.id === tweet.author_id);
+    return {
+      id: tweet.id,
+      text: tweet.text,
+      authorId: tweet.author_id,
+      author: {
+        id: author.id,
+        name: author.name,
+        username: author.username,
+      },
+      createdAt: dayjs(tweet.created_at),
+    }
+  }
+
+  async getTweets(client: TwitterApi = this.consumerClient, id: string) {
+    return client.v2.tweets(id, {
+      "tweet.fields": ["created_at", "lang", "conversation_id", 'author_id'],
+      'user.fields': ['id', 'name', 'username'],
+      expansions: ['author_id'],
+    }).then(res => res.data.map((tweet) => this.convertTweet(tweet, res.includes)));
+  }
+
   async searchPosts(client: TwitterApi = this.consumerClient, query: string, sinceId?: string): Promise<any> {
     try {
       const res = await client.v2.search({
@@ -204,20 +227,7 @@ export class XServiceImpl extends XService {
 
       if (!res?.data?.data) return [];
       
-      return res?.data?.data.map((tweet) => {
-        const author = res.includes.users.find(user => user.id === tweet.author_id);
-        return {
-          id: tweet.id,
-          text: tweet.text,
-          authorId: tweet.author_id,
-          author: {
-            id: author.id,
-            name: author.name,
-            username: author.username,
-          },
-          createdAt: dayjs(tweet.created_at),
-        }
-      });
+      return res?.data?.data.map((tweet) => this.convertTweet(tweet, res.includes));
     } catch(error) {
       console.error(error);
       throw error;
@@ -231,11 +241,15 @@ export class XServiceImpl extends XService {
   async like(tweetId: string) {
     throw new Error('Method not implemented.');
   }
+
+  isApiResponseError(error: any): error is ApiResponseError {
+    return error instanceof ApiResponseError;
+  }
 }
 
-export const X_SERVICE_PROVIDER = [
-  {
-    provide: XService,
-    useClass: XServiceImpl,
-  }
-]
+export function provideXConfig(config: XConfig) {
+  return [
+    { provide: X_SERVICE, useClass: XServiceImpl },
+    { provide: X_CONFIG, useValue: config },
+  ];
+}

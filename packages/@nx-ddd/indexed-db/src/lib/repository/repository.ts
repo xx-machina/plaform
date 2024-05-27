@@ -1,4 +1,4 @@
-import { Injectable } from '@nx-ddd/core/di';
+import { Injectable } from '@angular/core';
 import { Entity } from '@nx-ddd/common/domain/models';
 import { Repository } from '@nx-ddd/common/domain/repository';
 import { IndexedDbConverter } from '../converter';

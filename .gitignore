@@ -49,7 +49,8 @@ Thumbs.db
 # env
 .env
 .env.*
-.secret/*
+.secret
 
 # Cache
 .firebase
+.nx/cache

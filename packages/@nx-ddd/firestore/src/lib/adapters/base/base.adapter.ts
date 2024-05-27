@@ -1,12 +1,11 @@
-import { Injectable } from '@nx-ddd/core';
+import { Injectable } from '@angular/core';
 import { getFirestoreAnnotations } from "@nx-ddd/firestore/decorators";
+import { walkObj } from '@nx-ddd/core/util/walk-obj';
+import { get } from 'lodash-es';
 import type {
   FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument,
   ToFirestoreData, Timestamp, FirestoreQuery, FieldValue
 } from '../../interfaces';
-import get from 'lodash.get';
-import { set } from 'lodash-es';
-import { walkObj } from '@nx-ddd/core/util/walk-obj';
 
 export type QueryFn<Data> = (collection?: any) => any;
 export type WhereFilterOp = '<' | '<=' | '==' | '!=' | '>=' | '>' | 'array-contains' | 'in' | 'array-contains-any' | 'not-in';
@@ -16,8 +15,8 @@ export abstract class FirestoreAdapter<Date = any> {
   protected abstract isTimestamp(v: any): v is Timestamp;
   protected abstract isFieldValue(v: any): v is FieldValue;
   protected abstract isDate(v: any): v is Date;
-  protected abstract convertTimestampToDate(timestamp: Timestamp): Date;
-  protected abstract convertDateToTimestamp(date: Date): Timestamp;
+  abstract convertTimestampToDate(timestamp: Timestamp): Date;
+  abstract convertDateToTimestamp(date: Date): Timestamp;
 
   abstract get Timestamp(): any
   abstract get FieldValue(): any
@@ -34,19 +33,21 @@ export abstract class FirestoreAdapter<Date = any> {
   abstract orderBy<Data>(key: string, order: 'asc' | 'desc'): QueryFn<Data>;
   abstract limit<Data>(n: number): QueryFn<Data>;
 
+  //** @deprecated */
   toFirestoreData<Entity>(entity: Entity): ToFirestoreData<Entity, Date> {
     return Object.entries(entity).reduce((pre, [k, v]) => ({
       ...pre, [k]: this.isDate(v) ?  this.convertDateToTimestamp(v) : v,
     }), {} as ToFirestoreData<Entity, Date>);
   }
 
+  //** @deprecated */
   fromFirestoreData<Entity>(data: ToFirestoreData<Entity, Date>): Entity {
     return Object.entries(data).reduce((pre, [k, v]) => ({
       ...pre, [k]: this.isTimestamp(v) ? this.convertTimestampToDate(v) : v,
     }), {} as Entity);
   }
 
-  toFirestore(obj: object, Entity: any) {
+  toFirestore<T>(obj: object, Entity: new () => T): object {
     const newObj = {};
     for (const annotation of getFirestoreAnnotations(Entity)) {
       const _value = get(obj, annotation.propName);
@@ -57,36 +58,47 @@ export abstract class FirestoreAdapter<Date = any> {
       switch(annotation.type) {
         case 'id':
         case 'string':
-        case 'number': {
+        case 'number': 
+        case 'boolean': {
           if (typeof _value === 'undefined') break;
           newObj[annotation.fieldName] = _value;
           break;
         }
         case 'timestamp': {
           if (typeof _value === 'undefined') break;
+          if (!this.isDate(_value)) throw new Error(`Invalid Date Type: ${_value}`);
           newObj[annotation.fieldName] = this.convertDateToTimestamp(_value);
           break;
         }
         case 'array': {
-          const Type = (annotation as any).childType();
-          if (typeof _value === 'undefined') break;
-          const value = _value.map(v => {
-            switch (Type) {
-              case String:
-              case Number:
-                return v
-              default: 
-                return this.toFirestore(v, Type);
-            }
-          });
-          if (value) newObj[annotation.fieldName] = value
+          if (typeof annotation?.childType === 'undefined') {
+            if (_value) newObj[annotation.fieldName] = _value;
+          } else {
+            const Type = (annotation as any).childType();
+            if (typeof _value === 'undefined') break;
+            const value = _value.map(v => {
+              switch (Type) {
+                case String:
+                case Number:
+                  return v
+                default: 
+                  return this.toFirestore(v, Type);
+              }
+            });
+            if (value) newObj[annotation.fieldName] = value
+          }
           break;
         }
         case 'map': {
-          const Type = (annotation as any).childType();
           if (typeof _value === 'undefined') break;
-          const value = this.toFirestore(_value, Type);
-          if (value) newObj[annotation.fieldName] = value;
+
+          if (typeof (annotation as any)?.childType === 'undefined') {
+            if (_value) newObj[annotation.fieldName] = _value;
+          } else {
+            const Type = (annotation as any).childType();
+            const value = this.toFirestore(_value, Type);
+            if (value) newObj[annotation.fieldName] = value;
+          }
           break;
         }
       }
@@ -94,7 +106,7 @@ export abstract class FirestoreAdapter<Date = any> {
     return newObj;
   }
   
-  fromFirestore(data: any, Entity: any) {
+  fromFirestore<T = any>(data: any, Entity: new() => T): T {
     const newObj = {};
     for (const annotation of getFirestoreAnnotations(Entity)) {
       const _value = data[annotation.fieldName];
@@ -107,7 +119,8 @@ export abstract class FirestoreAdapter<Date = any> {
       switch(annotation.type) {
         case 'id':
         case 'string':
-        case 'number': {
+        case 'number':
+        case 'boolean': {
           newObj[annotation.propName] = _value;
           break;
         }
@@ -120,28 +133,36 @@ export abstract class FirestoreAdapter<Date = any> {
           break;
         }
         case 'array': {
-          const Type = (annotation as any).childType();
-          const value = _value.map(v => {
-            switch (Type) {
-              case String:
-              case Number:
-                return v
-              default:
-                return this.fromFirestore(v, Type);
-            }
-          });
-          if (value) newObj[annotation.propName] = value
+          if (typeof annotation?.childType === 'undefined') {
+            newObj[annotation.propName] = _value;
+          } else {
+            const Type = (annotation as any).childType();
+            const value = _value.map(v => {
+              switch (Type) {
+                case String:
+                case Number:
+                  return v
+                default:
+                  return this.fromFirestore(v, Type);
+              }
+            });
+            if (value) newObj[annotation.propName] = value
+          }
           break;
         }
         case 'map': {
-          const Type = (annotation as any).childType();
-          const value = this.fromFirestore(_value, Type);
-          if (value) newObj[annotation.propName] = value;
+          if (typeof annotation?.childType === 'undefined') {
+            newObj[annotation.propName] = _value;
+          } else {
+            const Type = (annotation as any).childType();
+            const value = this.fromFirestore(_value, Type);
+            if (value) newObj[annotation.propName] = value;
+          }
           break;
         }
       }
     }
-    return newObj;
+    return newObj as T;
   }
 
   /**
@@ -161,4 +182,8 @@ export abstract class FirestoreAdapter<Date = any> {
     return newObj;
   }
   
+}
+
+export function provideFirestoreAdapter(useClass: new () => FirestoreAdapter) {
+  return { provide: FirestoreAdapter, useClass };
 }

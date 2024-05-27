@@ -15,6 +15,7 @@ export type NestedGetType<T, P extends any[]> =
       : never
     : T;
 
+/** @deprecated use lodash-es */
 export function get<T, P extends PathKeys<T>>(obj: T, path: P): NestedGetType<T, P> {
   return _get(obj, path);
 };

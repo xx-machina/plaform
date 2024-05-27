@@ -29,18 +29,11 @@
         "{workspaceRoot}/coverage/packages/@nx-ddd/firestore-angular-adapter"
       ],
       "options": {
-        "jestConfig": "packages/@nx-ddd/firestore-angular-adapter/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@nx-ddd/firestore-angular-adapter/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/firestore-angular-adapter/**/package.json",
-          "packages/@nx-ddd/firestore-angular-adapter/**/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "publish": {
       "executor": "nx:run-commands",

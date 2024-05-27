@@ -1,5 +1,5 @@
 import { Inject, Injectable, InjectionToken, Optional, Pipe, PipeTransform } from '@angular/core';
-import { smartSortByTransformer } from '@ng-atomic/common/pipes/smart-sort-by';
+import { sortByTransformer } from '@ng-atomic/common/pipes/sort-by';
 
 interface Page {
   start: number;
@@ -11,7 +11,7 @@ interface Page {
 export const PAGINATION_TRANSFORMER = new InjectionToken('[@ng-atomic/pipes] Pagination Transformer');
 export type PaginationTransformer<E> = (items: E[], page: Page) => E[];
 export function paginationTransformer<E>(items: E[], page: Page): E[] {
-  return smartSortByTransformer(items, page.key, page.order).slice(page.start, page.end);
+  return sortByTransformer(items, page).slice(page.start, page.end) as E[];
 }
 
 @Injectable({ providedIn: 'root' })

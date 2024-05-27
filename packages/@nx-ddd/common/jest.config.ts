@@ -1,13 +1,31 @@
 /* eslint-disable */
 export default {
-  displayName: 'common',
-
-  globals: {},
+  displayName: '@nx-ddd/firestore',
+  preset: '../../../jest.preset.js',
+  setupFilesAfterEnv: [
+    '<rootDir>/src/test-setup.ts'
+  ],
+  coverageDirectory: '../../../coverage/projects/@nx-ddd/common',
   transform: {
-    '^.+\\.[tj]sx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
+    '^.+\\.(ts|mjs|js|html)$': [
+      'jest-preset-angular',
+      {
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+        stringifyContentPathRegex: '\\.(html|svg)$',
+      },
+    ],
   },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/packages/@nx-ddd/common',
-  testEnvironment: 'node',
-  preset: '../../jest.preset.js',
+  transformIgnorePatterns: [
+    // 'node_modules/(?!.*\\.mjs$)',
+    'node_modules/(?!(lodash-es|@angular|@nx-ddd|flat|undici)/)'
+  ],
+  snapshotSerializers: [
+    'jest-preset-angular/build/serializers/no-ng-attributes',
+    'jest-preset-angular/build/serializers/ng-snapshot',
+    'jest-preset-angular/build/serializers/html-comment',
+  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  globals: {
+    'TextDecoder': require('util').TextDecoder, // 追加
+  }
 };

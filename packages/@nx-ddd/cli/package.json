@@ -1,0 +1,12 @@
+{
+  "name": "@nx-ddd/cli",
+  "version": "0.0.1",
+  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@nx-ddd/cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nontangent/machina.git"
+  },
+  "dependencies": {},
+  "type": "commonjs",
+  "main": "./index.cjs"
+}

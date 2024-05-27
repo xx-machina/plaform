@@ -13,26 +13,18 @@
         "packageJson": "packages/@nx-ddd/core/package.json",
         "rootDir": "packages/@nx-ddd/core/src",
         "main": "packages/@nx-ddd/core/src/index.ts",
-        "assets": ["packages/@nx-ddd/core/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "assets": ["packages/@nx-ddd/core/*.md"]
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/core/**/package.json",
-          "packages/@nx-ddd/core/**/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/core"],
       "options": {
-        "jestConfig": "packages/@nx-ddd/core/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@nx-ddd/core/jest.config.ts"
       }
     },
     "publish": {

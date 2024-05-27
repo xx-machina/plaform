@@ -1,24 +1,47 @@
 @use 'scoped-var/strict' as * with ($host: 'navigator');
+@use 'atomic/organism' as *;
 
 :host {
-  @include property(--height, 64px);
-  @include property(--primary-color, #012148);
+  @include organism($host);
+  @include property(--primary-color, #404040);
+  @include property(--on-primary-color, #f0f0f0);
+  @include property(--secondary-color, #B0B0B0);
+  @include property(--on-secondary-color, #f0f0f0);
+  @include property(--background-color, #fff);
+  @include property(--on-background-color, #404040);
 }
 
 :host {
   display: block;
   width: 100%;
-  height: var(--height);
+  height: 56px;
 
   mat-toolbar {
+    --mat-toolbar-container-background-color: #{var(--background-color)};
+    --mat-toolbar-container-text-color: #{var(--on-background-color)};
     display: flex;
     width: 100%;
     height: 100%;
-
-    background-color: var(--primary-color);
-
     justify-content: space-between;
     align-items: center;
+    overflow: hidden;
+    transition: background 0.5s ease-in-out;
+
+    > div {
+      &:first-child, &:last-child {
+        flex: 0 0 auto; // 左右のdivは内容に応じてサイズを決め、伸縮しない
+      }
+  
+      &:nth-child(2) {
+        flex: 1 1 auto; // 中央のng-contentを含むdivは可能な限り領域を取る
+        display: flex;
+        justify-content: flex-start; // 中央の内容を中央揃えにする
+        overflow: hidden; // コンテンツがはみ出した場合は隠す
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
   }
   
   div {

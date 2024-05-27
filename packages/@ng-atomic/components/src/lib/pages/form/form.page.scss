@@ -1,0 +1,30 @@
+@use 'scoped-var/strict' as * with ($host: 'form');
+@use 'atomic/page' as *;
+
+:host {
+	@include page($host);
+	@include external-property(--page-width-lv1);
+	@include external-property(--page-width-lv2);
+	@include external-property(--page-width-lv3);
+	@include external-property(--primary-color);
+	@include external-property(--on-primary-color);
+	@include external-property(--surface-color);
+	@include external-property(--on-surface-color);
+	@include external-property(--on-background-color);
+	@include external-property(--background-color);
+}
+
+:host {
+	.template {
+		width: var(--page-width-lv1);
+	}
+
+	* {
+    --primary-color: #{var(--primary-color)};
+		--on-primary-color: #{var(--on-primary-color)};
+		--surface-color: #{var(--surface-color)};
+		--on-surface-color: #{var(--on-surface-color)};
+		--background-color: #{var(--background-color)};
+		--on-background-color: #{var(--on-background-color)};
+  }
+}

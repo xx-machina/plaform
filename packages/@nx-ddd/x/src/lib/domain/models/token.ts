@@ -1,7 +1,7 @@
-import { IsString, validateSync } from "class-validator";
-import dayjs from 'dayjs';
 import { IsDayjs } from "@nx-ddd/core/util/class-validators";
 import { Firestore } from "@nx-ddd/firestore/decorators";
+import { IsString, validateSync } from "class-validator";
+import dayjs from 'dayjs';
 
 export class TwitterToken {
   @Firestore.String() @IsString() token_type: string;

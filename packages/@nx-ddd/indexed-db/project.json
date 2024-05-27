@@ -17,21 +17,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/indexed-db/**/package.json",
-          "packages/@nx-ddd/indexed-db/**/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/indexed-db"],
       "options": {
-        "jestConfig": "packages/@nx-ddd/indexed-db/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@nx-ddd/indexed-db/jest.config.ts"
       }
     },
     "publish": {

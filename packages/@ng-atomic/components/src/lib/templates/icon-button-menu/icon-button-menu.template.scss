@@ -2,19 +2,25 @@
 @use 'atomic/template' as *;
 :host {
 	@include template($host);
-	@include property(--primary-color, #3f51b5);
-	@include property(--mdc-icon-button-icon-color, white);
+	@include property(--primary-color, #404040);
+	@include property(--on-primary-color, #f0f0f0);
+	@include property(--secondary-color, #B0B0B0);
+	@include property(--mdc-icon-button-icon-color, #FEFEFE);
 }
 
 :host {
 	display: flex;
 	flex-direction: column;
-	justify-content: start;
+	justify-content: flex-start;
 	align-items: center;
 
 	width: 100%;
 	height: 100%;
 	background-color: var(--primary-color);
+
+	button {
+		--mat-icon-color: #{var(--on-primary-color)};
+  }
 
 	// button {
 	// 	width: 100%;

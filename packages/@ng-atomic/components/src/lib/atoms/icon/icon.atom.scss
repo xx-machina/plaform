@@ -3,12 +3,18 @@
 
 :host {
   @include atom($host);
+	@include property(--primary-color, #404040);
+	@include property(--surface-color, #f0f0f0);
+	@include property(--background-color, #f0f0f0);
+	@include property(--on-primary-color, #f0f0f0);
+	@include property(--on-background-color, #404040);
+	@include property(--on-surface-color, #404040);
   @include property(--color);
 }
 
 :host {
   mat-icon {
-    color: var(--color);
+    color: var(--on-background-color);
 
     ::ng-deep {
       svg .filled {

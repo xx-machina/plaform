@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { scan, map, distinctUntilChanged, delay, tap, shareReplay } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ObservableInput, ObservedValueOf, OperatorFunction, Subject, of } from 'rxjs';
+import { scan, map, distinctUntilChanged, delay, tap, shareReplay, switchMap } from 'rxjs/operators';
 
 type LoadingMap = Map<string, boolean>;
 
@@ -9,47 +10,65 @@ type LoadingMap = Map<string, boolean>;
 })
 export class LoadingService {
   private loadingEntries$ = new Subject<[string, boolean]>();
-
-  loadingMap: LoadingMap = new Map();
-  loadingMap$ = this.loadingEntries$.pipe(
+  readonly loadingMap$ = this.loadingEntries$.pipe(
     scan((map, [key, value]) => map.set(key, value), new Map()),
     map((map: LoadingMap) => new Map([...map.entries()].filter(([_, v]: [string, boolean]) => v))),
-    tap(m => console.debug('m:', m)),
     distinctUntilChanged((pre, cur) => JSON.stringify([...pre.entries()]) === JSON.stringify([...cur.entries()])),
     shareReplay(1),
   );
+  readonly loadingMap = toSignal(this.loadingMap$);
 
-  isLoading$ = this.loadingMap$.pipe(
+  readonly isLoading$ = this.loadingMap$.pipe(
     map((map) => !![...map.keys()].length),
     delay(0),
   );
+  readonly isLoading = toSignal(this.isLoading$);
 
-  constructor() {
-    this.loadingMap$.subscribe((m) => {
-      this.loadingMap = m;
-    });
-  }
-
-  setKey(key: string): void {
+  start(key: string = randomStr(16)): string {
     this.loadingEntries$.next([key, true]);
+    return key;
   }
 
-  removeKey(key: string): void {
+  end(key: string): void {
     this.loadingEntries$.next([key, false]);
   }
 
-  start(callback: (done: any) => void, key: string = randomStr(16)) {
-    this.setKey(key);
-    callback(() => this.removeKey(key));
+  /** @deprecated: use start() instead */
+  setKey(key: string): void {
+    this.start(key);
   }
 
-  async await<T = any>(callback: (...args: any[]) => Promise<T>): Promise<T> {
-    const key = randomStr(16);
-    this.setKey(key);
-    const res = await callback();
-    this.removeKey(key);
+  /** @deprecated: use end() instead*/
+  removeKey(key: string): void {
+    this.end(key);
+  }
+
+  async await<T = any>(callback: (...args: any[]) => Promise<T>): Promise<T | void> {
+    const key = this.start();
+    const res = await callback().catch(error => {console.error(error);});
+    this.end(key);
     return res;
   }
+
+  switchMap<T, O extends ObservableInput<any>>(
+    project: (value: T, index: number) => O
+  ): OperatorFunction<T, ObservedValueOf<O>> {
+    const key = randomStr(16);
+    return (source) => source.pipe(
+      tap(() => this.start(key)),
+      switchMap(project),
+      tap(() => this.end(key)),
+    );
+  }
+}
+
+@Injectable()
+export class NoopLoadingService extends LoadingService {
+  readonly isLoading$ = of(false);
+}
+
+export function provideNoopLoadingService() {
+  return { provide: LoadingService, useClass: NoopLoadingService };
 }
 
 export function randomStr(n: number = 16): string {

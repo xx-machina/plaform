@@ -1,0 +1,15 @@
+@use 'scoped-var/strict' as * with ($host: 'background');
+@use 'atomic/template' as *;
+:host {
+	@include template($host);
+	@include property('--background-color', #000000);
+	@include property('--on-background-color', #ffffff);
+}
+
+:host {
+	width: 100%;
+	height: 100%;
+
+	background-color: var(--background-color);
+	color: var(--on-background-color);
+}

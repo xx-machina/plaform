@@ -1,50 +1,40 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
-import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
+import { ChangeDetectionStrategy, Component, Directive, effect, inject, input } from '@angular/core';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
+
+@TokenizedType()
+@Directive({ standalone: true, selector: 'frames-drawer' })
+export class DrawerFrameStore extends InjectableComponent {
+  readonly opened = input<boolean>(false);
+  readonly mode = input<'side' | 'over' | 'push'>('side');
+  readonly hasBackdrop = input<boolean>(true);
+  readonly position = input<'start' | 'end'>('start');
+}
 
 @Component({
   selector: 'frames-drawer',
   standalone: true,
   imports: [
-    CommonModule,
     MatSidenavModule,
   ],
   template: `
-  <mat-drawer-container [autosize]="false">
-    <mat-drawer #drawer mode="side">
-      <ng-content select=[drawer]></ng-content>
+  <mat-drawer-container [autosize]="false" [hasBackdrop]="store.hasBackdrop()">
+    <mat-drawer #drawer [opened]="store.opened()" [mode]="store.mode()" [position]="store.position()">
+      <ng-content select=[drawer] />
     </mat-drawer>
     <mat-drawer-content>
-      <ng-content select=[contents]></ng-content>
+      <ng-content select=[contents] />
     </mat-drawer-content>
   </mat-drawer-container>`,
   styleUrls: ['./drawer.frame.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: DrawerFrameStore,
+      inputs: ['opened', 'mode', 'hasBackdrop', 'position'],
+    }
+  ],
 })
-export class DrawerFrame implements AfterViewInit {
-
-  @ViewChild(MatDrawer)
-  drawer!: MatDrawer;
-
-  private _isOpen = false;
-
-  @Input()
-  set isOpen(_isOpen: boolean) {
-    _isOpen ? this.drawer?.open() : this.drawer?.close();
-    this._isOpen = _isOpen
-  }
-
-  get isOpen(): boolean {
-    return this._isOpen
-  }
-
-  ngAfterViewInit() {
-    // setTimeout(() => {
-    //   this.drawer.open();
-    //   this.isOpen ? this.drawer?.open() : this.drawer?.close();
-    //   console.debug('this.drawer:', this.drawer);
-
-    // },0);
-  }
-
+export class DrawerFrame extends NgAtomicComponent {
+  readonly store = inject(DrawerFrameStore);
 }

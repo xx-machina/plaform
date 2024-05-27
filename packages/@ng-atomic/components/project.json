@@ -106,21 +106,14 @@
       "defaultConfiguration": "development"
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/@ng-atomic/components/**/package.json",
-          "packages/@ng-atomic/components/**/project.json"
-        ]
-      },
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/ng-atomic/components"],
       "options": {
-        "jestConfig": "packages/@ng-atomic/components/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@ng-atomic/components/jest.config.ts"
       }
     },
     "deploy": {
@@ -146,7 +139,5 @@
       }
     }
   },
-  "tags": [
-    "@ng-atomic"
-  ]
+  "tags": ["@ng-atomic"]
 }

@@ -5,18 +5,14 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["packages/@ng-atomic/web-api/**/*.ts"]
-      },
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/ng-atomic/web-api"],
       "options": {
-        "jestConfig": "packages/@ng-atomic/web-api/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@ng-atomic/web-api/jest.config.ts"
       }
     },
     "pack": {
@@ -40,7 +36,8 @@
         "assets": [],
         "target": "node",
         "compiler": "tsc",
-        "babelUpwardRootMode": true
+        "babelUpwardRootMode": true,
+        "webpackConfig": "packages/@ng-atomic/web-api/webpack.config.js"
       },
       "configurations": {
         "production": {

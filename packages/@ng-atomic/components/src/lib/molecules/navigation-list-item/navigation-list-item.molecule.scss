@@ -2,10 +2,50 @@
 @use 'atomic/molecule' as *;
 :host {
 	@include molecule($host);
+	@include property(--primary-color, #404040);
+	@include property(--surface-color, #f0f0f0);
+	@include property(--background-color, #f0f0f0);
+	@include property(--on-primary-color, #f0f0f0);
+	@include property(--on-background-color, #404040);
+	@include property(--on-surface-color, #404040);
+	@include external-property(--mat-badge-background-color);
 }
 
 :host {
-	--mdc-list-list-item-hover-label-text-color: white;
-	--mdc-list-list-item-label-text-color: white;
-	--mdc-list-list-item-supporting-text-color: white;
+	--mdc-list-list-item-hover-label-text-color: var(--on-background-color);
+	--mdc-list-list-item-label-text-color: var(--on-background-color);
+	--mdc-list-list-item-supporting-text-color: var(--on-background-color);
+	--mat-list-list-item-leading-icon-end-space: 16px;
+
+	[matListItemTitle] {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	::ng-deep .mat-list-item {
+		.mat-list-item-content {
+			display: flex;
+			align-items: center;
+			grid-gap: 8px;
+			padding-top: 8px;
+			padding-bottom: 8px;
+			cursor: pointer;
+			color: var(--on-background-color);
+			font-size: 12px;
+		}
+
+		.mat-list-text {
+			padding-left: 8px !important;
+		}
+	}
+
+	* {
+		--background-color: #{var(--background-color)};
+		--on-background-color: #{var(--on-background-color)};
+		--surface-color: #{var(--surface-color)};
+		--on-surface-color: #{var(--on-surface-color)};
+		--primary-color: #{var(--on-primary-color)};
+		--on-primary-color: #{var(--primary-color)};
+	}
 }

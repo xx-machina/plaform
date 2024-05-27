@@ -1,0 +1,13 @@
+@use 'scoped-var/strict' as * with ($host: 'agreement-input-section');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+}
+
+:host {
+	display: flex;
+	width: 100%;
+	padding: 0 8px;
+	box-sizing: border-box;
+	justify-content: flex-start;
+}

@@ -5,15 +5,11 @@
 }
 
 :host {
+
 	.message {
 		display: block;
 		height: 100%;
 		position: relative;
-
-		.scroll {
-			height: calc(100% - 80px);
-			overflow: scroll;
-		}
 
 		organisms-textarea-section {
 			position: absolute;

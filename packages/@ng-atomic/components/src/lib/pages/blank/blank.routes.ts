@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
-import { BlankPage } from './blank.page';
+import { BLANK_ROUTE } from './blank.route';
 
-export const routes: Routes = [{path: '', component: BlankPage}];
+export const routes: Routes = [
+  BLANK_ROUTE,
+];

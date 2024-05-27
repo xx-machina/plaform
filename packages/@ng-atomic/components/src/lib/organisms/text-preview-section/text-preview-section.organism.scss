@@ -1,0 +1,23 @@
+@use 'scoped-var/strict' as * with ($host: 'text-preview-section');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+}
+
+:host {
+	.item {
+		display: block;
+		padding: 0 16px;
+		font-size: 16px;
+
+		.title {
+			// font-weight: bold;
+			margin-bottom: 4px;
+			font-size: 0.8em;
+		}
+
+		.description {
+			font-size: 1em;
+		}
+	}
+}

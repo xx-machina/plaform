@@ -18,21 +18,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/@ng-atomic/common/**/package.json",
-          "packages/@ng-atomic/common/**/project.json"
-        ]
-      },
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/ng-atomic/common"],
       "options": {
-        "jestConfig": "packages/@ng-atomic/common/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@ng-atomic/common/jest.config.ts"
       }
     },
     "publish": {
@@ -50,7 +43,5 @@
       }
     }
   },
-  "tags": [
-    "@ng-atomic"
-  ]
+  "tags": ["@ng-atomic"]
 }

@@ -5,21 +5,14 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/@ng-atomic/schematics/**/package.json",
-          "packages/@ng-atomic/schematics/**/project.json"
-        ]
-      },
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/ng-atomic/schematics"],
       "options": {
-        "jestConfig": "packages/@ng-atomic/schematics/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@ng-atomic/schematics/jest.config.ts"
       }
     },
     "build": {
@@ -62,7 +55,5 @@
       }
     }
   },
-  "tags": [
-    "@ng-atomic"
-  ]
+  "tags": ["@ng-atomic"]
 }

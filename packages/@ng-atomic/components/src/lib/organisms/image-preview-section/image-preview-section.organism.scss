@@ -1,0 +1,13 @@
+@use 'scoped-var/strict' as * with ($host: 'image-preview-section');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+}
+
+:host {
+	width: 100%;
+
+	img {
+		width: 100%;
+	}
+}

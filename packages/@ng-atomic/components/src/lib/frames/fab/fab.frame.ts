@@ -1,35 +1,53 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Directive, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Action } from '@ng-atomic/core';
+import { Action, _computed } from '@ng-atomic/core';
 import { FabService } from './fab.service';
-import { ReplaySubject, takeUntil } from 'rxjs';
 import { NgAtomicComponent } from '@ng-atomic/core';
+import { makeConfig } from '@ng-atomic/common/services/ui';
+
+@Directive({ standalone: true, selector: 'frames-fab' })
+export class FabFrameStore {
+  static readonly Config = makeConfig(() => {
+    return () => ({
+      actions: [] as Action[],
+      hide: false,
+    });
+  }, ['components', 'frames', 'fab']);
+  
+  readonly config = FabFrameStore.Config.inject();
+  readonly actions = input(_computed(() => this.config().actions));
+  readonly hide = input(_computed(() => this.config().hide));
+}
 
 @Component({
   selector: 'frames-fab',
   standalone: true,
   imports: [
-    CommonModule,
     MatIconModule,
     MatButtonModule,
   ],
   template: `
     <ng-content></ng-content>
-    <ng-container *ngFor="let action of fab.actions">
-      <button mat-fab color="primary" (click)="dispatch(action)">
+    @for (action of store.actions(); track action.id) {
+      <button mat-fab [color]="action?.color ?? 'primary'" (click)="dispatch(action)">
         <mat-icon>{{ action?.icon ?? 'add' }}</mat-icon>
       </button>
-    </ng-container>
+    }
   `,
   styleUrls: ['./fab.frame.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: FabFrameStore,
+      inputs: ['actions', 'hide'],
+    },
+  ],
+  host: {
+    '[attr.hide]': 'store.hide()',
+  }
 })
 export class FabFrame extends NgAtomicComponent {
   protected fab = inject(FabService);
-
-  @Input()
-  actions: Action[] = [];
-
+  protected store = inject(FabFrameStore);
 }

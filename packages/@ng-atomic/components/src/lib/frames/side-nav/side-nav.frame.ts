@@ -1,30 +1,59 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Directive, HostBinding, InjectionToken, Input, Signal, computed, inject, isSignal, signal } from '@angular/core';
-import { injectUiConfig } from '@ng-atomic/common/services/ui';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Directive, HostBinding, WritableSignal, inject, input, signal } from '@angular/core';
+import { Breakpoint, makeConfig } from '@ng-atomic/common/services/ui';
 import { DrawerFrame } from '@ng-atomic/components/frames/drawer';
 import { LineUpFrame } from '@ng-atomic/components/frames/line-up';
 import { MenuTemplateStore } from '@ng-atomic/components/templates/menu';
-import { NgAtomicComponent } from '@ng-atomic/core';
-import { signalize } from '@ng-atomic/common/pipes/signal';
+import { NgAtomicComponent, TokenizedType, _computed } from '@ng-atomic/core';
 import { IconButtonMenuTemplateStore } from '@ng-atomic/components/templates/icon-button-menu';
-import { Action } from '@ng-atomic/core';
 import { InjectableComponent } from '@ng-atomic/core';
 
+export function injectSideNavMode(): WritableSignal<'collapsed' | 'expanded'> {
+  return signal<'collapsed' | 'expanded'>('collapsed');
+}
+
+@TokenizedType()
 @Directive({ standalone: true, selector: 'frames-side-nav' })
 export class SideNavFrameStore extends InjectableComponent {
-  static TOKEN = new InjectionToken('side-nav-frame-store');
+  static readonly Config = makeConfig(() => {
+    const getFrameType = (breakpoint: Breakpoint) => {
+      switch (breakpoint) {
+        case 'xSmall': return 'drawer';
+        default: return 'lineup';
+      }
+    }
 
-  @Input()
-  readonly actions: Action[] = [];
+    const getMenuType = (breakpoint: Breakpoint) => {
+      switch (breakpoint) {
+        case 'xSmall': return 'menu';
+        case 'small':
+        case 'medium': return 'icon-button-menu';
+        default: return 'menu';
+      }
+    }
 
-  @Input({transform: (v: any) => signalize(v)})
-  readonly menuType = injectUiConfig(['frames', 'sideNav', 'menuType']);
+    const getMode = (breakpoint: Breakpoint) => {
+      switch (breakpoint) {
+        case 'xSmall': return 'collapsed';
+        default: return 'expanded';
+      }
+    }
 
-  @Input()
-  readonly mode: 'expanded' | 'collapsed' = 'expanded';
+    return (_, context) => ({
+      actions: [],
+      menuType: getMenuType(context.breakpoint),
+      menuTitle: undefined as string,
+      mode: getMode(context.breakpoint),
+      frameType: getFrameType(context.breakpoint) as 'lineup' | 'drawer',
+    });
+  }, ['components', 'frames', 'sideNav']);
 
-  @Input({transform: (v: any) => signalize(v)})
-  readonly frameType = injectUiConfig(['frames', 'sideNav', 'frameType']);
+  readonly config = SideNavFrameStore.Config.inject();
+  readonly actions = input(_computed(() => this.config().actions));
+  readonly menuType = input(_computed(() => this.config().menuType));
+  readonly menuTitle = input(_computed(() => this.config().menuTitle));
+  readonly mode = input(_computed(() => this.config().mode));
+  readonly frameType = input(_computed(() => this.config().frameType));
 
   @HostBinding('attr.frame')
   get attrFrame() {
@@ -36,7 +65,7 @@ export class SideNavFrameStore extends InjectableComponent {
 @Component({
   standalone: true,
   imports: [
-    CommonModule,
+    NgTemplateOutlet,
     DrawerFrame,
     LineUpFrame,
     IconButtonMenuTemplateStore,
@@ -44,41 +73,54 @@ export class SideNavFrameStore extends InjectableComponent {
   ],
   selector: 'frames-side-nav',
   template: `
-  <ng-container [ngSwitch]="store.frameType()">
-    <frames-drawer *ngSwitchCase="'drawer'" [isOpen]="store.mode === 'expanded'">
-      <ng-container drawer *ngTemplateOutlet="menu"></ng-container>
-      <ng-container contents *ngTemplateOutlet="contents"></ng-container>
-    </frames-drawer>
-    <frames-line-up *ngSwitchCase="'lineup'" [hasNext]="true" [scope]="'nav'">
-      <ng-container main *ngTemplateOutlet="menu"></ng-container>
-      <div class="content" next><ng-container *ngTemplateOutlet="contents"></ng-container></div>
-    </frames-line-up>
-  </ng-container>
+  @switch (store.frameType()) {
+    @case ('drawer') {
+      @defer {
+        <frames-drawer [opened]="store.mode() === 'expanded'">
+          <ng-container *ngTemplateOutlet="menu" drawer/>
+          <ng-container *ngTemplateOutlet="contents" contents/>
+        </frames-drawer>
+      }
+    }
+    @default {
+      <!-- @defer { -->
+        <frames-line-up [hasNext]="true" [scope]="'nav'">
+          <ng-container *ngTemplateOutlet="menu" main/>
+          <div class="content" next><ng-container *ngTemplateOutlet="contents"/></div>
+        </frames-line-up>
+      <!-- } -->
+    }
+  }
 
   <ng-template #menu>
-    <ng-container [ngSwitch]="store.menuType()">
-      <templates-icon-button-menu injectable
-        *ngSwitchCase="'icon-button-menu'"
-        [actions]="store.actions"
-        (action)="dispatch($event)"
-      ></templates-icon-button-menu>
-      <templates-menu injectable
-        *ngSwitchCase="'menu'"
-        [actions]="store.actions"
-        (action)="dispatch($event)"
-      ></templates-menu>
-    </ng-container>
+    @switch (store.menuType()) {
+      @case ('icon-button-menu') {
+        <!-- @defer { -->
+          <templates-icon-button-menu injectable
+            [actions]="store.actions()"
+            (action)="dispatch($event)"
+          />
+        <!-- } -->
+      }
+      @default {
+        <!-- @defer { -->
+          <templates-menu injectable
+            [title]="store.menuTitle()"
+            [actions]="store.actions()"
+            (action)="dispatch($event)"
+          />
+        <!-- } -->
+      }
+    }
   </ng-template>
-  <ng-template #contents>
-    <ng-content select="[contents]"></ng-content>
-  </ng-template>
+  <ng-template #contents><ng-content/></ng-template>
   `,
   styleUrls: ['./side-nav.frame.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [
     {
       directive: SideNavFrameStore,
-      inputs: ['actions', 'menuType', 'mode', 'frameType'],
+      inputs: ['actions', 'menuType', 'menuTitle', 'mode', 'frameType'],
     },
   ],
 })

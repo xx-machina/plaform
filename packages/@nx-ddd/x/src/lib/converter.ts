@@ -1,4 +1,4 @@
-import { Injectable } from "@nx-ddd/core";
+import { Injectable } from "@angular/core";
 import { Tweet } from "./domain/models";
 
 @Injectable({providedIn: 'root'})

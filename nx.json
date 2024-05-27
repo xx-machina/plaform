@@ -18,10 +18,7 @@
       }
     }
   },
-  "defaultProject": "@ng-atomic/components",
-  "cli": {
-    "defaultCollection": "./dist/packages/@ng-atomic/schematics"
-  },
+  "defaultProject": "./dist/packages/@ng-atomic/schematics",
   "generators": {
     "@nx/angular:application": {
       "style": "scss",
@@ -39,10 +36,14 @@
     "./dist/packages/@ng-atomic/schematics": {
       "pipe": {
         "project": "@ng-atomic/common",
-        "path": "packages/@ng-atomic/common/src/pipes",
+        "path": "packages/@ng-atomic/common/src/lib/pipes",
         "flat": false,
         "standalone": true,
         "skipImport": true
+      },
+      "service": {
+        "project": "@ng-atomic/common",
+        "flat": false
       },
       "atom": {
         "project": "@ng-atomic/components",
@@ -109,7 +110,21 @@
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
     },
     "e2e": {
-      "inputs": ["default", "^production"]
+      "inputs": ["default", "^production"],
+      "cache": true
+    },
+    "@nx/jest:jest": {
+      "cache": true,
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
     }
   },
   "namedInputs": {
@@ -126,7 +141,10 @@
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/jest.config.[jt]s",
       "!{projectRoot}/.eslintrc.json",
-      "!{projectRoot}/src/test-setup.[jt]s"
+      "!{projectRoot}/src/test-setup.[jt]s",
+      "!{projectRoot}/cypress/**/*",
+      "!{projectRoot}/**/*.cy.[jt]s?(x)",
+      "!{projectRoot}/cypress.config.[jt]s"
     ]
   }
 }

@@ -1,12 +1,11 @@
-import { Injectable } from '@nx-ddd/core';
+import { Injectable } from '@angular/core';
 import { PartialWithId, Repository } from '@nx-ddd/common/domain/repository';
 import { toObject } from '@nx-ddd/common/utilities/to-object';
 import { generateId } from '@nx-ddd/common/utilities';
-import { Dayjs } from 'dayjs';
 import { FirestoreAdapter } from '../adapters/base';
 import { IFirestoreConverter } from '../converter';
 import { FirestorePathBuilder } from '../path-builder';
-import { FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument, ToFirestoreData } from '../interfaces';
+import { FirestoreCollection, FirestoreCollectionGroup, FirestoreDocument } from '../interfaces';
 
 const toPromise = callback => new Promise<ReturnType<typeof callback>>(async (resolve, reject) => {
   try { resolve(callback()); } catch (error) { reject(error); }
@@ -14,16 +13,12 @@ const toPromise = callback => new Promise<ReturnType<typeof callback>>(async (re
 
 @Injectable()
 export abstract class BaseFirestoreRepository<
-  Entity extends { id: string },
-  FirestoreData = ToFirestoreData<Entity, Dayjs>,
+  Entity extends { id: string }
 > extends Repository<Entity> {
   protected abstract collectionPath: string;
-  protected abstract converter: IFirestoreConverter<Entity, FirestoreData>;
+  protected abstract converter: IFirestoreConverter<Entity>;
   protected pathBuilder: FirestorePathBuilder<Entity>;
-
-  constructor(
-    protected adapter: FirestoreAdapter,
-  ) { super(); }
+  protected adapter: FirestoreAdapter;
 
   async list(paramMap?: Partial<Entity>, query: any = q => q): Promise<Entity[]> {
     const collection = paramMap ? this.collection(paramMap) : this.collectionGroup();
@@ -92,24 +87,24 @@ export abstract class BaseFirestoreRepository<
     }, this.adapter.batch()).commit();
   }
 
-  protected collection(paramMap?: Partial<Entity>): FirestoreCollection<FirestoreData> {
+  protected collection(paramMap?: Partial<Entity>): FirestoreCollection<object> {
     const path = this.pathBuilder.collection(paramMap)
-    return this.adapter.collection<FirestoreData>(path);
+    return this.adapter.collection<object>(path);
   }
 
-  protected collectionGroup(): FirestoreCollectionGroup<FirestoreData> {
+  protected collectionGroup(): FirestoreCollectionGroup<object> {
     const path = this.pathBuilder.collectionGroup();
-    return this.adapter.collectionGroup<FirestoreData>(path);
+    return this.adapter.collectionGroup<object>(path);
   }
 
-  protected doc(paramMap: PartialWithId<Entity>): FirestoreDocument<FirestoreData> {
+  protected doc(paramMap: PartialWithId<Entity>): FirestoreDocument<object> {
     const path = this.pathBuilder.doc(paramMap);
-    return this.adapter.doc<FirestoreData>(path);
+    return this.adapter.doc<object>(path);
   }
 
   protected genId = (): string => generateId();
 
-  protected _list(collection: FirestoreCollection<FirestoreData>) {
+  protected _list(collection: FirestoreCollection<object>) {
     const doesExist = (doc: any) => typeof doc.exists === 'function' ? doc.exists() : doc.exists;
     return collection.get().then(({docs}) => docs.map(doc => {
       if (!doesExist(doc)) return null;
@@ -117,19 +112,23 @@ export abstract class BaseFirestoreRepository<
     }));
   }
 
-  protected _get(doc: FirestoreDocument<FirestoreData>) {
+  protected _get(doc: FirestoreDocument<object>) {
     return doc.get().then((doc => {
       if (!doc.data()) return null;
       return this.converter.fromFirestore(doc)
     }));
   }
 
-  protected _save(doc: FirestoreDocument<FirestoreData>, entity: Entity): Promise<[Entity, boolean]> {
-    return this._set(doc, entity, !entity?.id)
-      .then(doc => this.converter.fromFirestore(doc)).then(e => [e, !!entity?.id]); 
+  protected async _save(doc: FirestoreDocument<object>, entity: Entity): Promise<[Entity, boolean]> {
+    const exists = await doc.exists();
+    if (exists) {
+      return this._set(doc, entity).then(doc => [this.converter.fromFirestore(doc), false]);
+    } else {
+      return this._create(doc, entity).then(entity => [entity, true]);
+    }
   }
 
-  protected async _create(doc: FirestoreDocument<FirestoreData>, entity: Entity): Promise<Entity> {
+  protected async _create(doc: FirestoreDocument<object>, entity: Entity): Promise<Entity> {
     const exists = await doc.exists();
     if (exists) throw new Error('Document already exists');
     return doc.set({
@@ -138,7 +137,7 @@ export abstract class BaseFirestoreRepository<
     } as any).then(() => doc.get()).then(doc => this.converter.fromFirestore(doc)); ;
   }
 
-  protected _set(doc: FirestoreDocument<FirestoreData>, entity: Partial<Entity>, isUpdate = true) {
+  protected _set(doc: FirestoreDocument<object>, entity: Partial<Entity>, isUpdate = true) {
     return doc.set({
       ...this.converter.toFirestore(entity),
       ...this.buildServerTimestampObject(isUpdate ? ['updatedAt'] : []),

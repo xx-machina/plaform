@@ -1,51 +1,85 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, Pipe, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { Action, Actions } from '@ng-atomic/core';
+import { Action, InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
+
+@Pipe({ standalone: true, name: 'stope' })
+export class StopPipe {
+  transform($event: Event) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    return $event;
+  }
+}
+
+@TokenizedType()
+@Directive({ standalone: true, selector: 'atoms-smart-menu-button' })
+export class SmartMenuButtonAtomStore extends InjectableComponent {
+  readonly actions = input<Action[]>([]);
+  readonly type = input<'button' | 'icon-button'>('icon-button');
+  readonly action = computed(() => this.actions()?.[0]);
+}
 
 @Component({
   selector: 'atoms-smart-menu-button',
   standalone: true,
   imports: [
-    CommonModule,
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    StopPipe
   ],
   template: `
-  <ng-container [ngSwitch]="actions?.length ?? 0">
-    <ng-container *ngSwitchCase="0"></ng-container>
-    <ng-container *ngSwitchCase="1">
-      <button mat-icon-button (click)="action.emit(actions[0])" [disabled]="actions[0].disabled">
-        <mat-icon>{{ actions[0]?.icon }}</mat-icon>
-      </button>
-    </ng-container>
-    <ng-container *ngSwitchDefault>
-      <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="action.disabled" *ngIf="actions.length">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-    </ng-container>
-  </ng-container>
+  @switch(store.actions()?.length ?? 0) {
+    @case(0) { }
+    @case(1) {
+      @switch (store.type()) {
+        @case('button') {
+          <button mat-button (click)="dispatch(store.action()); $event.stopPropagation()" [disabled]="store.action().disabled">
+            {{ store.action()?.name }}
+          </button>
+        }
+        @case('icon-button') {
+          <button mat-icon-button (click)="dispatch(store.action()); $event.stopPropagation();" [disabled]="store.action().disabled">
+            <mat-icon>{{ store.action()?.icon }}</mat-icon>
+          </button>
+        }
+      }
+    }
+    @default {
+      @if (store.actions().length) {
+        @switch (store.type()) {
+          @case('button') {
+            <button mat-button [matMenuTriggerFor]="menu">
+              {{ store.actions().length }} actions
+            </button>
+          }
+          @case('icon-button') {
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          }
+        }
+      }
+    }
+  }
 
   <mat-menu #menu="matMenu">
-    <button 
-      *ngFor="let _action of actions; trackBy: trackByItemId"
-      mat-menu-item 
-      (click)="action.emit(_action)"
-    >{{ _action.name }}</button>
+    @for (action of store.actions(); track action.id) {
+      <button mat-menu-item (click)="dispatch(action)" [disabled]="action.disabled">{{ action.name }}</button>
+    }
   </mat-menu>
   `,
   styleUrls: ['./smart-menu-button.atom.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
+  hostDirectives: [
+    {
+      directive: SmartMenuButtonAtomStore,
+      inputs: ['actions', 'type'],
+    }
+  ]
 })
-export class SmartMenuButtonAtom {
-  @Input()
-  actions: Actions = [];
-
-  @Output()
-  action = new EventEmitter<Action>();
-
-  trackByItemId = (index: number, item: Action): string => item.id;
+export class SmartMenuButtonAtom extends NgAtomicComponent {
+  protected store = inject(SmartMenuButtonAtomStore);
 }

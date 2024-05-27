@@ -1,11 +1,37 @@
-# core
+# NxDDD Core
+`@nx-ddd/core` is a wrapper library that allows the use of Angular's hierarchical injector in backend or CLI environments.
 
-This library was generated with [Nx](https://nx.dev).
+## Usage
 
-## Running unit tests
+```ts
+import '@angular/compiler';
+import { Injectable } from '@angular/core';
+import { bootstrap } from './index';
 
-Run `nx test core` to execute the unit tests via [Jest](https://jestjs.io).
+@Injectable()
+export abstract class Repository {
+  abstract name: string;
+}
 
-## Running lint
+@Injectable()
+export class RepositoryImpl extends Repository {
+  name = 'RepositoryImpl.name';
+}
 
-Run `nx lint core` to execute the lint via [ESLint](https://eslint.org/).
+@Injectable({providedIn: 'root'})
+export class AppService {
+  constructor(public repository: Repository) { }
+}
+
+async function main() {
+  const injector = await bootstrap([
+    // Inject RepositoryImpl
+    { provide: Repository, useClass: RepositoryImpl},
+  ]);
+  const app = injector.get(AppService);
+  console.debug('app.repository.name:', app.repository.name);
+}
+```
+
+## LISENCE
+MIT

@@ -1,5 +1,5 @@
 import { FileEntry } from "@angular-devkit/schematics";
-import { Configuration, OpenAIApi } from "openai";
+import { OpenAI } from "openai";
 import { AxiosError } from 'axios';
 import { PromiseQueue } from "../promise-queue";
 // import { logger } from "../../cli/logger";
@@ -16,7 +16,6 @@ function isAxiosError(err: Error): err is AxiosError {
 
 export class OpenAiPrompter {
   protected _prompt: string = '';
-  protected config = new Configuration({apiKey: this.token});
 
   constructor(
     protected promiseQueue: PromiseQueue,
@@ -25,7 +24,7 @@ export class OpenAiPrompter {
     if (!this.token?.length)
       throw new Error('OPEN_AI_TOKEN is not provided! Please `export OPEN_AI_TOKEN=<-OPEN_AI_TOKEN->`');
   }
-  protected openai = new OpenAIApi(this.config);
+  protected openai = new OpenAI({apiKey: this.token});
   protected stop = '\n\`\`\`';
 
   get prompt(): string {
@@ -48,7 +47,7 @@ export class OpenAiPrompter {
       //   stop: this.stop,
       // });
 
-      const res = await this.promiseQueue.add(() => this.openai.createCompletion({
+      const data = await this.promiseQueue.add(() => this.openai.completions.create({
         model: options?.model ?? 'code-cushman-001',
         prompt: this._prompt,
         temperature: options?.temperature ?? 0,
@@ -57,9 +56,9 @@ export class OpenAiPrompter {
         // n: 1,
       }));
 
-      // logger.debug('choices:', res.data.choices.length);
-      this._prompt += res.data.choices?.[0].text;
-      this._prompt += res.data.choices?.[0].finish_reason === 'stop' ? this.stop : '';
+      // logger.debug('choices:', data.choices.length);
+      this._prompt += data.choices?.[0].text;
+      this._prompt += data.choices?.[0].finish_reason === 'stop' ? this.stop : '';
     } catch (error) {
       process.env['SX_VERBOSE_LOGGING'] && console.error(this._prompt);
       if (isAxiosError(error)) {

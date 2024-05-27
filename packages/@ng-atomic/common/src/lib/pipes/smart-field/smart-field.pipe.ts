@@ -1,22 +1,31 @@
-import { Inject, InjectionToken, Optional, Pipe, PipeTransform, Signal } from '@angular/core';
+import { InjectionToken, Pipe, PipeTransform, Signal, inject } from '@angular/core';
 import { Action } from '@ng-atomic/core';
 import { SignalOrValue } from '@ng-atomic/common/pipes/signal';
 import get from 'lodash.get';
 
 
-interface Option<T> {
+export interface Option<T> {
   name: string;
   value: T;
 }
 
 interface BaseField {
   placeholder?: string;
-  hint?: string;
+  hint?: SignalOrValue<string>;
+  actions?: Action[] | Signal<Action[]>;
 }
 
-interface InputField extends BaseField {
-  type: 'input';
-  autoComplete?: SignalOrValue<(string | number)[]>;
+interface TextField extends BaseField {
+  type: 'text';
+  autoComplete?: SignalOrValue<string[]>;
+}
+
+interface PasswordField extends BaseField {
+  type: 'password';
+}
+
+interface NumberField extends BaseField {
+  type: 'number';
 }
 
 interface TextareaField extends BaseField {
@@ -28,19 +37,29 @@ interface DateInputField extends BaseField {
   type: 'date';
 }
 
-interface SelectField<T> extends BaseField {
-  type: 'select';
-  options: Option<T>[];
+interface DateRangeInputField extends BaseField {
+  type: 'date-range';
 }
 
+interface SelectField<T> extends BaseField {
+  type: 'select';
+  options: Option<T>[] | Signal<Option<T>[]>;
+  multiple?: boolean;
+}
+
+interface TimeRangeField extends BaseField {
+  type: 'time-range';
+}
+
+//* @deprecated use multiple option */
 interface MultiSelectField<T> extends BaseField {
   type: 'multi-select';
-  options: Option<T>[];
+  options: Option<T>[] | Signal<Option<T>[]>;
 }
 
 interface FileField extends BaseField {
   type: 'file';
-  progress?: Signal<number>;
+  progress?: Signal<number | null>;
 }
 
 interface ActionField extends BaseField {
@@ -49,44 +68,69 @@ interface ActionField extends BaseField {
   disabled?: boolean;
 }
 
-interface NoneField {
-  type: 'none';
+interface AgreementField {
+  type: 'agreement';
+  labelTemp: null | any;
 }
 
-type FormField<V> = InputField
+interface HiddenField {
+  type: 'hidden';
+}
+
+interface PreviewField extends BaseField {
+  type: 'preview';
+}
+
+interface PreviewImageField extends BaseField {
+  type: 'preview:image';
+}
+
+export type FormField<V = any> = 
+  | TextField
+  | PasswordField
   | TextareaField
   | DateInputField
+  | DateRangeInputField
   | SelectField<V>
+  | TimeRangeField
   | MultiSelectField<V>
   | FileField
   | ActionField
-  | NoneField;
+  | HiddenField
+  | NumberField
+  | PreviewField
+  | AgreementField
+  | PreviewImageField;
 
 export interface FormFieldMap {
   [key: string]: FormField<any> | FormFieldMap;
 }
 
+/** @deprecated */
 export const FORM_FIELD_MAP = new InjectionToken<FormFieldMap>('[@ng-atomic] Smart Form Field');
 
-@Pipe({
-  name: 'smartField',
-  standalone: true,
-  pure: true,
-})
+/** @deprecated */
+export function provideFormFieldMap(useFactory: () => FormFieldMap) {
+  return { provide: FORM_FIELD_MAP, useFactory };
+}
+
+type Enum<T> = Record<string, T>;
+
+/** @deprecated */
+export function buildOptions<T>(_enum: Enum<T>): Option<T>[] {
+  return Object.values(_enum).map(value => ({value, name: value}) as Option<T>);
+}
+
+/** @deprecated */
+@Pipe({name: 'smartField', standalone: true, pure: true})
 export class SmartFieldPipe implements PipeTransform {
+  protected map = inject(FORM_FIELD_MAP, {optional: true}) ?? {
+    createdAt: { type: 'date' },
+    updatedAt: { type: 'date' },
+    deletedAt: { type: 'date' },
+  };
 
-  constructor(
-    @Optional() @Inject(FORM_FIELD_MAP) private map: Record<string, FormField<any>>
-  ) {
-    this.map ??= {
-      createdAt: { type: 'date' },
-      updatedAt: { type: 'date' },
-      deletedAt: { type: 'date' },
-    };
+  transform(key: string, map: FormFieldMap = this.map): FormField<any> {
+    return get(map, key) ?? {type: 'input'};
   }
-
-  transform(key: string): FormField<any> {
-    return get(this.map, key) ?? {type: 'input'};
-  }
-
 }

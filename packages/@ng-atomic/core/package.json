@@ -1,6 +1,11 @@
 {
   "name": "@ng-atomic/core",
   "version": "0.0.0-PLACEHOLDER",
+  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@ng-atomic/core",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nontangent/machina.git"
+  },
   "peerDependencies": {
     "@angular/core": "^16.0.0"
   },

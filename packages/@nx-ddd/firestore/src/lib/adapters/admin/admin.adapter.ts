@@ -1,30 +1,30 @@
+import { Injectable, NgModule } from '@angular/core';
 import dayjs from 'dayjs';
-import { firestore } from 'firebase-admin';
+import admin from 'firebase-admin';
 import { DocumentReference, FirestoreCollection, FirestoreCollectionGroup } from '../../interfaces'
-import { FirestoreAdapter, QueryFn, WhereFilterOp } from '../base';
-import { Injectable, NxModule } from '@nx-ddd/core';
+import { FirestoreAdapter, QueryFn, WhereFilterOp, provideFirestoreAdapter as _provideFirestoreAdapter } from '../base';
 
 @Injectable()
 export class AdminFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
-  protected firestore = firestore();
+  protected firestore = admin.firestore();
 
-  get FieldValue(): typeof firestore.FieldValue {
-    return firestore.FieldValue;  
+  get FieldValue(): typeof admin.firestore.FieldValue {
+    return admin.firestore.FieldValue;  
   }
 
-  get Timestamp(): typeof firestore.Timestamp {
-    return firestore.Timestamp;  
+  get Timestamp(): typeof admin.firestore.Timestamp {
+    return admin.firestore.Timestamp;  
   }
 
-  get FieldPath(): typeof firestore.FieldPath {
-    return firestore.FieldPath;
+  get FieldPath(): typeof admin.firestore.FieldPath {
+    return admin.firestore.FieldPath;
   }
 
-  protected isTimestamp(v: any): v is firestore.Timestamp {
+  protected isTimestamp(v: any): v is admin.firestore.Timestamp {
     return v instanceof this.Timestamp;
   }
 
-  protected isFieldValue(v: any): v is firestore.FieldValue {
+  protected isFieldValue(v: any): v is admin.firestore.FieldValue {
     return v instanceof this.FieldValue;
   }
 
@@ -32,18 +32,18 @@ export class AdminFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
     return dayjs.isDayjs(v);
   }
 
-  protected convertDateToTimestamp(date: dayjs.Dayjs): firestore.Timestamp {
+  convertDateToTimestamp(date: dayjs.Dayjs): admin.firestore.Timestamp {
     if (dayjs.isDayjs(date) && date.isValid()) {
-      return firestore.Timestamp.fromDate(date.toDate());
+      return admin.firestore.Timestamp.fromDate(date.toDate());
     }
     throw new Error(`Invalid date: ${date}`);
   }
 
-  protected convertTimestampToDate(timestamp: firestore.Timestamp): dayjs.Dayjs {
+  convertTimestampToDate(timestamp: admin.firestore.Timestamp): dayjs.Dayjs {
     return dayjs(timestamp.toDate())
   }
 
-  doc(path: string): DocumentReference<any, firestore.DocumentReference> {
+  doc(path: string): DocumentReference<any, admin.firestore.DocumentReference> {
     const docRef = this.firestore.doc(path);
     return {
       __ref: docRef,
@@ -55,7 +55,7 @@ export class AdminFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
     };
   }
 
-  collection(path: string): FirestoreCollection<any, firestore.CollectionReference> {
+  collection(path: string): FirestoreCollection<any, admin.firestore.CollectionReference> {
     return this.firestore.collection(path);
   }
 
@@ -72,15 +72,15 @@ export class AdminFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
   }
 
   where<Data>(key: string, evaluation: WhereFilterOp, value: unknown): QueryFn<Data> {
-    return (collection: firestore.CollectionReference<Data> | firestore.Query<Data>) => collection.where(key, evaluation, value);  
+    return (collection: admin.firestore.CollectionReference<Data> | admin.firestore.Query<Data>) => collection.where(key, evaluation, value);  
   }
 
   orderBy<Data>(key: string, order: 'asc' | 'desc' = 'asc'): QueryFn<Data> {
-    return (collection: firestore.CollectionReference<Data> | firestore.Query<Data>) => collection.orderBy(key, order);
+    return (collection: admin.firestore.CollectionReference<Data> | admin.firestore.Query<Data>) => collection.orderBy(key, order);
   }
 
   limit<Data>(n: number): QueryFn<Data> {
-    return (collection: firestore.CollectionReference<Data> | firestore.Query<Data>) => collection.limit(n);
+    return (collection: admin.firestore.CollectionReference<Data> | admin.firestore.Query<Data>) => collection.limit(n);
   }
 
   batch() {
@@ -88,9 +88,13 @@ export class AdminFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
   }
 }
 
-@NxModule({
+@NgModule({
   providers: [
     { provide: FirestoreAdapter, useClass: AdminFirestoreAdapter },
   ],
 })
 export class AdminFirestoreModule { }
+
+export function provideFirestoreAdapter() {
+  return _provideFirestoreAdapter(AdminFirestoreAdapter);
+}

@@ -1,0 +1,46 @@
+@use 'scoped-var/strict' as * with ($host: 'definition-list');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+	@include external-property(--mdc-outlined-text-field-label-text-color);
+	@include external-property(--mat-form-field-outlined-label-text-populated-size);
+}
+
+:host {
+	width: 100%;
+	padding: 0 16px;
+	box-sizing: border-box;
+
+	mat-label {
+		color: var(--mdc-outlined-text-field-label-text-color);
+		font-size: var(--mat-form-field-outlined-label-text-populated-size);
+		font-weight: normal;
+	}
+	
+	dl {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+		font-size: 0.9em;
+
+		::ng-deep > mat-divider {
+			width: 100%;
+			height: 6px;
+		}
+
+		::ng-deep > dt {
+			float: left;
+			width: 50%;
+			color: var(--mdc-outlined-text-field-label-text-color);
+			line-height: 1.5em;
+		}
+
+		::ng-deep > dd {
+			text-align: right;
+			width: 50%;
+			height: 1.5em;
+			margin-inline-start: 0;
+			line-height: 1.5em;
+		}
+	}
+}

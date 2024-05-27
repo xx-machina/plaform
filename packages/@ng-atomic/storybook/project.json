@@ -16,18 +16,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/@ng-atomic/storybook/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/ng-atomic/storybook"],
       "options": {
-        "jestConfig": "packages/@ng-atomic/storybook/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@ng-atomic/storybook/jest.config.ts"
       }
     },
     "publish": {

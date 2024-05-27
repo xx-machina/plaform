@@ -1,0 +1,9 @@
+{
+  "name": "@nx-ddd/google",
+  "version": "0.0.1",
+  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@nx-ddd/google",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nontangent/machina.git"
+  }
+}

@@ -1,6 +1,11 @@
 {
   "name": "@ng-atomic/elements",
   "version": "0.0.0-PLACEHOLDER",
+  "homepage": "https://github.com/nontangent/machina/tree/main/packages/@ng-atomic/elements",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nontangent/machina.git"
+  },
   "type": "commonjs",
   "builders": "./executors.json",
   "peerDependencies": {},

@@ -1,0 +1,15 @@
+@use 'scoped-var/strict' as * with ($host: 'markdown-preview-section');
+@use 'atomic/organism' as *;
+:host {
+	@include organism($host);
+}
+
+:host {
+	width: 100%;
+	padding: 0 16px;
+	box-sizing: border-box;
+
+	markdown {
+		
+	}
+}

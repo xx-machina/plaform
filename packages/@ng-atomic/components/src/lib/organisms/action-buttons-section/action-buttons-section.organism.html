@@ -1,3 +1,0 @@
-<ng-container *ngFor="let _action of actions; trackBy: trackById">
-  <button mat-raised-button color="primary" [disabled]="_action?.disabled" (click)="action.emit(_action)">{{ _action?.name }}</button>
-</ng-container>

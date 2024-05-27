@@ -17,21 +17,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/@nx-ddd/firestore/**/package.json",
-          "packages/@nx-ddd/firestore/**/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/@nx-ddd/firestore"],
       "options": {
-        "jestConfig": "packages/@nx-ddd/firestore/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/@nx-ddd/firestore/jest.config.ts"
       }
     },
     "publish": {

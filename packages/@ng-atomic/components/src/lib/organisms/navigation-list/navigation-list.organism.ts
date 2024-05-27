@@ -1,37 +1,32 @@
-import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, Input, Directive, InjectionToken, inject, Type } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Directive, inject, input } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
-import { InjectableComponent, NgAtomicComponent } from '@ng-atomic/core';
+import { InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
 import { Action } from '@ng-atomic/core';
-import { NavigationListItemMolecule } from '@ng-atomic/components/molecules/navigation-list-item';
+import { NavigationListItemMolecule, NavigationListItemMoleculeStore } from '@ng-atomic/components/molecules/navigation-list-item';
 
-export const Abstract = function (target) {
-  (target as any)['TOKEN'] = new InjectionToken<Type<any>>(`[@ng-atomic/components] ${target.name}`);
-}
-
-@Abstract
+@TokenizedType()
 @Directive({ standalone: true, selector: 'organisms-navigation-list' })
 export class NavigationListOrganismStore extends InjectableComponent {
-  @Input() actions: Action<string>[] = [];
+  readonly actions = input<Action<string>[]>([]);
 }
-
 
 @Component({
   selector: 'organisms-navigation-list',
   standalone: true,
   imports: [
-    CommonModule,
     MatListModule,
-    NavigationListItemMolecule,
+    NavigationListItemMoleculeStore,
+    // NavigationListItemMolecule,
   ],
   template: `
   <mat-selection-list [multiple]="false">
     <!-- TODO(@nontangent): ClickイベントがInjectableComponentでまだ拾えていない -->
-    <molecules-navigation-list-item injectable
-      *ngFor="let action of store.actions" 
-      [action]="action"
-      (click)="dispatch(action)"
-    ></molecules-navigation-list-item>
+    @for (action of store.actions(); track action.id) {
+      <molecules-navigation-list-item injectable
+        [action]="action"
+        (click)="dispatch(action)"
+      />
+    }
   </mat-selection-list>
   `,
   styleUrls: ['./navigation-list.organism.scss'],

@@ -3,6 +3,7 @@
 :host {
   @include property(--horizontal-padding, 64px);
   @include property(--background-color, #eee);
+  @include external-property(--page-width-lv1);
 }
 
 :host {

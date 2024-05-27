@@ -6,10 +6,19 @@
 
 :host {
   display: block;
+  width: 100%;
+  position: relative;
   padding: 0 var(--vertical-padding);
   box-sizing: border-box;
 
   molecules-textarea-field {
     width: 100%;
+  }
+
+  atoms-smart-menu-button {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background-color: white;
   }
 }

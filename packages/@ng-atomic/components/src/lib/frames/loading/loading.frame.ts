@@ -1,24 +1,34 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Directive, inject, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgAtomicComponent } from '@ng-atomic/core';
+
+@Directive({ standalone: true, selector: 'frames-loading' })
+export class LoadingFrameStore {
+  readonly isLoading = input(false);
+}
 
 @Component({
   selector: 'frames-loading',
   standalone: true,
   imports: [
-    CommonModule,
     MatProgressSpinnerModule,
   ],
   template: `
-    <div class="contents"><ng-content></ng-content></div>
-    <div class="loading" *ngIf="isLoading"><mat-spinner></mat-spinner></div>
+    <div class="contents"><ng-content /></div>
+    @if(store.isLoading()) {
+      <div class="loading"><mat-spinner /></div>
+    }
   `,
   styleUrls: ['./loading.frame.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: LoadingFrameStore,
+      inputs: ['isLoading'],
+    }
+  ]
 })
-export class LoadingFrame {
-
-  @Input()
-  isLoading = false;
+export class LoadingFrame extends NgAtomicComponent {
+  protected store = inject(LoadingFrameStore);
 
 }

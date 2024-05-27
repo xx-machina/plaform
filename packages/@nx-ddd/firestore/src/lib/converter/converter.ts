@@ -1,50 +1,35 @@
-import { Dayjs } from 'dayjs';
-import { Injectable } from '@nx-ddd/core';
-import pick from 'lodash.pick';
+import { inject } from '@angular/core';
+import { plainToInstanceWithValid } from '@nx-ddd/core/util';
 import { FirestoreAdapter } from '../adapters/base';
-import { DocumentSnapshot, ToFirestoreData } from '../interfaces';
-import { FirestoreAnnotation, FIRESTORE_ANNOTATIONS } from '../decorators';
+import { DocumentSnapshot } from '../interfaces';
 
-
-export interface IFirestoreConverter<Entity = any, Data = ToFirestoreData<Entity, Dayjs>> {
-  fromFirestore(doc: DocumentSnapshot<Data>): Entity;
-  toFirestore(entity: Partial<Entity>): Data;
+export interface IFirestoreConverter<Entity extends {id: string}> {
+  fromFirestore(doc: DocumentSnapshot<object>): Entity;
+  toFirestore(entity: Partial<Entity>): object;
 }
 
-@Injectable()
-export class FirestoreConverter<
-  Entity = any, 
-  Data = ToFirestoreData<Entity, Dayjs>
-> implements IFirestoreConverter {
-  protected Entity: any;
-  protected adapter: FirestoreAdapter<any>;
+class BasicConverter<E extends {id: string}> {
+  constructor(
+    protected readonly Entity: new () => E,
+    protected readonly adapter: FirestoreAdapter,
+  ) { }
 
-  private get fields(): string[] {
-    const annotations = this.Entity[FIRESTORE_ANNOTATIONS] as FirestoreAnnotation[];
-    return annotations.map(a => a.fieldName);
-  }
-
-  fromFirestore(doc: DocumentSnapshot<Data>): Entity {
-    return this.Entity.fromObj(this.adapter.fromFirestoreData({
+  fromFirestore(doc: DocumentSnapshot<any>): E {
+    const data = this.adapter.fromFirestore({
       ...doc.data(),
       id: doc.id
-    }));
+    }, this.Entity);
+    return plainToInstanceWithValid(this.Entity, data);
   }
 
-  toFirestore(entity: Entity): Data {
-    const data = this.adapter.toFirestoreData<Entity>(this.Entity.toObj(entity));
-    return pick(data, this.fields) as Data;
+  toFirestore(entity: E): object {
+    return this.adapter.toFirestore(entity as any, this.Entity);
   }
 }
 
-export function createConverter<E = any>(
-  Entity: any,
-  adapter: FirestoreAdapter
-): FirestoreConverter<E> {
-  class Converter extends FirestoreConverter<E> {
-    protected Entity = Entity;
-    protected adapter = adapter;
-  }
-
-  return new Converter();
+export function injectConverter<Entity extends {id: string}>(
+  Entity: new () => Entity,
+) {
+  const adapter = inject(FirestoreAdapter);
+  return new BasicConverter(Entity, adapter);
 }

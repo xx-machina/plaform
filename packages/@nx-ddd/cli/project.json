@@ -1,0 +1,36 @@
+{
+  "name": "@nx-ddd/cli",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/@nx-ddd/cli/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/@nx-ddd/cli",
+        "main": "packages/@nx-ddd/cli/src/index.ts",
+        "tsConfig": "packages/@nx-ddd/cli/tsconfig.lib.json",
+        "assets": ["packages/@nx-ddd/cli/*.md"],
+        "generatePackageJson": true,
+        "format": ["cjs"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs @nx-ddd/cli {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/@nx-ddd/cli/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

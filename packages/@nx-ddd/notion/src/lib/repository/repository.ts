@@ -1,13 +1,17 @@
 import { Client } from '@notionhq/client';
 import { Entity } from '@nx-ddd/common/domain/models';
 import { Repository } from '@nx-ddd/common/domain/repository';
-import { Inject, Injectable, InjectionToken } from '@nx-ddd/core/di';
+import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { NotionConverter } from '../converter';
 import { NotionBaseQuery } from '../query';
 import { NotionQueryBuilder } from '../query-builder';
 
-export const NOTION_ACCESS_TOKEN = new InjectionToken('[@nx-ddd/notion] Notion Access Token');
+export const NOTION_ACCESS_TOKEN = new InjectionToken<string>('[@nx-ddd/notion] Notion Access Token');
 export const NOTION_DATABASE_ID = new InjectionToken('[@nx-ddd/notion] Notion Database Id');
+
+export function provideNotionConfig(config: {accessToken: string}) {
+  return { provide: NOTION_ACCESS_TOKEN, useValue: config.accessToken };
+}
 
 @Injectable()
 export abstract class NotionRepository<E extends Entity> extends Repository<E> {

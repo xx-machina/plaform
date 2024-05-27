@@ -1,5 +1,57 @@
 @use 'scoped-var/strict' as * with ($host: 'selection');
 @use 'atomic/template' as *;
+
 :host {
-	@include template($host);
+  @include template($host);
+  @include property(--navigator-height, 56px);
+  @include property(--primary-color, #404040);
+  @include property(--on-primary-color, #f0f0f0);
+  @include property(--secondary-color, #f0f0f0);
+  @include property(--surface-color, #f0f0f0);
+  @include property(--on-surface-color, #000);
+  @include property(--background-color, #f0f0f0);
+  @include property(--on-background-color, #000);
+  @include property(--first-content-height, 0px);
+  @include property(--navigator-background-color, var(--primary-color));
+  @include property(--navigator-on-background-color, var(--on-primary-color));
+  @include property(--min-first-content-height, 0px);
+  @include property(--max-first-content-height, calc(100% - 80px));
+}
+
+:host {
+  background-color: var(--background-color);
+  transition: background-color 0.5s ease-in-out;
+
+  frame-scroll {
+    // --height: 100vh;
+  }
+
+  frames-auto-layout {
+    --gap: 0;
+    --vertical-padding: 0;
+  }
+
+  frames-divider {
+    --first-content-height: #{var(--first-content-height)};
+    --min-first-content-height: #{var(--min-first-content-height)};
+    // --max-first-content-height: #{var(--max-first-content-height)};
+  }
+
+  * {
+    --primary-color: #{var(--primary-color)};
+    --on-primary-color: #{var(--on-primary-color)};
+    --surface-color: #{var(--surface-color)};
+    --on-surface-color: #{var(--on-surface-color)};
+    --background-color: #{var(--background-color)};
+    --on-background-color: #{var(--on-background-color)};
+  }
+
+  organisms-navigator {
+    --background-color: #{var(--navigator-background-color)};
+    --on-background-color: #{var(--navigator-on-background-color)};
+  }
+
+  organisms-action-buttons-section {
+    margin-bottom: 24px;
+  }
 }

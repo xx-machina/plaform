@@ -1,4 +1,4 @@
-import { Injectable } from '@nx-ddd/core';
+import { Injectable, Provider } from '@angular/core';
 import { 
   doc, collection, collectionGroup,
   Timestamp, setDoc, getDoc, deleteDoc, getDocs, 
@@ -18,33 +18,25 @@ import { inject, InjectionToken } from '@angular/core';
 
 
 function asObservable<T = unknown>(
-  ref: Parameters<typeof onSnapshot<T>>[0],
-  _onSnapshot: typeof onSnapshot<T>,
+  ref: Parameters<typeof onSnapshot>[0],
+  _onSnapshot: typeof onSnapshot,
 ): Observable<QuerySnapshot<T>> {
   return new Observable<QuerySnapshot<T>>((observer) => _onSnapshot(
     ref, 
-    value => observer.next(value),
-    error => observer.error(error),
+    (value: any) => observer.next(value),
+    (error: any) => observer.error(error),
     () => observer.complete()),
   );
 }
 
 export const FIREBASE_ADAPTER = new InjectionToken<AngularFirestoreAdapter>('ANGULAR_FIRESTORE_ADAPTER');
-export function provideFirestoreAdapter(firestoreFactory = () => inject(Firestore)) {
-  return [
-    {
-      provide: FIREBASE_ADAPTER,
-      useFactory: () => new AngularFirestoreAdapter(firestoreFactory()),
-    },
-  ];
-}
 
 @Injectable()
 export class AngularFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
 
   constructor(public firestore: Firestore) { super() }
 
-  get FieldValue() {
+  get FieldValue(): typeof FieldValue & {serverTimestamp: () => FieldValue} {
     return Object.assign(FieldValue, {serverTimestamp});
   }
 
@@ -70,12 +62,12 @@ export class AngularFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
     return dayjs.isDayjs(v);
   }
 
-  protected convertDateToTimestamp(date: dayjs.Dayjs): Timestamp {
+  convertDateToTimestamp(date: dayjs.Dayjs): Timestamp {
     return Timestamp.fromDate(date.toDate());
   }
 
-  protected convertTimestampToDate(timestamp: Timestamp): dayjs.Dayjs {
-    return dayjs(timestamp.toDate())
+  convertTimestampToDate(timestamp: Timestamp): dayjs.Dayjs {
+    return dayjs(timestamp.toDate());
   }
 
   doc(path: string): FirestoreDocument<any> {
@@ -155,4 +147,8 @@ export class AngularFirestoreAdapter extends FirestoreAdapter<dayjs.Dayjs> {
   batch() {
     return writeBatch(this.firestore);
   }
+}
+
+export function provideAngularFirestoreAdapter(): Provider {
+  return { provide: FirestoreAdapter, useClass: AngularFirestoreAdapter };
 }

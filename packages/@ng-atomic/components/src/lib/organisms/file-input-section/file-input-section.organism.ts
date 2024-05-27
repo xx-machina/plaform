@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Directive, effect, inject, input } from '@angular/core';
 import { FileInputFieldMolecule } from '@ng-atomic/components/molecules/file-input-field';
-import { Effect, NgAtomicComponent } from '@ng-atomic/core';
+import { Effect, InjectableComponent, NgAtomicComponent, TokenizedType } from '@ng-atomic/core';
 import { FormControl } from '@angular/forms';
 
 enum ActionId {
@@ -9,34 +8,51 @@ enum ActionId {
   CANCEL = '[@ng-atomic/components/organisms/file-input-section] Cancel',
 }
 
+@TokenizedType()
+@Directive({ standalone: true, selector: 'organisms-file-input-section' })
+export class FileInputSectionOrganismStore extends InjectableComponent {
+  readonly control = input(new FormControl(null));
+  readonly label = input('label');
+  readonly placeholder = input('placeholder');
+  readonly hint = input<string | null>(null);
+  readonly progress = input<number | false>(false);
+
+  constructor() {
+    super();
+    effect(() => {
+      console.debug('FileInputSectionOrganismStore#progress:', this.progress());
+    });
+  }
+}
+
 @Component({
   selector: 'organisms-file-input-section',
   standalone: true,
   imports: [
-    CommonModule,
     FileInputFieldMolecule,
   ],
   template: `
   <molecules-file-input-field
-    [control]="control"
-    [label]="label"
-    [hint]="hint"
-    [progress]="progress"
-    [placeholder]="placeholder"
+    [control]="store.control()"
+    [label]="store.label()"
+    [hint]="store.hint()"
+    [progress]="store.progress()"
+    [placeholder]="store.placeholder()"
     (action)="dispatch($event)"
-  ></molecules-file-input-field>
+  />
   `,
   styleUrls: ['./file-input-section.organism.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: FileInputSectionOrganismStore,
+      inputs: ['control', 'label', 'placeholder', 'hint', 'progress'],
+    }
+  ],
 })
 export class FileInputSectionOrganism extends NgAtomicComponent {
   static ActionId = ActionId;
-
-  @Input() control = new FormControl({value: null, disabled: true});
-  @Input() label = 'label';
-  @Input() placeholder = 'placeholder';
-  @Input() hint?: string;
-  @Input() progress?: number;
+  protected store = inject(FileInputSectionOrganismStore);
 
   @Effect(FileInputFieldMolecule.ActionId.FILE_SELECTED)
   protected onFileSelected(files: File[]) {

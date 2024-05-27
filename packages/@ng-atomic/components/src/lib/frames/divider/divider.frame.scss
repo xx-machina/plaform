@@ -2,7 +2,9 @@
 // @use 'atomic/frame' as *;
 :host {
 	// @include frame($host);
-	@include property('--first-content-height', 0px);
+	@include property(--first-content-height, 0px);
+	@include property(--min-first-content-height, 0px);
+	@include property(--max-first-content-height, calc(100% - 80px));
 }
 
 :host {
@@ -14,7 +16,7 @@
 	width: 100%;
 
 	div.first {
-		height: var(--first-content-height);
+		height: min(max(var(--first-content-height), var(--min-first-content-height)), var(--max-first-content-height));
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
@@ -29,9 +31,8 @@
 	div.second {
 		display: flex;
 		flex-direction: column;
-		height: calc(100% - var(--first-content-height));
+		height: calc(100% - min(max(var(--first-content-height), var(--min-first-content-height)), var(--max-first-content-height)));
 		overflow: hidden;
-
 	}
 
 }

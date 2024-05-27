@@ -1,4 +1,4 @@
-import { Injectable, Inject, InjectionToken } from '@nx-ddd/core';
+import { Injectable, Inject, InjectionToken } from '@angular/core';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 
 export const SERVICE_ACCOUNT = new InjectionToken('[@nx-ddd/spreadsheet] Service Account');

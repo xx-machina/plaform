@@ -1,0 +1,49 @@
+@use 'scoped-var/strict' as * with ($host: 'form');
+// @use 'atomic/template' as *;
+
+:host {
+  // @include template($host);
+  @include property(--horizontal-padding, 16px);
+  @include property(--vertical-padding, 24px);
+  @include property(--gap, 16px);
+  @include property(--primary-color, #404040);
+  @include property(--on-primary-color, #f0f0f0);
+  @include property(--secondary-color, #f0f0f0);
+  @include property(--surface-color, #f0f0f0);
+  @include property(--on-surface-color, #000);
+  @include property(--background-color, #f0f0f0);
+  @include property(--on-background-color, #000);
+  @include property(--navigator-background-color, var(--primary-color));
+  @include property(--navigator-on-background-color, var(--on-primary-color));
+}
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--background-color);
+
+  frames-auto-layout {
+    height: fit-content;
+    --gap: #{var(--gap)};
+    --vertical-padding: #{var(--vertical-padding)};
+
+    * {
+      --horizontal-padding: #{var(--horizontal-padding)};
+    }
+  }
+
+  organisms-navigator {
+    --background-color: #{var(--navigator-background-color)};
+    --on-background-color: #{var(--navigator-on-background-color)};
+  }
+
+  * {
+    --primary-color: #{var(--primary-color)};
+    --on-primary-color: #{var(--on-primary-color)};
+    --surface-color: #{var(--surface-color)};
+    --on-surface-color: #{var(--on-surface-color)};
+    --background-color: #{var(--background-color)};
+    --on-background-color: #{var(--on-background-color)};
+  }
+}

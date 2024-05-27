@@ -1,46 +1,37 @@
-import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, Input,  HostBinding } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, HostBinding, input, inject } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { catchError, map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
+import { NgAtomicComponent } from '@ng-atomic/core';
+import { catchError, map, Observable, of, switchMap } from 'rxjs';
 
 
 @Component({
   selector: 'atoms-icon',
   standalone: true,
   imports: [
-    CommonModule,
     MatIconModule,
   ],
   template: `
-  <mat-icon
-    *ngIf="hasSvgIcon$ | async"
-    [svgIcon]="name$ | async"
-  ></mat-icon>
-  <mat-icon
-    *ngIf="!(hasSvgIcon$ | async)"
-  >{{ name$ | async }}</mat-icon>
+  @if (hasSvgIcon()) {
+    <mat-icon [svgIcon]="name()"></mat-icon>
+  } @else {
+    <mat-icon>{{ name() }}</mat-icon>
+  }
   `,
   styleUrls: ['./icon.atom.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IconAtom {
-
-  name$ = new ReplaySubject<string>(1);
-  hasSvgIcon$: Observable<boolean> = this.name$.pipe(
+export class IconAtom extends NgAtomicComponent {
+  readonly name = input('name');
+  private registry = inject(MatIconRegistry);
+  readonly hasSvgIcon$: Observable<boolean> = toObservable(this.name).pipe(
     switchMap((name: string) => this.registry.getNamedSvgIcon(name)),
     map(svgIcon => !!svgIcon),
     catchError(() => of(false)),
   );
-
-  @Input()
-  set name(_name: string) {
-    this.name$.next(_name)
-  };
+  readonly hasSvgIcon = toSignal(this.hasSvgIcon$);
 
   @HostBinding('style.--color')
   @Input()
   color?: string;
-
-  constructor(private registry: MatIconRegistry) { }
-
 }

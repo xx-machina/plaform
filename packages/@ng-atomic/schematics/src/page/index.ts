@@ -2,10 +2,10 @@ import { strings } from '@angular-devkit/core';
 import { Rule, Tree, apply, applyTemplates, chain, externalSchematic, mergeWith, move, schematic, url } from '@angular-devkit/schematics';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { dasherize, classify } from '@angular-devkit/core/src/utils/strings';
-import { Schema } from '../atomic-component/schema';
-
-import { addPathToRoutes } from '../_utilities';
 import { createDefaultPath } from '@schematics/angular/utility/workspace';
+import { omit } from 'lodash';
+import { Schema } from '../atomic-component/schema';
+import { addPathToRoutes } from '../_utilities';
 
 type TargetType = 'page' | 'pages';
 type Target = {path: string, name: string};
@@ -18,7 +18,9 @@ export const page = (options: Schema): Rule => async (host: Tree) => {
 	options.path ??= await createDefaultPath(host, options.project);
 
 	const { name, path, type, project } = options = {...options, ...parseName(options.path, options.name)};
-	const { styleHeader, useTypeAsExtension, ...opt } = options;
+	const { styleHeader, useTypeAsExtension } = options;
+	const opt = omit(options, ['styleHeader', 'useTypeAsExtension', 'story', 'ngPackage']);
+
 	const componentExt = useTypeAsExtension ? type : 'component';
 	const scssPath = `${path}/${name}/${name}.${componentExt}.scss`;
 	const pages = getPagesOptions(`${path}/${name}`);
@@ -76,5 +78,6 @@ const buildPageRoute = (name): string => `
 	{
 		path: '',
 		component: ${classify(name)}Page,
+		loadChildren: () => import('@ng-atomic/components/pages/blank').then(m => m.routes)
 		// loadChildren: () => import('./pages/pages.routes').then(m => m.routes)
 	}`;

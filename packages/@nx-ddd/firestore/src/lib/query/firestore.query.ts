@@ -2,10 +2,10 @@ import dayjs from 'dayjs';
 import { Observable, ReplaySubject, lastValueFrom, of, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { FirestoreAdapter } from '../adapters/base';
-import { FirestoreConverter } from '../converter';
+import { IFirestoreConverter } from '../converter';
 import { FirestoreDAO } from '../dao';
 import { FirestorePathBuilder } from '../path-builder';
-import { FirestoreCollection,  FirestoreCollectionGroup, ToFirestoreData } from '../interfaces';
+import { DocumentSnapshot, FirestoreCollection,  FirestoreCollectionGroup, ToFirestoreData } from '../interfaces';
 
 type FirestoreCollectionType<D> = FirestoreCollection<D> | FirestoreCollectionGroup<D>;
   
@@ -15,7 +15,7 @@ export class FirestoreQuery<
 > extends FirestoreDAO<Entity, FirestoreData> {
   constructor(
     adapter: FirestoreAdapter,
-    protected converter: FirestoreConverter<Entity>,
+    protected converter: IFirestoreConverter<Entity>,
     protected pathBuilder: FirestorePathBuilder<Entity>
   ) {
     super(adapter);
@@ -30,10 +30,42 @@ export class FirestoreQuery<
     shareReplay(1),
   )
 
+  /** @deprecated */
   listChanges(paramMap?: Partial<Entity>, options: {switch?: boolean} = {switch: true}): Observable<Entity[]> {
     return of(paramMap).pipe(
       tap((paramMap) => options?.switch && this.switchCollectionRef(paramMap)),
       switchMap(() => this.list$),
+    );
+  }
+
+  listChangesV2(paramMap?: Partial<Entity>): Observable<Entity[]> {
+    return of(paramMap).pipe(
+      tap((paramMap) => paramMap && this.switchCollectionRef(paramMap)),
+      switchMap(() => this.list$),
+    );
+  }
+
+  listChangesAfter(updatedAt: dayjs.Dayjs, {limit}: {limit?: number} = {}) {
+    const entitiesMap = new Map<string, Entity>();
+    const _updatedAt = dayjs.isDayjs(updatedAt) ? this.adapter.convertDateToTimestamp(updatedAt) : updatedAt
+    return this.adapter.query(
+      this.collection(),
+      ...[
+        this.adapter.where('updatedAt', '>', _updatedAt),
+        this.adapter.orderBy('updatedAt', 'asc'),
+        limit ? this.adapter.limit(limit) : undefined,
+      ].filter(Boolean),
+    ).stateChanges().pipe(
+      // bufferTime(1_000),
+      // map(zippedActions => zippedActions.flat()),
+      tap(actions => actions.forEach(({type, payload: {doc}}) => {
+        if (new Set(['added', 'modified']).has(type)) {
+          entitiesMap.set(doc.id, this.converter.fromFirestore(doc as DocumentSnapshot<any>));
+        } else if (type === 'removed') {
+          entitiesMap.delete(doc.id);
+        }
+      })),
+      map(() => [...entitiesMap.values()]),
     );
   }
 

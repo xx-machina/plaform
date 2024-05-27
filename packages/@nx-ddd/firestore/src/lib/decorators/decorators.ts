@@ -31,8 +31,8 @@ export const Geopoint = createDecorator('geopoint');
 export const Boolean = createDecorator('boolean');
 export const Timestamp = createDecorator('timestamp');
 export const Number = createDecorator('number');
-export const Map = (childType: () => any, props?: {name?: string}) => createDecorator('map', {childType})(props);
-export const Array = (childType: () => any, props?: {name?: string}) => createDecorator('array', {childType})(props);
+export const Map = (childType?: () => any, props?: {name?: string}) => createDecorator('map', {childType})(props);
+export const Array = (childType?: () => any, props?: {name?: string}) => createDecorator('array', {childType})(props);
 export const Reference = createDecorator('reference');
 
 export class Firestore {

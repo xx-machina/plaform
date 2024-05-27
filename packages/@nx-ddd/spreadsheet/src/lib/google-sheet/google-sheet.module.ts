@@ -1,6 +1,6 @@
-import { NxModule } from "@nx-ddd/core";
+import { NgModule } from "@angular/core";
 
-@NxModule({
+@NgModule({
   imports: []
 })
 export class GoogleSheetModule { }

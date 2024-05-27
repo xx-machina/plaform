@@ -1,7 +1,40 @@
-# common
+# NxDDD Common
+`@nx-ddd/common` is a library used for domain model annotations and related functionalities.
 
-This library was generated with [Nx](https://nx.dev).
+## Install
+```sh
+$ npm i @nx-ddd/common
+```
 
-## Running unit tests
+## Usage
 
-Run `nx test common` to execute the unit tests via [Jest](https://jestjs.io).
+```ts
+import { Domain, getAnnotations, getLangMap, getModelName } from './models';
+
+@Domain.Entity({name: 'Profile'})
+class Profile {
+  @Domain.Lang('名前') name: string;
+  @Domain.Lang('メールアドレス') email: string;
+}
+
+@Domain.Entity({name: 'ユーザー'})
+class User {
+  @Domain.Lang('ID') id: string;
+  @Domain.Type() profile: Profile;
+  @Domain.Lang('作成日時') createdAt: Date;
+  @Domain.Lang('更新日時') updatedAt: Date;
+}
+
+getLangMap(User);
+/**
+-> {
+  id: 'ID',
+  'profile.name': '名前',
+  'profile.email': 'メールアドレス',
+  createdAt: '作成日時',
+  updatedAt: '更新日時',
+}
+ * */
+
+getModelName(User) // -> 'ユーザー'
+```

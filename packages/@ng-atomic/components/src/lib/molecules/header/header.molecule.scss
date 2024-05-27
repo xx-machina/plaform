@@ -8,8 +8,15 @@
 :host {
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
 	align-items: flex-end;
+	width: 100%;
+	justify-content: flex-start;
+
+	.title {
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
 
 	.description {
 		line-height: 1em;
