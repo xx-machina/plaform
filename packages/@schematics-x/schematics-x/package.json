@@ -24,7 +24,9 @@
     "@angular-devkit/core": "17.2.2",
     "@angular-devkit/schematics": "17.2.2",
     "jsonc-parser": "^3.0.0",
-    "fsevents": "^2.3.2",
     "nx": "17.2.8"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.3"
   }
 }
